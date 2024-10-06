@@ -19,6 +19,30 @@ RATE_LIMIT_THRESHOLD = 100
 # Configure logger
 logger.add("scraper.log", rotation="10 MB")
 
+def check_initial_rate_limit(token):
+    url = f"{GITHUB_API}/rate_limit"
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    data = response.json()
+    
+    remaining = data['resources']['core']['remaining']
+    reset_time = data['resources']['core']['reset']
+    
+    if remaining <= RATE_LIMIT_THRESHOLD:
+        current_time = time.time()
+        wait_time = max(reset_time - current_time, 0)
+        logger.warning(f"Rate limit is already low ({remaining} remaining). Another process might be running.")
+        logger.warning(f"Rate limit will reset in {wait_time:.2f} seconds.")
+        logger.warning("Exiting to avoid conflicts.")
+        return False
+    
+    logger.info(f"Initial rate limit check passed. {remaining} requests remaining.")
+    return True
+
 def handle_rate_limit(response):
     remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
     reset_time = int(response.headers.get('X-RateLimit-Reset', 0))
@@ -299,6 +323,10 @@ def main():
         raise ValueError("GitHub token must be provided as an environment variable.")
     
     logger.info(f"Using GitHub username: {username}")
+    
+    # Check initial rate limit
+    if not check_initial_rate_limit(token):
+        sys.exit(1)  # Exit early if rate limit is already low
     
     existing_data = load_existing_data()
     
