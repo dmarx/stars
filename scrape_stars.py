@@ -327,7 +327,8 @@ def main():
     
     # Check initial rate limit
     if not check_initial_rate_limit(token):
-        sys.exit(1)  # Exit early if rate limit is already low
+        #sys.exit(1)  # Exit early if rate limit is already low
+        sys.exit(0) # don't need to signal abnormal exit code
     
     existing_data = load_existing_data()
     
