@@ -13,6 +13,7 @@ GITHUB_API = "https://api.github.com"
 STARS_FILE = 'github_stars.json'
 BACKFILL_CHUNK_SIZE = 100
 UPDATE_INTERVAL = 7
+COMMIT_INTERVAL = 5
 
 # Configure logger
 logger.add("scraper.log", rotation="10 MB")
