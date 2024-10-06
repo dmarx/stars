@@ -221,20 +221,40 @@ def update_stars(username, token, existing_data):
 def get_git_remote_username():
     try:
         remote_url = subprocess.check_output(["git", "config", "--get", "remote.origin.url"], universal_newlines=True).strip()
-        # Extract username from URLs like:
-        # https://github.com/username/repo.git
-        # git@github.com:username/repo.git
-        match = re.search(r"[/:]([^/]+)/[^/]+\.git$", remote_url)
-        if match:
-            return match.group(1)
-    except subprocess.CalledProcessError:
-        logger.warning("Failed to get git remote URL. Ensure you're in a git repository.")
+        logger.info(f"Git remote URL: {remote_url}")
+        
+        # Handle different types of URLs:
+        # HTTPS: https://github.com/username/repo.git
+        # SSH: git@github.com:username/repo.git
+        # GitHub Actions: https://github.com/username/repo
+        patterns = [
+            r"https://github\.com/([^/]+)/",
+            r"git@github\.com:([^/]+)/",
+            r"https://x-access-token:[^@]+@github\.com/([^/]+)/"
+        ]
+        
+        for pattern in patterns:
+            match = re.search(pattern, remote_url)
+            if match:
+                username = match.group(1)
+                logger.info(f"Extracted username: {username}")
+                return username
+        
+        logger.warning(f"Could not extract username from remote URL: {remote_url}")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Failed to get git remote URL: {e}")
+    except Exception as e:
+        logger.error(f"Unexpected error in get_git_remote_username: {e}")
+    
     return None
 
 
 def main():
     username = os.environ.get('GITHUB_USERNAME') or get_git_remote_username()
     token = os.environ.get('GITHUB_TOKEN')
+    
+    logger.info(f"Determined username: {username}")
+    logger.info(f"Token available: {'Yes' if token else 'No'}")
     
     if not username:
         logger.error("Unable to determine GitHub username. Please set GITHUB_USERNAME environment variable or run from a git repository.")
