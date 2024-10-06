@@ -72,9 +72,9 @@ def test_extract_arxiv_urls():
     assert urls == ['2104.08653', '2105.14075']
 
 def test_extract_bibtex():
-    text = "@article{test2021, title={Test}, author={Tester}, year={2021}}"
+    text = "@article{test2021,\n  title={Test},\n  author={Tester},\n  year={2021}\n}"
     bibtex = extract_bibtex(text)
-    assert bibtex == [text]
+    assert bibtex == [text.strip()]
 
 def test_infer_primary_arxiv_url():
     description = "Implementation of arxiv:2104.08653"
