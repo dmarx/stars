@@ -7,6 +7,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 import time
 from loguru import logger
+import subprocess
 
 GITHUB_API = "https://api.github.com"
 STARS_FILE = 'github_stars.json'
