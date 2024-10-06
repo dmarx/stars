@@ -109,7 +109,7 @@ def extract_arxiv_urls(text):
     return re.findall(arxiv_pattern, text)
 
 def extract_bibtex(text):
-    bibtex_pattern = r'(@\w+\{[^}]+\})'
+    bibtex_pattern = r'(@\w+\{[^@]*\})'
     return re.findall(bibtex_pattern, text, re.DOTALL)
 
 def infer_primary_arxiv_url(description, readme_content, arxiv_urls):
