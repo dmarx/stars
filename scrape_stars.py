@@ -3,7 +3,7 @@ import json
 import os
 import re
 import base64
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from datetime import datetime, timedelta, UTC
 import time
 from loguru import logger
@@ -75,7 +75,7 @@ def load_existing_data():
     if os.path.exists(STARS_FILE):
         with open(STARS_FILE, 'r') as f:
             return json.load(f)
-    return {"last_updated": None, "repositories": {}}
+    return {"last_updated": None, "repositories": {}, "last_processed_index": 0}
 
 def save_data(data):
     with open(STARS_FILE, 'w') as f:
@@ -114,7 +114,7 @@ def get_readme_content(repo_full_name, token):
 
 def extract_arxiv_urls(text):
     arxiv_pattern = r'(?:arxiv\.org/(?:abs|pdf)/|arxiv:)(\d{4}\.\d{4,5})'
-    return re.findall(arxiv_pattern, text)
+    return list(OrderedDict.fromkeys(re.findall(arxiv_pattern, text)))
 
 def extract_bibtex(text):
     bibtex_pattern = r'(@\w+\{[^@]*\})'
@@ -175,7 +175,10 @@ def backfill_stars(username, token, existing_data):
     all_starred = get_starred_repos(username, token)
     total_repos = len(all_starred)
     
-    for i in range(0, total_repos, BACKFILL_CHUNK_SIZE):
+    start_index = existing_data.get('last_processed_index', 0)
+    logger.info(f"Resuming from index {start_index}")
+
+    for i in range(start_index, total_repos, BACKFILL_CHUNK_SIZE):
         chunk = all_starred[i:i+BACKFILL_CHUNK_SIZE]
         logger.info(f"Processing chunk {i//BACKFILL_CHUNK_SIZE + 1} of {total_repos//BACKFILL_CHUNK_SIZE + 1}")
         
@@ -199,14 +202,16 @@ def backfill_stars(username, token, existing_data):
                     logger.warning(f"Skipping repo {repo_name} due to metadata retrieval failure.")
         
         existing_data['last_updated'] = datetime.now(UTC).isoformat()
+        existing_data['last_processed_index'] = i + BACKFILL_CHUNK_SIZE
         save_data(existing_data)
         
         # Commit and push every COMMIT_INTERVAL chunks
-        if (i // BACKFILL_CHUNK_SIZE + 1) % COMMIT_INTERVAL == 0:
+        if ((i // BACKFILL_CHUNK_SIZE + 1) % COMMIT_INTERVAL == 0) or (i + BACKFILL_CHUNK_SIZE >= total_repos):
             commit_and_push()
     
-    # Final commit after all processing
-    commit_and_push()
+    # Reset last_processed_index after completion
+    existing_data['last_processed_index'] = 0
+    save_data(existing_data)
     logger.info("Backfill process completed.")
 
 def update_stars(username, token, existing_data):
@@ -295,7 +300,7 @@ def main():
     existing_data = load_existing_data()
     
     try:
-        if not existing_data['last_updated']:
+        if not existing_data['last_updated'] or existing_data.get('last_processed_index', 0) > 0:
             backfill_stars(username, token, existing_data)
         else:
             update_stars(username, token, existing_data)
