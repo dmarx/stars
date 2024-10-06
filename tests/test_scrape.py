@@ -1,14 +1,14 @@
+import pytest
+from unittest.mock import patch, MagicMock
+import json
+import base64
+from datetime import datetime, timedelta
 import sys
 import os
 
 # Add the parent directory to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-
-import pytest
-from unittest.mock import patch, MagicMock
-import json
-from datetime import datetime, timedelta
 from scrape_stars import (
     get_starred_repos, get_repo_metadata, extract_metadata,
     get_readme_content, extract_arxiv_urls, extract_bibtex,
@@ -96,7 +96,7 @@ def test_infer_primary_arxiv_url():
     )
 ])
 def test_process_repo(repo_data, expected_urls, expected_primary):
-    with patch('scrape_stars.get_readme_content', return_value=""):
+    with patch('scrape_stars.get_readme_content', return_value="arxiv:2104.08653" if expected_urls else ""):
         processed = process_repo("test/repo", repo_data, 'testtoken')
     assert processed['arxiv']['urls'] == expected_urls
     assert processed['arxiv']['primary_url'] == expected_primary
