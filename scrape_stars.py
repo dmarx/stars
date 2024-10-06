@@ -14,9 +14,24 @@ STARS_FILE = 'github_stars.json'
 BACKFILL_CHUNK_SIZE = 100
 UPDATE_INTERVAL = 7
 COMMIT_INTERVAL = 5
+RATE_LIMIT_THRESHOLD = 100
 
 # Configure logger
 logger.add("scraper.log", rotation="10 MB")
+
+def handle_rate_limit(response):
+    remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
+    reset_time = int(response.headers.get('X-RateLimit-Reset', 0))
+    
+    if remaining <= RATE_LIMIT_THRESHOLD:
+        current_time = time.time()
+        sleep_time = max(reset_time - current_time, 0) + 1
+        
+        if sleep_time > 0:
+            logger.warning(f"Rate limit low. {remaining} requests remaining. Sleeping for {sleep_time:.2f} seconds until reset.")
+            time.sleep(sleep_time)
+        else:
+            logger.info(f"Rate limit low but reset time has passed. Proceeding cautiously.")
 
 def get_starred_repos(username, token, since=None):
     url = f"{GITHUB_API}/users/{username}/starred"
@@ -33,17 +48,12 @@ def get_starred_repos(username, token, since=None):
     while url:
         response = requests.get(url, headers=headers, params=params)
         response.raise_for_status()
+        handle_rate_limit(response)
+        
         starred_repos.extend(response.json())
         url = response.links.get('next', {}).get('url')
         if url:
             params = {}  # Clear params for pagination
-        
-        # Respect rate limit
-        if int(response.headers['X-RateLimit-Remaining']) < 10:
-            reset_time = int(response.headers['X-RateLimit-Reset'])
-            sleep_time = max(reset_time - time.time(), 0) + 1
-            logger.warning(f"Rate limit nearly exceeded. Sleeping for {sleep_time} seconds.")
-            time.sleep(sleep_time)
     
     return starred_repos
 
@@ -56,14 +66,7 @@ def get_repo_metadata(repo, token):
     try:
         response = requests.get(url, headers=headers)
         response.raise_for_status()
-        
-        # Respect rate limit
-        if int(response.headers['X-RateLimit-Remaining']) < 10:
-            reset_time = int(response.headers['X-RateLimit-Reset'])
-            sleep_time = max(reset_time - time.time(), 0) + 1
-            logger.warning(f"Rate limit nearly exceeded. Sleeping for {sleep_time} seconds.")
-            time.sleep(sleep_time)
-        
+        handle_rate_limit(response)
         return response.json()
     except requests.exceptions.HTTPError as e:
         if e.response.status_code == 403:
