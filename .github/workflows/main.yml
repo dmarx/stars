@@ -26,7 +26,7 @@ jobs:
         pip install requests loguru pytest
 
     - name: Run tests
-      run: pytest
+      run: pytest tests/test_scrape.py
 
   scrape-stars:
     needs: test
@@ -44,10 +44,25 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests loguru
 
+    - name: Debug information
+      run: |
+        echo "Current directory: $(pwd)"
+        echo "Repository: ${{ github.repository }}"
+        echo "Repository owner: ${{ github.repository_owner }}"
+        git remote -v
+        git config --get remote.origin.url
+
+    - name: Check GitHub token
+      run: |
+        if [ -z "${{ secrets.GITHUB_TOKEN }}" ]; then
+          echo "GITHUB_TOKEN is not set in the repository secrets."
+          exit 1
+        fi
+
     - name: Run star scraper
       env:
-        GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_USERNAME: ${{ github.repository_owner }}
       run: python scrape_stars.py
 
     - name: Commit and push if changes
