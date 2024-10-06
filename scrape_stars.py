@@ -217,6 +217,19 @@ def update_stars(username, token, existing_data):
     save_data(existing_data)
     logger.info("Incremental update process completed.")
 
+def get_git_remote_username():
+    try:
+        remote_url = subprocess.check_output(["git", "config", "--get", "remote.origin.url"], universal_newlines=True).strip()
+        # Extract username from URLs like:
+        # https://github.com/username/repo.git
+        # git@github.com:username/repo.git
+        match = re.search(r"[/:]([^/]+)/[^/]+\.git$", remote_url)
+        if match:
+            return match.group(1)
+    except subprocess.CalledProcessError:
+        logger.warning("Failed to get git remote URL. Ensure you're in a git repository.")
+    return None
+
 def main():
     username = os.environ['GITHUB_USERNAME']
     token = os.environ['GITHUB_TOKEN']
