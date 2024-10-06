@@ -52,17 +52,23 @@ def get_repo_metadata(repo, token):
         "Authorization": f"token {token}",
         "Accept": "application/vnd.github.v3+json"
     }
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()
-    
-    # Respect rate limit
-    if int(response.headers['X-RateLimit-Remaining']) < 10:
-        reset_time = int(response.headers['X-RateLimit-Reset'])
-        sleep_time = max(reset_time - time.time(), 0) + 1
-        logger.warning(f"Rate limit nearly exceeded. Sleeping for {sleep_time} seconds.")
-        time.sleep(sleep_time)
-    
-    return response.json()
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        
+        # Respect rate limit
+        if int(response.headers['X-RateLimit-Remaining']) < 10:
+            reset_time = int(response.headers['X-RateLimit-Reset'])
+            sleep_time = max(reset_time - time.time(), 0) + 1
+            logger.warning(f"Rate limit nearly exceeded. Sleeping for {sleep_time} seconds.")
+            time.sleep(sleep_time)
+        
+        return response.json()
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 403:
+            logger.warning(f"403 Forbidden error for repo {repo['full_name']}. The repo may be private or deleted.")
+            return None
+        raise
 
 def load_existing_data():
     if os.path.exists(STARS_FILE):
@@ -152,6 +158,17 @@ def process_repo(repo_name, repo_data, token):
     
     return repo_data
 
+def commit_and_push():
+    try:
+        subprocess.run(["git", "config", "--global", "user.name", "GitHub Action"], check=True)
+        subprocess.run(["git", "config", "--global", "user.email", "action@github.com"], check=True)
+        subprocess.run(["git", "add", STARS_FILE], check=True)
+        subprocess.run(["git", "commit", "-m", "Update GitHub stars data"], check=True)
+        subprocess.run(["git", "push"], check=True)
+        logger.info("Changes committed and pushed successfully.")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error during git operations: {e}")
+
 def backfill_stars(username, token, existing_data):
     logger.info("Starting backfill process...")
     all_starred = get_starred_repos(username, token)
@@ -166,21 +183,29 @@ def backfill_stars(username, token, existing_data):
             if repo_name not in existing_data['repositories'] or \
                'metadata' not in existing_data['repositories'][repo_name]:
                 metadata = get_repo_metadata(item['repo'], token)
-                existing_data['repositories'][repo_name] = {
-                    'lists': item.get('star_lists', []),
-                    'metadata': extract_metadata(metadata, item['starred_at']),
-                    'last_updated': datetime.utcnow().isoformat()
-                }
-            
-            existing_data['repositories'][repo_name] = process_repo(
-                repo_name, 
-                existing_data['repositories'][repo_name], 
-                token
-            )
+                if metadata:
+                    existing_data['repositories'][repo_name] = {
+                        'lists': item.get('star_lists', []),
+                        'metadata': extract_metadata(metadata, item['starred_at']),
+                        'last_updated': datetime.now(UTC).isoformat()
+                    }
+                    existing_data['repositories'][repo_name] = process_repo(
+                        repo_name, 
+                        existing_data['repositories'][repo_name], 
+                        token
+                    )
+                else:
+                    logger.warning(f"Skipping repo {repo_name} due to metadata retrieval failure.")
         
-        existing_data['last_updated'] = datetime.utcnow().isoformat()
+        existing_data['last_updated'] = datetime.now(UTC).isoformat()
         save_data(existing_data)
+        
+        # Commit and push every COMMIT_INTERVAL chunks
+        if (i // BACKFILL_CHUNK_SIZE + 1) % COMMIT_INTERVAL == 0:
+            commit_and_push()
     
+    # Final commit after all processing
+    commit_and_push()
     logger.info("Backfill process completed.")
 
 def update_stars(username, token, existing_data):
