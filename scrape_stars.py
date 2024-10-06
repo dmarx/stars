@@ -230,16 +230,31 @@ def get_git_remote_username():
         logger.warning("Failed to get git remote URL. Ensure you're in a git repository.")
     return None
 
+
 def main():
-    username = os.environ['GITHUB_USERNAME']
-    token = os.environ['GITHUB_TOKEN']
+    username = os.environ.get('GITHUB_USERNAME') or get_git_remote_username()
+    token = os.environ.get('GITHUB_TOKEN')
+    
+    if not username:
+        logger.error("Unable to determine GitHub username. Please set GITHUB_USERNAME environment variable or run from a git repository.")
+        raise ValueError("GitHub username must be provided or determinable from git remote.")
+    
+    if not token:
+        logger.error("GITHUB_TOKEN environment variable is not set.")
+        raise ValueError("GitHub token must be provided as an environment variable.")
+    
+    logger.info(f"Using GitHub username: {username}")
     
     existing_data = load_existing_data()
     
-    if not existing_data['last_updated']:
-        backfill_stars(username, token, existing_data)
-    else:
-        update_stars(username, token, existing_data)
+    try:
+        if not existing_data['last_updated']:
+            backfill_stars(username, token, existing_data)
+        else:
+            update_stars(username, token, existing_data)
+    except Exception as e:
+        logger.error(f"An error occurred during execution: {e}")
+        raise
 
 if __name__ == "__main__":
     main()
