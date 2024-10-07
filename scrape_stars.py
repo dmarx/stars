@@ -44,16 +44,18 @@ def check_initial_rate_limit(token):
     logger.info(f"Initial rate limit check passed. {remaining} requests remaining.")
     return True
 
-def handle_rate_limit(response):
+def handle_rate_limit(response, existing_data):
     remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
     reset_time = int(response.headers.get('X-RateLimit-Reset', 0))
     
-    if remaining <= RATE_LIMIT_THRESHOLD:
+    if remaining <= CORE_RATE_LIMIT_THRESHOLD:
         current_time = time.time()
         sleep_time = max(reset_time - current_time, 0) + 1
         
         if sleep_time > 0:
-            logger.warning(f"Rate limit low. {remaining} requests remaining. Sleeping for {sleep_time:.2f} seconds until reset.")
+            logger.warning(f"Rate limit low. {remaining} requests remaining. Committing changes and sleeping for {sleep_time:.2f} seconds until reset.")
+            save_data(existing_data)
+            commit_and_push()
             time.sleep(sleep_time)
         else:
             logger.info(f"Rate limit low but reset time has passed. Proceeding cautiously.")
@@ -259,17 +261,20 @@ def process_stars(username, token, existing_data):
     
     logger.info(f"Found {total_repos} total starred repositories.")
 
-    start_index = existing_data.get('last_processed_index', 0)
-    logger.info(f"Starting from index {start_index}")
+    changes_made = False
+    chunks_processed = 0
 
-    for i in range(start_index, total_repos, CHUNK_SIZE):
+    for i in range(0, total_repos, CHUNK_SIZE):
         chunk = all_starred[i:i+CHUNK_SIZE]
         logger.info(f"Processing chunk {i//CHUNK_SIZE + 1} of {total_repos//CHUNK_SIZE + 1}")
+        
+        chunk_changes = False
         
         for item in chunk:
             repo_name = item['repo']['full_name']
             if repo_name not in existing_data['repositories']:
                 metadata = get_repo_metadata(item['repo'], token)
+                handle_rate_limit(metadata.response, existing_data)  # Check rate limit after each API call
                 if metadata:
                     existing_data['repositories'][repo_name] = {
                         'lists': item.get('star_lists', []),
@@ -281,23 +286,30 @@ def process_stars(username, token, existing_data):
                         existing_data['repositories'][repo_name], 
                         token
                     )
+                    chunk_changes = True
+                    changes_made = True
                 else:
                     logger.warning(f"Skipping repo {repo_name} due to metadata retrieval failure.")
-            else:
-                # Update the lists for existing repos
+            elif item.get('star_lists', []) != existing_data['repositories'][repo_name]['lists']:
+                # Update the lists for existing repos if they've changed
                 existing_data['repositories'][repo_name]['lists'] = item.get('star_lists', [])
+                chunk_changes = True
+                changes_made = True
         
-        existing_data['last_updated'] = datetime.now(UTC).isoformat()
-        existing_data['last_processed_index'] = i + CHUNK_SIZE
-        save_data(existing_data)
+        if chunk_changes:
+            existing_data['last_updated'] = datetime.now(UTC).isoformat()
+            save_data(existing_data)
+            chunks_processed += 1
         
-        # Commit and push every COMMIT_INTERVAL chunks
-        if ((i // CHUNK_SIZE + 1) % COMMIT_INTERVAL == 0) or (i + CHUNK_SIZE >= total_repos):
+        # Commit and push every COMMIT_INTERVAL chunks with changes
+        if chunk_changes and (chunks_processed % COMMIT_INTERVAL == 0):
             commit_and_push()
+
+    # Final commit if there are any uncommitted changes
+    if changes_made:
+        save_data(existing_data)
+        commit_and_push()
     
-    # Reset last_processed_index after completion
-    existing_data['last_processed_index'] = 0
-    save_data(existing_data)
     logger.info("Star processing completed.")
 
 def main():
