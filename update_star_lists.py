@@ -8,9 +8,9 @@ from loguru import logger
 import sys
 import re
 
+GITHUB_API = "https://api.github.com"
+GITHUB_URL = "https://github.com"
 STARS_FILE = 'github_stars.json'
-GITHUB_URL = 'https://github.com'
-GITHUB_API_URL = 'https://api.github.com'
 MAX_RETRIES = 5
 INITIAL_BACKOFF = 60  # Initial backoff time in seconds
 RATE_LIMIT_THRESHOLD = 10  # Number of requests to keep in reserve
