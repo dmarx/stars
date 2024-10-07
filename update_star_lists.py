@@ -177,6 +177,7 @@ def update_star_lists(username, token):
         logger.info(f"Initial rate limit: {rate_limit_data['remaining']}/{rate_limit_data['limit']}")
         
         star_lists = get_star_lists(username, session)
+        changes_made = False
         
         for list_name, list_url, repo_count in star_lists:
             logger.info(f"Processing list: {list_name} (Expected repos: {repo_count})")
@@ -186,26 +187,41 @@ def update_star_lists(username, token):
             if len(repos_in_list) < repo_count:
                 logger.warning(f"Found fewer repositories ({len(repos_in_list)}) than expected ({repo_count}) for list {list_name}")
             
+            list_changes = False
             for repo_name in repos_in_list:
                 if repo_name in existing_data['repositories']:
                     if list_name not in existing_data['repositories'][repo_name]['lists']:
                         existing_data['repositories'][repo_name]['lists'].append(list_name)
+                        list_changes = True
+                        changes_made = True
                 else:
                     logger.warning(f"Repository {repo_name} found in list but not in existing data")
                     # Optionally, add the repository to existing_data here
+                    # If you do, set list_changes and changes_made to True
             
-            existing_data['last_updated'] = datetime.now(UTC).isoformat()
-            save_data(existing_data)
-            commit_and_push()
+            if list_changes:
+                existing_data['last_updated'] = datetime.now(UTC).isoformat()
+                save_data(existing_data)
+                if commit_and_push():
+                    logger.info(f"Changes for list {list_name} committed and pushed.")
+                else:
+                    logger.info(f"No changes to commit for list {list_name}.")
+            else:
+                logger.info(f"No changes made for list {list_name}.")
+            
             logger.info(f"Completed processing list: {list_name}")
         
-        logger.info("Star lists update completed successfully")
+        if changes_made:
+            logger.info("Star lists update completed with changes.")
+        else:
+            logger.info("Star lists update completed. No changes were necessary.")
     
     except requests.exceptions.RequestException as e:
         logger.error(f"An error occurred during the update process: {e}")
-        existing_data['last_updated'] = datetime.now(UTC).isoformat()
-        save_data(existing_data)
-        commit_and_push()
+        if changes_made:
+            existing_data['last_updated'] = datetime.now(UTC).isoformat()
+            save_data(existing_data)
+            commit_and_push()
         sys.exit(1)
 
 if __name__ == "__main__":
