@@ -73,11 +73,20 @@ def get_star_lists(username, session):
     soup = BeautifulSoup(response.text, 'html.parser')
     
     lists = []
-    list_elements = soup.select('a[data-hovercard-type="list"]')
-    for element in list_elements:
-        list_name = element.text.strip()
-        list_url = element['href']
-        lists.append((list_name, list_url))
+    list_container = soup.select_one('#profile-lists-container .Box')
+    
+    if list_container:
+        list_items = list_container.select('a.Box-row')
+        for item in list_items:
+            list_name = item.select_one('h3.f4').text.strip()
+            list_url = item['href']
+            repo_count_text = item.select_one('div.color-fg-muted').text.strip()
+            repo_count = int(re.search(r'\d+', repo_count_text).group())
+            lists.append((list_name, list_url, repo_count))
+    
+    logger.info(f"Found {len(lists)} star lists")
+    for name, url, count in lists:
+        logger.info(f"List: {name}, URL: {url}, Repositories: {count}")
     
     return lists
 
@@ -115,11 +124,12 @@ def update_star_lists(username, token):
         rate_limiter.window = rate_limit_data['reset'] - time.time()
         
         star_lists = get_star_lists(username, session)
-        logger.info(f"Found {len(star_lists)} star lists")
         
-        for list_name, list_url in star_lists:
-            logger.info(f"Processing list: {list_name}")
+        for list_name, list_url, repo_count in star_lists:
+            logger.info(f"Processing list: {list_name} (Expected repos: {repo_count})")
             repos_in_list = get_repos_in_list(list_url, session)
+            
+            logger.info(f"Found {len(repos_in_list)} repositories in list {list_name}")
             
             for repo_name in repos_in_list:
                 if repo_name in existing_data['repositories']:
