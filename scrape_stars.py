@@ -12,7 +12,7 @@ import subprocess
 
 GITHUB_API = "https://api.github.com"
 STARS_FILE = 'github_stars.json'
-BACKFILL_CHUNK_SIZE = 100
+CHUNK_SIZE = 100
 UPDATE_INTERVAL = 7
 COMMIT_INTERVAL = 5
 RATE_LIMIT_THRESHOLD = 100
