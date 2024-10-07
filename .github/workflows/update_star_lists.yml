@@ -1,0 +1,35 @@
+name: Update Star Lists
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # Run daily at 1 AM UTC
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  update-star-lists:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests beautifulsoup4 loguru
+
+    - name: Run star lists update script
+      env:
+        GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: python update_star_lists.py
+
+    - name: Commit and push if changes
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add github_stars.json
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update star lists data" && git push)
