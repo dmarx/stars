@@ -11,9 +11,10 @@ import re
 STARS_FILE = 'github_stars.json'
 GITHUB_URL = 'https://github.com'
 GITHUB_API_URL = 'https://api.github.com'
+INITIAL_BACKOFF = 60  # Initial backoff time in seconds
+RATE_LIMIT_THRESHOLD = 10  # Number of requests to keep in reserve
 DEFAULT_RATE_LIMIT = 60  # Default to 60 requests per minute
 DEFAULT_RATE_LIMIT_WINDOW = 60  # 1 minute in seconds
-RATE_LIMIT_THRESHOLD = 5  # Number of requests to keep in reserve
 
 logger.add("star_lists_update.log", rotation="10 MB")
 
@@ -35,38 +36,57 @@ class RateLimiter:
         self.last_updated = time.time()
 
     def update_rate_limit(self, headers):
-        limit = int(headers.get('X-RateLimit-Limit', self.limit))
-        remaining = int(headers.get('X-RateLimit-Remaining', self.tokens))
-        reset = int(headers.get('X-RateLimit-Reset', time.time() + self.window))
+        new_limit = int(headers.get('X-RateLimit-Limit', self.limit))
+        new_remaining = int(headers.get('X-RateLimit-Remaining', self.tokens))
+        new_reset = int(headers.get('X-RateLimit-Reset', time.time() + self.window))
         
-        self.limit = limit
-        self.tokens = remaining
+        # Only update if we're dealing with API rate limits (which are typically higher)
+        if new_limit > DEFAULT_RATE_LIMIT:
+            self.limit = new_limit
+            self.tokens = new_remaining
+            self.window = max(new_reset - time.time(), 1)
+        else:
+            # For web scraping, stick to the default limits
+            self.tokens = min(new_remaining, self.tokens)
+        
         self.last_updated = time.time()
-        self.window = max(reset - self.last_updated, 1)  # Ensure window is at least 1 second
 
     def wait_if_needed(self):
         now = time.time()
         time_passed = now - self.last_updated
         self.tokens = min(self.limit, self.tokens + time_passed * (self.limit / self.window))
 
-        if self.tokens < 1:
-            sleep_time = (1 - self.tokens) * (self.window / self.limit)
-            logger.info(f"Rate limit reached. Sleeping for {sleep_time:.2f} seconds.")
+        if self.tokens < RATE_LIMIT_THRESHOLD:
+            sleep_time = (RATE_LIMIT_THRESHOLD - self.tokens) * (self.window / self.limit)
+            logger.info(f"Approaching rate limit. Sleeping for {sleep_time:.2f} seconds.")
             time.sleep(sleep_time)
-            self.tokens = 1
+            self.tokens = RATE_LIMIT_THRESHOLD
             self.last_updated = time.time()
         else:
             self.tokens -= 1
             self.last_updated = now
 
+def exponential_backoff(attempt):
+    return INITIAL_BACKOFF * (2 ** attempt) + random.uniform(0, 1)
+
 rate_limiter = RateLimiter()
 
-def make_request(session, url):
-    rate_limiter.wait_if_needed()
-    response = session.get(url)
-    response.raise_for_status()
-    rate_limiter.update_rate_limit(response.headers)
-    return response
+def make_request(session, url, max_retries=MAX_RETRIES):
+    for attempt in range(max_retries):
+        rate_limiter.wait_if_needed()
+        try:
+            response = session.get(url)
+            response.raise_for_status()
+            rate_limiter.update_rate_limit(response.headers)
+            return response
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 429:
+                if attempt < max_retries - 1:
+                    backoff_time = exponential_backoff(attempt)
+                    logger.warning(f"Rate limited (429). Backing off for {backoff_time:.2f} seconds.")
+                    time.sleep(backoff_time)
+                    continue
+            raise
 
 def get_star_lists(username, session):
     url = f"{GITHUB_URL}/{username}?tab=stars"
