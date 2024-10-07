@@ -23,9 +23,12 @@ jobs:
 
     - name: Run star lists update script
       env:
-        GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: python update_star_lists.py
+        GITHUB_USERNAME: ${{ github.repository_owner }}
+      run: |
+        echo "GITHUB_USERNAME: $GITHUB_USERNAME"
+        echo "GITHUB_TOKEN is set: ${{ secrets.GITHUB_TOKEN != '' }}"
+        python update_star_lists.py
 
     - name: Commit and push if changes
       run: |
