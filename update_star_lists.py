@@ -93,19 +93,23 @@ def get_star_lists(username, session):
 
 def get_repos_in_list(list_url, session):
     repos = []
-    while list_url:
-        response = make_request(session, f"{GITHUB_URL}{list_url}")
+    page = 1
+    while True:
+        full_url = f"{GITHUB_URL}{list_url}?page={page}"
+        response = make_request(session, full_url)
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        repo_elements = soup.select('h3.wb-break-all')
+        repo_elements = soup.select('#user-list-repositories .col-12.d-block')
+        if not repo_elements:
+            break
+        
         for element in repo_elements:
-            repo_link = element.find('a')
+            repo_link = element.select_one('h3 a')
             if repo_link:
                 repo_name = repo_link.text.strip()
                 repos.append(repo_name)
         
-        next_button = soup.select_one('a.next_page')
-        list_url = next_button['href'] if next_button else None
+        page += 1
     
     return repos
 
