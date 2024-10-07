@@ -7,6 +7,7 @@ import os
 from loguru import logger
 import sys
 import re
+import random
 
 GITHUB_API = "https://api.github.com"
 GITHUB_URL = "https://github.com"
