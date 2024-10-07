@@ -21,19 +21,20 @@ function main() {
     process.exit(1);
   }
 
-  // Generate package-lock.json
-  console.log('Generating package-lock.json...');
-  runCommand('npm install --package-lock-only');
+  // Update packages and generate package-lock.json
+  console.log('Updating packages and generating package-lock.json...');
+  runCommand('npm update');
+  runCommand('npm install');
 
   // Stage, commit, and push the changes
   console.log('Committing and pushing package-lock.json...');
   runCommand('git config --global user.email "github-actions[bot]@users.noreply.github.com"');
   runCommand('git config --global user.name "github-actions[bot]"');
-  runCommand('git add package-lock.json');
-  runCommand('git commit -m "Add package-lock.json"');
+  runCommand('git add package.json package-lock.json');
+  runCommand('git commit -m "Update dependencies and regenerate package-lock.json"');
   runCommand('git push');
 
-  console.log('package-lock.json has been generated and pushed to the repository.');
+  console.log('Dependencies updated and package-lock.json has been regenerated and pushed to the repository.');
 }
 
 main();
