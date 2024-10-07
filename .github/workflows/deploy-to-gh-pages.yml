@@ -6,11 +6,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
@@ -25,15 +26,16 @@ jobs:
       env:
         CI: false
 
-    - name: Debug - List directory contents
-      run: |
-        echo "Contents of the current directory:"
-        ls -R
-        echo "Contents of the build directory:"
-        ls -R build
+    # - name: Debug - List directory contents
+    #   run: |
+    #     echo "Contents of the current directory:"
+    #     ls -R
+    #     echo "Contents of the build directory:"
+    #     ls -R build
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./build
+        force_orphan: true
