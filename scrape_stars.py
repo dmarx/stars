@@ -15,7 +15,8 @@ STARS_FILE = 'github_stars.json'
 CHUNK_SIZE = 100
 UPDATE_INTERVAL = 7
 COMMIT_INTERVAL = 5
-RATE_LIMIT_THRESHOLD = 100
+CORE_RATE_LIMIT_THRESHOLD = 100
+SEARCH_RATE_LIMIT_THRESHOLD = 5
 
 # Configure logger
 logger.add("scraper.log", rotation="10 MB")
