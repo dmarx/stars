@@ -1,0 +1,21 @@
+name: Generate package-lock.json
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate-package-lock:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Generate package-lock.json
+      run: node scripts/generate-package-lock.js
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
