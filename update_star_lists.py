@@ -159,12 +159,9 @@ def update_star_lists(username, token):
     session.headers.update({'Authorization': f'token {token}'})
     
     try:
-        # Make an API request to get accurate rate limit information
-        api_response = make_request(session, f"{GITHUB_API_URL}/rate_limit")
+        api_response = make_request(session, f"{GITHUB_API}/rate_limit")
         rate_limit_data = api_response.json()['resources']['core']
-        rate_limiter.limit = rate_limit_data['limit']
-        rate_limiter.tokens = rate_limit_data['remaining']
-        rate_limiter.window = rate_limit_data['reset'] - time.time()
+        logger.info(f"Initial rate limit: {rate_limit_data['remaining']}/{rate_limit_data['limit']}")
         
         star_lists = get_star_lists(username, session)
         
@@ -182,19 +179,20 @@ def update_star_lists(username, token):
                         existing_data['repositories'][repo_name]['lists'].append(list_name)
                 else:
                     logger.warning(f"Repository {repo_name} found in list but not in existing data")
-                    # Optionally, you could add the repository to existing_data here
-                    # existing_data['repositories'][repo_name] = {
-                    #     'lists': [list_name],
-                    #     'metadata': {},  # You might want to fetch metadata for this repo
-                    #     'last_updated': datetime.now(UTC).isoformat()
-                    # }
+                    # Optionally, add the repository to existing_data here
+            
+            existing_data['last_updated'] = datetime.now(UTC).isoformat()
+            save_data(existing_data)
+            commit_and_push()
+            logger.info(f"Completed processing list: {list_name}")
         
-        existing_data['last_updated'] = datetime.now(UTC).isoformat()
-        save_data(existing_data)
         logger.info("Star lists update completed successfully")
     
     except requests.exceptions.RequestException as e:
         logger.error(f"An error occurred during the update process: {e}")
+        existing_data['last_updated'] = datetime.now(UTC).isoformat()
+        save_data(existing_data)
+        commit_and_push()
         sys.exit(1)
 
 if __name__ == "__main__":
