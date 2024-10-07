@@ -140,7 +140,21 @@ def test_process_stars(mock_commit, mock_save, mock_process, mock_metadata, mock
         {'repo': {'full_name': 'test/repo1'}, 'starred_at': '2023-01-01T00:00:00Z'},
         {'repo': {'full_name': 'test/repo2'}, 'starred_at': '2023-01-02T00:00:00Z'},
     ]
-    mock_metadata.return_value = {'id': 1, 'name': 'test-repo'}
+    mock_metadata.return_value = {
+        'id': 1,
+        'name': 'test-repo',
+        'full_name': 'test/repo',
+        'description': 'A test repository',
+        'html_url': 'https://github.com/test/repo',
+        'homepage': 'https://test.com',
+        'language': 'Python',
+        'stargazers_count': 100,
+        'forks_count': 10,
+        'open_issues_count': 5,
+        'created_at': '2020-01-01T00:00:00Z',
+        'updated_at': '2021-01-01T00:00:00Z',
+        'pushed_at': '2021-01-01T00:00:00Z',
+    }
     mock_process.return_value = {'processed': True}
 
     existing_data = {'repositories': {}, 'last_updated': None}
