@@ -148,6 +148,8 @@ def test_process_stars(mock_commit, mock_save, mock_process, mock_metadata, mock
 
     assert 'test/repo1' in existing_data['repositories']
     assert 'test/repo2' in existing_data['repositories']
+    assert existing_data['repositories']['test/repo1']['lists'] == []
+    assert existing_data['repositories']['test/repo2']['lists'] == []
     assert mock_save.call_count > 0
     assert mock_commit.call_count > 0
 
