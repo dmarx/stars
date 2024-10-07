@@ -11,6 +11,7 @@ import re
 STARS_FILE = 'github_stars.json'
 GITHUB_URL = 'https://github.com'
 GITHUB_API_URL = 'https://api.github.com'
+MAX_RETRIES = 5
 INITIAL_BACKOFF = 60  # Initial backoff time in seconds
 RATE_LIMIT_THRESHOLD = 10  # Number of requests to keep in reserve
 DEFAULT_RATE_LIMIT = 60  # Default to 60 requests per minute
