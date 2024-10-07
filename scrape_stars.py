@@ -94,8 +94,8 @@ def get_repo_metadata(repo, token):
         handle_rate_limit(response)
         return response.json()
     except requests.exceptions.HTTPError as e:
-        if e.response.status_code == 403:
-            logger.warning(f"403 Forbidden error for repo {repo['full_name']}. The repo may be private or deleted.")
+        if e.response.status_code in [403, 404]:
+            logger.warning(f"{e.response.status_code} error for repo {repo['full_name']}. The repo may be private, deleted, or inaccessible.")
             return None
         raise
 
@@ -221,69 +221,6 @@ def process_repo_batch(repos, token, existing_data):
             existing_data['repositories'][repo_name]['lists'] = item.get('star_lists', [])
     return existing_data
 
-def backfill_stars(username, token, existing_data):
-    logger.info("Starting backfill process...")
-    all_starred = get_starred_repos(username, token)
-    total_repos = len(all_starred)
-    
-    start_index = existing_data.get('last_processed_index', 0)
-    logger.info(f"Resuming from index {start_index}")
-
-    for i in range(start_index, total_repos, BACKFILL_CHUNK_SIZE):
-        chunk = all_starred[i:i+BACKFILL_CHUNK_SIZE]
-        logger.info(f"Processing chunk {i//BACKFILL_CHUNK_SIZE + 1} of {total_repos//BACKFILL_CHUNK_SIZE + 1}")
-        
-        existing_data = process_repo_batch(chunk, token, existing_data)
-        
-        existing_data['last_updated'] = datetime.now(UTC).isoformat()
-        existing_data['last_processed_index'] = i + BACKFILL_CHUNK_SIZE
-        save_data(existing_data)
-        
-        # Commit and push every COMMIT_INTERVAL chunks
-        if ((i // BACKFILL_CHUNK_SIZE + 1) % COMMIT_INTERVAL == 0) or (i + BACKFILL_CHUNK_SIZE >= total_repos):
-            commit_and_push()
-    
-    # Reset last_processed_index after completion
-    existing_data['last_processed_index'] = 0
-    save_data(existing_data)
-    logger.info("Backfill process completed.")
-
-def update_stars(username, token, existing_data):
-    logger.info("Starting incremental update process...")
-    last_updated = datetime.fromisoformat(existing_data['last_updated'])
-    all_starred = get_starred_repos(username, token)
-    
-    total_stars = len(all_starred)
-    logger.info(f"Found {total_stars} total starred repositories.")
-
-    new_repos = [repo for repo in all_starred if repo['repo']['full_name'] not in existing_data['repositories']]
-    logger.info(f"Found {len(new_repos)} new repositories to process.")
-
-    for i in range(0, len(new_repos), BACKFILL_CHUNK_SIZE):
-        chunk = new_repos[i:i+BACKFILL_CHUNK_SIZE]
-        logger.info(f"Processing chunk {i//BACKFILL_CHUNK_SIZE + 1} of {len(new_repos)//BACKFILL_CHUNK_SIZE + 1}")
-        
-        existing_data = process_repo_batch(chunk, token, existing_data)
-        
-        existing_data['last_updated'] = datetime.now(UTC).isoformat()
-        save_data(existing_data)
-        
-        # Commit and push every COMMIT_INTERVAL chunks
-        if ((i // BACKFILL_CHUNK_SIZE + 1) % COMMIT_INTERVAL == 0) or (i + BACKFILL_CHUNK_SIZE >= len(new_repos)):
-            commit_and_push()
-    
-    # Update lists for existing repos
-    for repo in all_starred:
-        repo_name = repo['repo']['full_name']
-        if repo_name in existing_data['repositories']:
-            existing_data['repositories'][repo_name]['lists'] = repo.get('star_lists', [])
-    
-    existing_data['last_updated'] = datetime.now(UTC).isoformat()
-    save_data(existing_data)
-    commit_and_push()
-    
-    logger.info("Incremental update process completed.")
-
 def get_git_remote_username():
     try:
         remote_url = subprocess.check_output(["git", "config", "--get", "remote.origin.url"], universal_newlines=True).strip()
@@ -315,6 +252,54 @@ def get_git_remote_username():
     return None
 
 
+def process_stars(username, token, existing_data):
+    logger.info("Starting star processing...")
+    all_starred = get_starred_repos(username, token)
+    total_repos = len(all_starred)
+    
+    logger.info(f"Found {total_repos} total starred repositories.")
+
+    start_index = existing_data.get('last_processed_index', 0)
+    logger.info(f"Starting from index {start_index}")
+
+    for i in range(start_index, total_repos, CHUNK_SIZE):
+        chunk = all_starred[i:i+CHUNK_SIZE]
+        logger.info(f"Processing chunk {i//CHUNK_SIZE + 1} of {total_repos//CHUNK_SIZE + 1}")
+        
+        for item in chunk:
+            repo_name = item['repo']['full_name']
+            if repo_name not in existing_data['repositories']:
+                metadata = get_repo_metadata(item['repo'], token)
+                if metadata:
+                    existing_data['repositories'][repo_name] = {
+                        'lists': item.get('star_lists', []),
+                        'metadata': extract_metadata(metadata, item['starred_at']),
+                        'last_updated': datetime.now(UTC).isoformat()
+                    }
+                    existing_data['repositories'][repo_name] = process_repo(
+                        repo_name, 
+                        existing_data['repositories'][repo_name], 
+                        token
+                    )
+                else:
+                    logger.warning(f"Skipping repo {repo_name} due to metadata retrieval failure.")
+            else:
+                # Update the lists for existing repos
+                existing_data['repositories'][repo_name]['lists'] = item.get('star_lists', [])
+        
+        existing_data['last_updated'] = datetime.now(UTC).isoformat()
+        existing_data['last_processed_index'] = i + CHUNK_SIZE
+        save_data(existing_data)
+        
+        # Commit and push every COMMIT_INTERVAL chunks
+        if ((i // CHUNK_SIZE + 1) % COMMIT_INTERVAL == 0) or (i + CHUNK_SIZE >= total_repos):
+            commit_and_push()
+    
+    # Reset last_processed_index after completion
+    existing_data['last_processed_index'] = 0
+    save_data(existing_data)
+    logger.info("Star processing completed.")
+
 def main():
     username = os.environ.get('GITHUB_USERNAME') or get_git_remote_username()
     token = os.environ.get('GITHUB_TOKEN')
@@ -334,16 +319,13 @@ def main():
     
     # Check initial rate limit
     if not check_initial_rate_limit(token):
-        #sys.exit(1)  # Exit early if rate limit is already low
-        sys.exit(0) # don't need to signal abnormal exit code
+        logger.warning("Rate limits are low. Consider rerunning later.")
+        # We'll continue anyway, but the warning is logged
     
     existing_data = load_existing_data()
     
     try:
-        if not existing_data['last_updated'] or existing_data.get('last_processed_index', 0) > 0:
-            backfill_stars(username, token, existing_data)
-        else:
-            update_stars(username, token, existing_data)
+        process_stars(username, token, existing_data)
     except Exception as e:
         logger.error(f"An error occurred during execution: {e}")
         raise
