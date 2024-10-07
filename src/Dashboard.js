@@ -61,7 +61,7 @@ const Dashboard = () => {
           <li key={name}>
             <h3>{name}</h3>
             <p>{repo.metadata && repo.metadata.description}</p>
-            <p>Stars: {repo.metadata && repo.metadata.stargazers_count}</p>
+            <p>Stars: {repo.metadata && repo.metadata.stars}</p>
             <p>Language: {repo.metadata && repo.metadata.language}</p>
           </li>
         ))}
