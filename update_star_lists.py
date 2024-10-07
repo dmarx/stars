@@ -9,7 +9,10 @@ import sys
 
 STARS_FILE = 'github_stars.json'
 GITHUB_URL = 'https://github.com'
-RATE_LIMIT_THRESHOLD = 10  # Number of requests to keep in reserve
+GITHUB_API_URL = 'https://api.github.com'
+DEFAULT_RATE_LIMIT = 60  # Default to 60 requests per minute
+DEFAULT_RATE_LIMIT_WINDOW = 60  # 1 minute in seconds
+RATE_LIMIT_THRESHOLD = 5  # Number of requests to keep in reserve
 
 logger.add("star_lists_update.log", rotation="10 MB")
 
@@ -23,22 +26,50 @@ def save_data(data):
     with open(STARS_FILE, 'w') as f:
         json.dump(data, f, indent=2)
 
-def handle_rate_limit(response):
-    remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
-    reset_time = int(response.headers.get('X-RateLimit-Reset', 0))
-    
-    if remaining <= RATE_LIMIT_THRESHOLD:
-        current_time = time.time()
-        sleep_time = max(reset_time - current_time, 0) + 1
-        logger.info(f"Rate limit low. {remaining} requests remaining. Sleeping for {sleep_time:.2f} seconds.")
-        time.sleep(sleep_time)
+class RateLimiter:
+    def __init__(self, limit=DEFAULT_RATE_LIMIT, window=DEFAULT_RATE_LIMIT_WINDOW):
+        self.limit = limit
+        self.window = window
+        self.tokens = limit
+        self.last_updated = time.time()
+
+    def update_rate_limit(self, headers):
+        limit = int(headers.get('X-RateLimit-Limit', self.limit))
+        remaining = int(headers.get('X-RateLimit-Remaining', self.tokens))
+        reset = int(headers.get('X-RateLimit-Reset', time.time() + self.window))
+        
+        self.limit = limit
+        self.tokens = remaining
+        self.last_updated = time.time()
+        self.window = max(reset - self.last_updated, 1)  # Ensure window is at least 1 second
+
+    def wait_if_needed(self):
+        now = time.time()
+        time_passed = now - self.last_updated
+        self.tokens = min(self.limit, self.tokens + time_passed * (self.limit / self.window))
+
+        if self.tokens < 1:
+            sleep_time = (1 - self.tokens) * (self.window / self.limit)
+            logger.info(f"Rate limit reached. Sleeping for {sleep_time:.2f} seconds.")
+            time.sleep(sleep_time)
+            self.tokens = 1
+            self.last_updated = time.time()
+        else:
+            self.tokens -= 1
+            self.last_updated = now
+
+rate_limiter = RateLimiter()
+
+def make_request(session, url):
+    rate_limiter.wait_if_needed()
+    response = session.get(url)
+    response.raise_for_status()
+    rate_limiter.update_rate_limit(response.headers)
+    return response
 
 def get_star_lists(username, session):
     url = f"{GITHUB_URL}/{username}?tab=stars"
-    response = session.get(url)
-    response.raise_for_status()
-    handle_rate_limit(response)
-    
+    response = make_request(session, url)
     soup = BeautifulSoup(response.text, 'html.parser')
     
     lists = []
@@ -53,10 +84,7 @@ def get_star_lists(username, session):
 def get_repos_in_list(list_url, session):
     repos = []
     while list_url:
-        response = session.get(f"{GITHUB_URL}{list_url}")
-        response.raise_for_status()
-        handle_rate_limit(response)
-        
+        response = make_request(session, f"{GITHUB_URL}{list_url}")
         soup = BeautifulSoup(response.text, 'html.parser')
         
         repo_elements = soup.select('h3.wb-break-all')
@@ -79,6 +107,13 @@ def update_star_lists(username, token):
     session.headers.update({'Authorization': f'token {token}'})
     
     try:
+        # Make an API request to get accurate rate limit information
+        api_response = make_request(session, f"{GITHUB_API_URL}/rate_limit")
+        rate_limit_data = api_response.json()['resources']['core']
+        rate_limiter.limit = rate_limit_data['limit']
+        rate_limiter.tokens = rate_limit_data['remaining']
+        rate_limiter.window = rate_limit_data['reset'] - time.time()
+        
         star_lists = get_star_lists(username, session)
         logger.info(f"Found {len(star_lists)} star lists")
         
