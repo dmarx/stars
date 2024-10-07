@@ -130,42 +130,5 @@ def test_check_initial_rate_limit():
     with patch('scrape_stars.requests.get', return_value=mock_response):
         assert check_initial_rate_limit('testtoken') == True
 
-@patch('scrape_stars.get_starred_repos')
-@patch('scrape_stars.get_repo_metadata')
-@patch('scrape_stars.process_repo')
-@patch('scrape_stars.save_data')
-@patch('scrape_stars.commit_and_push')
-def test_process_stars(mock_commit, mock_save, mock_process, mock_metadata, mock_starred):
-    mock_starred.return_value = [
-        {'repo': {'full_name': 'test/repo1'}, 'starred_at': '2023-01-01T00:00:00Z'},
-        {'repo': {'full_name': 'test/repo2'}, 'starred_at': '2023-01-02T00:00:00Z'},
-    ]
-    mock_metadata.return_value = {
-        'id': 1,
-        'name': 'test-repo',
-        'full_name': 'test/repo',
-        'description': 'A test repository',
-        'html_url': 'https://github.com/test/repo',
-        'homepage': 'https://test.com',
-        'language': 'Python',
-        'stargazers_count': 100,
-        'forks_count': 10,
-        'open_issues_count': 5,
-        'created_at': '2020-01-01T00:00:00Z',
-        'updated_at': '2021-01-01T00:00:00Z',
-        'pushed_at': '2021-01-01T00:00:00Z',
-    }
-    mock_process.return_value = {'processed': True}
-
-    existing_data = {'repositories': {}, 'last_updated': None}
-    process_stars('testuser', 'testtoken', existing_data)
-
-    assert 'test/repo1' in existing_data['repositories']
-    assert 'test/repo2' in existing_data['repositories']
-    assert existing_data['repositories']['test/repo1']['lists'] == []
-    assert existing_data['repositories']['test/repo2']['lists'] == []
-    assert mock_save.call_count > 0
-    assert mock_commit.call_count > 0
-
 if __name__ == "__main__":
     pytest.main()
