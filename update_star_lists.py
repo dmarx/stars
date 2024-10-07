@@ -91,6 +91,13 @@ def get_star_lists(username, session):
     
     return lists
 
+def clean_repo_name(repo_name):
+    parts = repo_name.split('/')
+    if len(parts) == 2:
+        owner, name = parts
+        return f"{owner.strip()}/{name.strip()}"
+    return repo_name.strip()
+
 def get_repos_in_list(list_url, session):
     repos = []
     page = 1
@@ -107,7 +114,8 @@ def get_repos_in_list(list_url, session):
             repo_link = element.select_one('h3 a')
             if repo_link:
                 repo_name = repo_link.text.strip()
-                repos.append(repo_name)
+                clean_name = clean_repo_name(repo_name)
+                repos.append(clean_name)
         
         page += 1
     
@@ -142,6 +150,12 @@ def update_star_lists(username, token):
                         existing_data['repositories'][repo_name]['lists'].append(list_name)
                 else:
                     logger.warning(f"Repository {repo_name} found in list but not in existing data")
+                    # Optionally, you could add the repository to existing_data here
+                    # existing_data['repositories'][repo_name] = {
+                    #     'lists': [list_name],
+                    #     'metadata': {},  # You might want to fetch metadata for this repo
+                    #     'last_updated': datetime.now(UTC).isoformat()
+                    # }
         
         existing_data['last_updated'] = datetime.now(UTC).isoformat()
         save_data(existing_data)
