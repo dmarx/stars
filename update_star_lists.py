@@ -103,21 +103,31 @@ def get_repos_in_list(list_url, session):
     page = 1
     while True:
         full_url = f"{GITHUB_URL}{list_url}?page={page}"
-        response = make_request(session, full_url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        
-        repo_elements = soup.select('#user-list-repositories .col-12.d-block')
-        if not repo_elements:
-            break
-        
-        for element in repo_elements:
-            repo_link = element.select_one('h3 a')
-            if repo_link:
-                repo_name = repo_link.text.strip()
-                clean_name = clean_repo_name(repo_name)
-                repos.append(clean_name)
-        
-        page += 1
+        try:
+            response = make_request(session, full_url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            repo_elements = soup.select('#user-list-repositories .col-12.d-block')
+            if not repo_elements:
+                break
+            
+            for element in repo_elements:
+                repo_link = element.select_one('h3 a')
+                if repo_link:
+                    repo_name = repo_link.text.strip()
+                    clean_name = clean_repo_name(repo_name)
+                    repos.append(clean_name)
+            
+            page += 1
+            if page > 100:
+                logger.warning(f"Reached page limit (100) for list {list_url}. Some repositories may be missing.")
+                break
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 404:
+                logger.warning(f"Reached end of list or encountered 404 error for {list_url} on page {page}. Some repositories may be missing.")
+                break
+            else:
+                raise
     
     return repos
 
@@ -143,6 +153,8 @@ def update_star_lists(username, token):
             repos_in_list = get_repos_in_list(list_url, session)
             
             logger.info(f"Found {len(repos_in_list)} repositories in list {list_name}")
+            if len(repos_in_list) < repo_count:
+                logger.warning(f"Found fewer repositories ({len(repos_in_list)}) than expected ({repo_count}) for list {list_name}")
             
             for repo_name in repos_in_list:
                 if repo_name in existing_data['repositories']:
