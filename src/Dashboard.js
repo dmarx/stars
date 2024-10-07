@@ -63,6 +63,13 @@ const Dashboard = () => {
             <p>{repo.metadata && repo.metadata.description}</p>
             <p>Stars: {repo.metadata && repo.metadata.stars}</p>
             <p>Language: {repo.metadata && repo.metadata.language}</p>
+            {repo.arxiv && repo.arxiv.primary_url && (
+              <p>
+                arXiv: <a href={repo.arxiv.primary_url} target="_blank" rel="noopener noreferrer">
+                  {repo.arxiv.primary_url}
+                </a>
+              </p>
+            )}
           </li>
         ))}
       </ul>
