@@ -44,7 +44,7 @@ def check_initial_rate_limit(token):
     logger.info(f"Initial rate limit check passed. {remaining} requests remaining.")
     return True
 
-def handle_rate_limit(response, existing_data):
+def handle_rate_limit(response):
     remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
     reset_time = int(response.headers.get('X-RateLimit-Reset', 0))
     
@@ -53,9 +53,7 @@ def handle_rate_limit(response, existing_data):
         sleep_time = max(reset_time - current_time, 0) + 1
         
         if sleep_time > 0:
-            logger.warning(f"Rate limit low. {remaining} requests remaining. Committing changes and sleeping for {sleep_time:.2f} seconds until reset.")
-            save_data(existing_data)
-            commit_and_push()
+            logger.warning(f"Rate limit low. {remaining} requests remaining. Sleeping for {sleep_time:.2f} seconds until reset.")
             time.sleep(sleep_time)
         else:
             logger.info(f"Rate limit low but reset time has passed. Proceeding cautiously.")
@@ -199,6 +197,8 @@ def commit_and_push():
         logger.info("Changes committed and pushed successfully.")
     except subprocess.CalledProcessError as e:
         logger.error(f"Error during git operations: {e}")
+        logger.warning("Exiting early due to potential conflict.")
+        sys.exit(1)
 
 def process_repo_batch(repos, token, existing_data):
     for item in repos:
@@ -274,7 +274,6 @@ def process_stars(username, token, existing_data):
             repo_name = item['repo']['full_name']
             if repo_name not in existing_data['repositories']:
                 metadata = get_repo_metadata(item['repo'], token)
-                handle_rate_limit(metadata.response, existing_data)  # Check rate limit after each API call
                 if metadata:
                     existing_data['repositories'][repo_name] = {
                         'lists': item.get('star_lists', []),
