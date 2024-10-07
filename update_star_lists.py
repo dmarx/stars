@@ -152,6 +152,17 @@ def get_repos_in_list(list_url, session):
     
     return repos
 
+def commit_and_push():
+    try:
+        os.system('git config --global user.name "GitHub Action"')
+        os.system('git config --global user.email "action@github.com"')
+        os.system(f'git add {STARS_FILE}')
+        os.system('git commit -m "Update GitHub stars data"')
+        os.system('git push')
+        logger.info("Changes committed and pushed successfully.")
+    except Exception as e:
+        logger.error(f"Error during git operations: {e}")
+
 def update_star_lists(username, token):
     logger.info(f"Starting star lists update for user: {username}")
     existing_data = load_existing_data()
