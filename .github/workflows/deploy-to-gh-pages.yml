@@ -25,6 +25,13 @@ jobs:
       env:
         CI: false
 
+    - name: Debug - List directory contents
+      run: |
+        echo "Contents of the current directory:"
+        ls -R
+        echo "Contents of the build directory:"
+        ls -R build
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
