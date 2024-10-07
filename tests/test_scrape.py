@@ -137,8 +137,8 @@ def test_check_initial_rate_limit():
 @patch('scrape_stars.commit_and_push')
 def test_process_stars(mock_commit, mock_save, mock_process, mock_metadata, mock_starred):
     mock_starred.return_value = [
-        {'repo': {'full_name': 'test/repo1'}},
-        {'repo': {'full_name': 'test/repo2'}},
+        {'repo': {'full_name': 'test/repo1'}, 'starred_at': '2023-01-01T00:00:00Z'},
+        {'repo': {'full_name': 'test/repo2'}, 'starred_at': '2023-01-02T00:00:00Z'},
     ]
     mock_metadata.return_value = {'id': 1, 'name': 'test-repo'}
     mock_process.return_value = {'processed': True}
