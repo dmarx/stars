@@ -5,6 +5,7 @@ import base64
 from datetime import datetime, UTC
 import sys
 import os
+import requests
 
 # Add the parent directory to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -43,20 +44,23 @@ def mock_repo_metadata():
     }
 
 def test_get_starred_repos(mock_response):
-    with patch('scrape_stars.requests.get', return_value=mock_response):
+    with patch('scrape_stars.requests.get', return_value=mock_response), \
+         patch('scrape_stars.handle_rate_limit'):
         repos = get_starred_repos('testuser', 'testtoken')
     assert repos == [{"repo": {"full_name": "test/repo"}}]
 
 def test_get_repo_metadata(mock_response, mock_repo_metadata):
     mock_response.json.return_value = mock_repo_metadata
-    with patch('scrape_stars.requests.get', return_value=mock_response):
+    with patch('scrape_stars.requests.get', return_value=mock_response), \
+         patch('scrape_stars.handle_rate_limit'):
         metadata = get_repo_metadata({"full_name": "test/repo"}, 'testtoken')
     assert metadata == mock_repo_metadata
 
 def test_get_repo_metadata_404_error(mock_response):
     mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(response=mock_response)
     mock_response.status_code = 404
-    with patch('scrape_stars.requests.get', return_value=mock_response):
+    with patch('scrape_stars.requests.get', return_value=mock_response), \
+         patch('scrape_stars.handle_rate_limit'):
         metadata = get_repo_metadata({"full_name": "test/repo"}, 'testtoken')
     assert metadata is None
 
@@ -139,7 +143,7 @@ def test_process_stars(mock_commit, mock_save, mock_process, mock_metadata, mock
     mock_metadata.return_value = {'id': 1, 'name': 'test-repo'}
     mock_process.return_value = {'processed': True}
 
-    existing_data = {'repositories': {}, 'last_processed_index': 0}
+    existing_data = {'repositories': {}, 'last_updated': None}
     process_stars('testuser', 'testtoken', existing_data)
 
     assert 'test/repo1' in existing_data['repositories']
