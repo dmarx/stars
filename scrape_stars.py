@@ -198,6 +198,25 @@ def commit_and_push():
     except subprocess.CalledProcessError as e:
         logger.error(f"Error during git operations: {e}")
 
+def process_repo_batch(repos, token, existing_data):
+    for item in repos:
+        repo_name = item['repo']['full_name']
+        metadata = get_repo_metadata(item['repo'], token)
+        if metadata:
+            existing_data['repositories'][repo_name] = {
+                'lists': item.get('star_lists', []),
+                'metadata': extract_metadata(metadata, item['starred_at']),
+                'last_updated': datetime.now(UTC).isoformat()
+            }
+            existing_data['repositories'][repo_name] = process_repo(
+                repo_name, 
+                existing_data['repositories'][repo_name], 
+                token
+            )
+        else:
+            logger.warning(f"Skipping repo {repo_name} due to metadata retrieval failure.")
+    return existing_data
+
 def backfill_stars(username, token, existing_data):
     logger.info("Starting backfill process...")
     all_starred = get_starred_repos(username, token)
@@ -210,24 +229,7 @@ def backfill_stars(username, token, existing_data):
         chunk = all_starred[i:i+BACKFILL_CHUNK_SIZE]
         logger.info(f"Processing chunk {i//BACKFILL_CHUNK_SIZE + 1} of {total_repos//BACKFILL_CHUNK_SIZE + 1}")
         
-        for item in chunk:
-            repo_name = item['repo']['full_name']
-            if repo_name not in existing_data['repositories'] or \
-               'metadata' not in existing_data['repositories'][repo_name]:
-                metadata = get_repo_metadata(item['repo'], token)
-                if metadata:
-                    existing_data['repositories'][repo_name] = {
-                        'lists': item.get('star_lists', []),
-                        'metadata': extract_metadata(metadata, item['starred_at']),
-                        'last_updated': datetime.now(UTC).isoformat()
-                    }
-                    existing_data['repositories'][repo_name] = process_repo(
-                        repo_name, 
-                        existing_data['repositories'][repo_name], 
-                        token
-                    )
-                else:
-                    logger.warning(f"Skipping repo {repo_name} due to metadata retrieval failure.")
+        existing_data = process_repo_batch(chunk, token, existing_data)
         
         existing_data['last_updated'] = datetime.now(UTC).isoformat()
         existing_data['last_processed_index'] = i + BACKFILL_CHUNK_SIZE
@@ -244,37 +246,52 @@ def backfill_stars(username, token, existing_data):
 
 def update_stars(username, token, existing_data):
     logger.info("Starting incremental update process...")
-    last_updated = datetime.fromisoformat(existing_data['last_updated']) if existing_data['last_updated'] else None
+    last_updated = datetime.fromisoformat(existing_data['last_updated'])
     new_stars = get_starred_repos(username, token, since=last_updated)
     
-    update_cutoff = datetime.utcnow() - timedelta(days=UPDATE_INTERVAL)
+    total_new_stars = len(new_stars)
+    logger.info(f"Found {total_new_stars} new or updated stars since last update.")
+
+    for i in range(0, total_new_stars, BACKFILL_CHUNK_SIZE):
+        chunk = new_stars[i:i+BACKFILL_CHUNK_SIZE]
+        logger.info(f"Processing chunk {i//BACKFILL_CHUNK_SIZE + 1} of {total_new_stars//BACKFILL_CHUNK_SIZE + 1}")
+        
+        existing_data = process_repo_batch(chunk, token, existing_data)
+        
+        existing_data['last_updated'] = datetime.now(UTC).isoformat()
+        save_data(existing_data)
+        
+        # Commit and push every COMMIT_INTERVAL chunks
+        if ((i // BACKFILL_CHUNK_SIZE + 1) % COMMIT_INTERVAL == 0) or (i + BACKFILL_CHUNK_SIZE >= total_new_stars):
+            commit_and_push()
     
-    for item in new_stars:
-        repo_name = item['repo']['full_name']
-        metadata = get_repo_metadata(item['repo'], token)
-        existing_data['repositories'][repo_name] = {
-            'lists': item.get('star_lists', []),
-            'metadata': extract_metadata(metadata, item['starred_at']),
-            'last_updated': datetime.utcnow().isoformat()
-        }
-        existing_data['repositories'][repo_name] = process_repo(
-            repo_name, 
-            existing_data['repositories'][repo_name], 
-            token
-        )
+    # Update metadata for existing repos if necessary
+    update_cutoff = datetime.now(UTC) - timedelta(days=UPDATE_INTERVAL)
+    repos_to_update = [repo_name for repo_name, repo_data in existing_data['repositories'].items()
+                       if datetime.fromisoformat(repo_data['last_updated']) < update_cutoff]
     
-    # Update metadata and arXiv info for existing repos if necessary
-    for repo_name, repo_data in existing_data['repositories'].items():
-        if 'last_updated' not in repo_data or \
-           datetime.fromisoformat(repo_data['last_updated']) < update_cutoff:
-            logger.info(f"Updating metadata and arXiv info for {repo_name}")
+    total_updates = len(repos_to_update)
+    logger.info(f"Updating metadata for {total_updates} existing repositories.")
+
+    for i in range(0, total_updates, BACKFILL_CHUNK_SIZE):
+        chunk = repos_to_update[i:i+BACKFILL_CHUNK_SIZE]
+        logger.info(f"Updating chunk {i//BACKFILL_CHUNK_SIZE + 1} of {total_updates//BACKFILL_CHUNK_SIZE + 1}")
+        
+        for repo_name in chunk:
+            logger.info(f"Updating metadata for {repo_name}")
             metadata = get_repo_metadata({'full_name': repo_name}, token)
-            repo_data['metadata'] = extract_metadata(metadata, repo_data['metadata']['starred_at'])
-            repo_data['last_updated'] = datetime.utcnow().isoformat()
-            existing_data['repositories'][repo_name] = process_repo(repo_name, repo_data, token)
+            if metadata:
+                existing_data['repositories'][repo_name]['metadata'] = extract_metadata(metadata, existing_data['repositories'][repo_name]['metadata']['starred_at'])
+                existing_data['repositories'][repo_name]['last_updated'] = datetime.now(UTC).isoformat()
+                existing_data['repositories'][repo_name] = process_repo(repo_name, existing_data['repositories'][repo_name], token)
+        
+        existing_data['last_updated'] = datetime.now(UTC).isoformat()
+        save_data(existing_data)
+        
+        # Commit and push every COMMIT_INTERVAL chunks
+        if ((i // BACKFILL_CHUNK_SIZE + 1) % COMMIT_INTERVAL == 0) or (i + BACKFILL_CHUNK_SIZE >= total_updates):
+            commit_and_push()
     
-    existing_data['last_updated'] = datetime.utcnow().isoformat()
-    save_data(existing_data)
     logger.info("Incremental update process completed.")
 
 def get_git_remote_username():
