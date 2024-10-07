@@ -278,7 +278,7 @@ def process_stars(username, token, existing_data):
                 metadata = get_repo_metadata(item['repo'], token)
                 if metadata:
                     existing_data['repositories'][repo_name] = {
-                        'lists': item.get('star_lists', []),
+                        'lists': [],  # Initialize as empty, to be populated by a separate process
                         'metadata': extract_metadata(metadata, item['starred_at']),
                         'last_updated': datetime.now(UTC).isoformat()
                     }
@@ -291,11 +291,6 @@ def process_stars(username, token, existing_data):
                     changes_made = True
                 else:
                     logger.warning(f"Skipping repo {repo_name} due to metadata retrieval failure.")
-            elif item.get('star_lists', []) != existing_data['repositories'][repo_name]['lists']:
-                # Update the lists for existing repos if they've changed
-                existing_data['repositories'][repo_name]['lists'] = item.get('star_lists', [])
-                chunk_changes = True
-                changes_made = True
         
         if chunk_changes:
             existing_data['last_updated'] = datetime.now(UTC).isoformat()
@@ -312,6 +307,7 @@ def process_stars(username, token, existing_data):
         commit_and_push()
     
     logger.info("Star processing completed.")
+    logger.info("Note: Star lists information is not available and needs to be populated separately.")
 
 def main():
     username = os.environ.get('GITHUB_USERNAME') or get_git_remote_username()
