@@ -16,8 +16,8 @@ const Dashboard = () => {
     if (data && data.repositories) {
       setFilteredRepos(
         Object.entries(data.repositories).filter(([name, repo]) =>
-          name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          repo.metadata.description.toLowerCase().includes(searchTerm.toLowerCase())
+          (name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+          ((repo.metadata && repo.metadata.description) || '').toLowerCase().includes(searchTerm.toLowerCase())
         )
       );
     }
@@ -27,7 +27,7 @@ const Dashboard = () => {
     if (!data || !data.repositories) return [];
     const tagCounts = {};
     Object.values(data.repositories).forEach(repo => {
-      repo.lists.forEach(tag => {
+      (repo.lists || []).forEach(tag => {
         tagCounts[tag] = (tagCounts[tag] || 0) + 1;
       });
     });
@@ -60,9 +60,9 @@ const Dashboard = () => {
         {filteredRepos.map(([name, repo]) => (
           <li key={name}>
             <h3>{name}</h3>
-            <p>{repo.metadata.description}</p>
-            <p>Stars: {repo.metadata.stargazers_count}</p>
-            <p>Language: {repo.metadata.language}</p>
+            <p>{repo.metadata && repo.metadata.description}</p>
+            <p>Stars: {repo.metadata && repo.metadata.stargazers_count}</p>
+            <p>Language: {repo.metadata && repo.metadata.language}</p>
           </li>
         ))}
       </ul>
