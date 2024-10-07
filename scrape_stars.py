@@ -201,20 +201,24 @@ def commit_and_push():
 def process_repo_batch(repos, token, existing_data):
     for item in repos:
         repo_name = item['repo']['full_name']
-        metadata = get_repo_metadata(item['repo'], token)
-        if metadata:
-            existing_data['repositories'][repo_name] = {
-                'lists': item.get('star_lists', []),
-                'metadata': extract_metadata(metadata, item['starred_at']),
-                'last_updated': datetime.now(UTC).isoformat()
-            }
-            existing_data['repositories'][repo_name] = process_repo(
-                repo_name, 
-                existing_data['repositories'][repo_name], 
-                token
-            )
+        if repo_name not in existing_data['repositories']:
+            metadata = get_repo_metadata(item['repo'], token)
+            if metadata:
+                existing_data['repositories'][repo_name] = {
+                    'lists': item.get('star_lists', []),
+                    'metadata': extract_metadata(metadata, item['starred_at']),
+                    'last_updated': datetime.now(UTC).isoformat()
+                }
+                existing_data['repositories'][repo_name] = process_repo(
+                    repo_name, 
+                    existing_data['repositories'][repo_name], 
+                    token
+                )
+            else:
+                logger.warning(f"Skipping repo {repo_name} due to metadata retrieval failure.")
         else:
-            logger.warning(f"Skipping repo {repo_name} due to metadata retrieval failure.")
+            # Update the lists for existing repos
+            existing_data['repositories'][repo_name]['lists'] = item.get('star_lists', [])
     return existing_data
 
 def backfill_stars(username, token, existing_data):
@@ -247,14 +251,17 @@ def backfill_stars(username, token, existing_data):
 def update_stars(username, token, existing_data):
     logger.info("Starting incremental update process...")
     last_updated = datetime.fromisoformat(existing_data['last_updated'])
-    new_stars = get_starred_repos(username, token, since=last_updated)
+    all_starred = get_starred_repos(username, token)
     
-    total_new_stars = len(new_stars)
-    logger.info(f"Found {total_new_stars} new or updated stars since last update.")
+    total_stars = len(all_starred)
+    logger.info(f"Found {total_stars} total starred repositories.")
 
-    for i in range(0, total_new_stars, BACKFILL_CHUNK_SIZE):
-        chunk = new_stars[i:i+BACKFILL_CHUNK_SIZE]
-        logger.info(f"Processing chunk {i//BACKFILL_CHUNK_SIZE + 1} of {total_new_stars//BACKFILL_CHUNK_SIZE + 1}")
+    new_repos = [repo for repo in all_starred if repo['repo']['full_name'] not in existing_data['repositories']]
+    logger.info(f"Found {len(new_repos)} new repositories to process.")
+
+    for i in range(0, len(new_repos), BACKFILL_CHUNK_SIZE):
+        chunk = new_repos[i:i+BACKFILL_CHUNK_SIZE]
+        logger.info(f"Processing chunk {i//BACKFILL_CHUNK_SIZE + 1} of {len(new_repos)//BACKFILL_CHUNK_SIZE + 1}")
         
         existing_data = process_repo_batch(chunk, token, existing_data)
         
@@ -262,35 +269,18 @@ def update_stars(username, token, existing_data):
         save_data(existing_data)
         
         # Commit and push every COMMIT_INTERVAL chunks
-        if ((i // BACKFILL_CHUNK_SIZE + 1) % COMMIT_INTERVAL == 0) or (i + BACKFILL_CHUNK_SIZE >= total_new_stars):
+        if ((i // BACKFILL_CHUNK_SIZE + 1) % COMMIT_INTERVAL == 0) or (i + BACKFILL_CHUNK_SIZE >= len(new_repos)):
             commit_and_push()
     
-    # Update metadata for existing repos if necessary
-    update_cutoff = datetime.now(UTC) - timedelta(days=UPDATE_INTERVAL)
-    repos_to_update = [repo_name for repo_name, repo_data in existing_data['repositories'].items()
-                       if datetime.fromisoformat(repo_data['last_updated']) < update_cutoff]
+    # Update lists for existing repos
+    for repo in all_starred:
+        repo_name = repo['repo']['full_name']
+        if repo_name in existing_data['repositories']:
+            existing_data['repositories'][repo_name]['lists'] = repo.get('star_lists', [])
     
-    total_updates = len(repos_to_update)
-    logger.info(f"Updating metadata for {total_updates} existing repositories.")
-
-    for i in range(0, total_updates, BACKFILL_CHUNK_SIZE):
-        chunk = repos_to_update[i:i+BACKFILL_CHUNK_SIZE]
-        logger.info(f"Updating chunk {i//BACKFILL_CHUNK_SIZE + 1} of {total_updates//BACKFILL_CHUNK_SIZE + 1}")
-        
-        for repo_name in chunk:
-            logger.info(f"Updating metadata for {repo_name}")
-            metadata = get_repo_metadata({'full_name': repo_name}, token)
-            if metadata:
-                existing_data['repositories'][repo_name]['metadata'] = extract_metadata(metadata, existing_data['repositories'][repo_name]['metadata']['starred_at'])
-                existing_data['repositories'][repo_name]['last_updated'] = datetime.now(UTC).isoformat()
-                existing_data['repositories'][repo_name] = process_repo(repo_name, existing_data['repositories'][repo_name], token)
-        
-        existing_data['last_updated'] = datetime.now(UTC).isoformat()
-        save_data(existing_data)
-        
-        # Commit and push every COMMIT_INTERVAL chunks
-        if ((i // BACKFILL_CHUNK_SIZE + 1) % COMMIT_INTERVAL == 0) or (i + BACKFILL_CHUNK_SIZE >= total_updates):
-            commit_and_push()
+    existing_data['last_updated'] = datetime.now(UTC).isoformat()
+    save_data(existing_data)
+    commit_and_push()
     
     logger.info("Incremental update process completed.")
 
