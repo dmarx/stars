@@ -6,6 +6,7 @@ from datetime import datetime, UTC
 import os
 from loguru import logger
 import sys
+import re
 
 STARS_FILE = 'github_stars.json'
 GITHUB_URL = 'https://github.com'
