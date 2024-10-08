@@ -6,6 +6,7 @@ const Dashboard = () => {
   const [selectedLists, setSelectedLists] = useState([]);
   const [filteredRepos, setFilteredRepos] = useState([]);
   const [allLists, setAllLists] = useState([]);
+  const [expandedRepo, setExpandedRepo] = useState(null);
 
   useEffect(() => {
     fetch(`${process.env.PUBLIC_URL}/github_stars.json`)
@@ -44,61 +45,75 @@ const Dashboard = () => {
     );
   };
 
+  const toggleRepoExpansion = (name) => {
+    setExpandedRepo(expandedRepo === name ? null : name);
+  };
+
   if (!data) {
-    return <div>Loading...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <h1 style={{ textAlign: 'center' }}>GitHub Stars Dashboard</h1>
-      <input
-        type="text"
-        placeholder="Search repositories..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={{ width: '100%', padding: '10px', marginBottom: '20px' }}
-      />
-      <div style={{ marginBottom: '20px' }}>
-        <h3>Filter by Lists:</h3>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+    <div className="dashboard">
+      <header>
+        <h1>GitHub Stars Dashboard</h1>
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Search repositories..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
+      </header>
+      
+      <aside className="filters">
+        <h3>Filter by Lists</h3>
+        <div className="list-filters">
           {allLists.map(list => (
-            <label key={list} style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+            <label key={list} className="list-filter-item">
               <input
                 type="checkbox"
                 checked={selectedLists.includes(list)}
                 onChange={() => toggleList(list)}
-                style={{ marginRight: '5px' }}
               />
-              {list}
+              <span>{list}</span>
             </label>
           ))}
         </div>
-      </div>
-      <h2>Repositories ({filteredRepos.length})</h2>
-      <ul style={{ listStyleType: 'none', padding: 0 }}>
-        {filteredRepos.map(([name, repo]) => (
-          <li key={name} style={{ marginBottom: '20px', borderBottom: '1px solid #ccc', paddingBottom: '10px' }}>
-            <h3>
-              <a href={`https://github.com/${name}`} target="_blank" rel="noopener noreferrer" style={{ color: '#0366d6', textDecoration: 'none' }}>
-                {name}
-              </a>
-            </h3>
-            <p>{repo.metadata && repo.metadata.description}</p>
-            <p>Stars: {repo.metadata && repo.metadata.stars}</p>
-            <p>Language: {repo.metadata && repo.metadata.language}</p>
-            {repo.lists && repo.lists.length > 0 && (
-              <p>Lists: {repo.lists.join(', ')}</p>
-            )}
-            {repo.arxiv && repo.arxiv.primary_url && (
-              <p>
-                arXiv: <a href={repo.arxiv.primary_url} target="_blank" rel="noopener noreferrer" style={{ color: '#0366d6' }}>
-                  {repo.arxiv.primary_url}
+      </aside>
+
+      <main>
+        <h2>Repositories ({filteredRepos.length})</h2>
+        <ul className="repo-list">
+          {filteredRepos.map(([name, repo]) => (
+            <li key={name} className={`repo-item ${expandedRepo === name ? 'expanded' : ''}`}>
+              <div className="repo-header" onClick={() => toggleRepoExpansion(name)}>
+                <h3>{name}</h3>
+                <span className="repo-stars">{repo.metadata && repo.metadata.stars} ★</span>
+              </div>
+              <div className="repo-details">
+                <p>{repo.metadata && repo.metadata.description}</p>
+                <p>Language: {repo.metadata && repo.metadata.language}</p>
+                {repo.lists && repo.lists.length > 0 && (
+                  <p>Lists: {repo.lists.join(', ')}</p>
+                )}
+                {repo.arxiv && repo.arxiv.primary_url && (
+                  <p>
+                    arXiv: <a href={repo.arxiv.primary_url} target="_blank" rel="noopener noreferrer">
+                      {repo.arxiv.primary_url}
+                    </a>
+                  </p>
+                )}
+                <a href={`https://github.com/${name}`} target="_blank" rel="noopener noreferrer" className="repo-link">
+                  View on GitHub
                 </a>
-              </p>
-            )}
-          </li>
-        ))}
-      </ul>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </main>
     </div>
   );
 };
