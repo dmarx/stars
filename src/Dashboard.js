@@ -36,19 +36,6 @@ const Dashboard = () => {
     }
   }, [searchTerm, selectedLists, data]);
 
-  const getTopTags = () => {
-    if (!data || !data.repositories) return [];
-    const tagCounts = {};
-    Object.values(data.repositories).forEach(repo => {
-      (repo.lists || []).forEach(tag => {
-        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-      });
-    });
-    return Object.entries(tagCounts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 10);
-  };
-
   const toggleList = (list) => {
     setSelectedLists(prev => 
       prev.includes(list) 
@@ -62,39 +49,37 @@ const Dashboard = () => {
   }
 
   return (
-    <div>
-      <h1>GitHub Stars Dashboard</h1>
+    <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+      <h1 style={{ textAlign: 'center' }}>GitHub Stars Dashboard</h1>
       <input
         type="text"
         placeholder="Search repositories..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
+        style={{ width: '100%', padding: '10px', marginBottom: '20px' }}
       />
-      <div>
+      <div style={{ marginBottom: '20px' }}>
         <h3>Filter by Lists:</h3>
-        {allLists.map(list => (
-          <label key={list}>
-            <input
-              type="checkbox"
-              checked={selectedLists.includes(list)}
-              onChange={() => toggleList(list)}
-            />
-            {list}
-          </label>
-        ))}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+          {allLists.map(list => (
+            <label key={list} style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+              <input
+                type="checkbox"
+                checked={selectedLists.includes(list)}
+                onChange={() => toggleList(list)}
+                style={{ marginRight: '5px' }}
+              />
+              {list}
+            </label>
+          ))}
+        </div>
       </div>
-      <h2>Top Tags</h2>
-      <ul>
-        {getTopTags().map(([tag, count]) => (
-          <li key={tag}>{tag}: {count}</li>
-        ))}
-      </ul>
-      <h2>Repositories</h2>
-      <ul>
+      <h2>Repositories ({filteredRepos.length})</h2>
+      <ul style={{ listStyleType: 'none', padding: 0 }}>
         {filteredRepos.map(([name, repo]) => (
-          <li key={name}>
+          <li key={name} style={{ marginBottom: '20px', borderBottom: '1px solid #ccc', paddingBottom: '10px' }}>
             <h3>
-              <a href={`https://github.com/${name}`} target="_blank" rel="noopener noreferrer">
+              <a href={`https://github.com/${name}`} target="_blank" rel="noopener noreferrer" style={{ color: '#0366d6', textDecoration: 'none' }}>
                 {name}
               </a>
             </h3>
@@ -106,7 +91,7 @@ const Dashboard = () => {
             )}
             {repo.arxiv && repo.arxiv.primary_url && (
               <p>
-                arXiv: <a href={repo.arxiv.primary_url} target="_blank" rel="noopener noreferrer">
+                arXiv: <a href={repo.arxiv.primary_url} target="_blank" rel="noopener noreferrer" style={{ color: '#0366d6' }}>
                   {repo.arxiv.primary_url}
                 </a>
               </p>
