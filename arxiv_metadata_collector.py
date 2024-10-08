@@ -68,6 +68,9 @@ def fetch_semantic_scholar_data(identifier, id_type='arxiv'):
             'year': data.get('year'),
             'venue': data.get('venue'),
             'url': data.get('url'),
+            'doi': data.get('doi'),
+            'arxivId': data.get('arxivId'),
+            'paperId': data.get('paperId'),
             'citation_count': data.get('citationCount'),
             'influential_citation_count': data.get('influentialCitationCount'),
             'reference_count': data.get('referenceCount')
@@ -89,6 +92,8 @@ def main():
         data = json.load(f)
 
     metadata = {}
+    paper_ids = set()  # Set to keep track of papers we've already processed
+
     for repo_name, repo_data in data['repositories'].items():
         if 'arxiv' in repo_data:
             arxiv_urls = repo_data['arxiv'].get('urls', [])
@@ -96,23 +101,43 @@ def main():
 
             for url in arxiv_urls:
                 arxiv_id = extract_arxiv_id(url)
-                if arxiv_id:
+                if arxiv_id and arxiv_id not in paper_ids:
+                    paper_ids.add(arxiv_id)
                     metadata[url] = fetch_arxiv_metadata(arxiv_id)
                     semantic_scholar_data = fetch_semantic_scholar_data(arxiv_id, 'arxiv')
                     if semantic_scholar_data:
                         metadata[url].update(semantic_scholar_data)
+                        if semantic_scholar_data.get('doi'):
+                            paper_ids.add(semantic_scholar_data['doi'])
+                        if semantic_scholar_data.get('paperId'):
+                            paper_ids.add(semantic_scholar_data['paperId'])
                     time.sleep(3)  # Respect API rate limits
 
             for bibtex in bibtex_citations:
                 bibtex_data = parse_bibtex(bibtex)
-                identifier = bibtex_data.get('doi') or f"{bibtex_data.get('title')} {bibtex_data.get('author')}"
-                id_type = 'doi' if 'doi' in bibtex_data else 'search'
+                doi = bibtex_data.get('doi')
+                title = bibtex_data.get('title')
+                
+                if doi and doi in paper_ids:
+                    continue
+                if title and any(title.lower() in metadata[url]['title'].lower() for url in metadata):
+                    continue
+
+                identifier = doi or f"{title} {bibtex_data.get('author')}"
+                id_type = 'doi' if doi else 'search'
                 semantic_scholar_data = fetch_semantic_scholar_data(identifier, id_type)
                 
                 if semantic_scholar_data:
                     url = semantic_scholar_data['url']
-                    metadata[url] = semantic_scholar_data
-                    metadata[url]['bibtex'] = bibtex_data
+                    if url not in metadata:
+                        metadata[url] = semantic_scholar_data
+                        metadata[url]['bibtex'] = bibtex_data
+                        if semantic_scholar_data.get('doi'):
+                            paper_ids.add(semantic_scholar_data['doi'])
+                        if semantic_scholar_data.get('arxivId'):
+                            paper_ids.add(semantic_scholar_data['arxivId'])
+                        if semantic_scholar_data.get('paperId'):
+                            paper_ids.add(semantic_scholar_data['paperId'])
                     time.sleep(3)  # Respect API rate limits
 
     with open('comprehensive_metadata.json', 'w') as f:
