@@ -21,21 +21,20 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
+    - name: Copy github_stars.json to public directory
+      run: cp github_stars.json public/
+
     - name: Build
       run: npm run build
       env:
         CI: false
 
-    - name: Create simple index.html
+    - name: Debug - List directory contents
       run: |
-        echo "<html><body><h1>GitHub Pages for stars is working!</h1></body></html>" > build/test.html
-
-    # - name: Debug - List directory contents
-    #   run: |
-    #     echo "Contents of the current directory:"
-    #     ls -R
-    #     echo "Contents of the build directory:"
-    #     ls -R build
+        echo "Contents of the public directory:"
+        ls -R public
+        echo "Contents of the build directory:"
+        ls -R build
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
@@ -43,3 +42,6 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./build
         force_orphan: true
+
+    - name: Output deployment URL
+      run: echo "Deployed to https://dmarx.github.io/stars"
