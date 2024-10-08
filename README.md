@@ -1,88 +1,87 @@
-# GitHub Stars Scraper with arXiv and BibTeX Extraction
-
-This repository contains a GitHub Action that automatically scrapes your GitHub stars, even for large collections of over 5000 starred repositories. It organizes them based on your star lists (tags), collects additional metadata for each repository, and includes functionality to extract arXiv URLs and BibTeX citations from README files.
-
-## How it works
-
-1. The GitHub Action runs daily at midnight UTC.
-2. It first runs the test suite to ensure all functionalities are working as expected.
-3. If tests pass, it executes the `scrape_stars.py` script, which:
-   - Performs a backfill process for the initial run or if no existing data is found
-   - Conducts incremental updates on subsequent runs
-   - Fetches all your starred repositories
-   - Retrieves all your star lists
-   - Collects additional metadata for each repository
-   - Fetches and analyzes the README of each repository
-   - Extracts arXiv URLs and BibTeX citations from the README
-   - Infers the primary arXiv URL associated with the repository
-   - Associates each repository with its corresponding lists, metadata, and extracted information
-4. The results are saved in `github_stars.json`
-5. If there are changes, the action commits and pushes the updated file to the repository
+# GitHub Stars Scraper, Organizer, and Dashboard
+This project automatically scrapes and organizes your GitHub stars, including star lists (tags), using GitHub Actions. It also provides a web-based dashboard to explore and search through your starred repositories.
 
 ## Features
+- Scrapes all starred repositories for a GitHub user
+- Retrieves and organizes star lists (tags) for each repository
+- Handles large collections (3000+ stars) gracefully
+- Implements intelligent rate limiting to avoid API throttling
+- Provides detailed logging for transparency and debugging
+- Commits and pushes updates only when changes are detected
+- Runs daily via GitHub Actions, with option for manual triggers
+- Offers a web-based dashboard to explore and search starred repositories
 
-- **Automated Testing**: The project includes a comprehensive test suite using pytest to ensure reliability.
-- **Logging**: The script uses Loguru for advanced logging capabilities, making debugging and monitoring easier.
-- **Backfill Process**: For the initial run or when no existing data is found, the script performs a full backfill of all starred repositories. This process is chunked to manage API rate limits effectively.
-- **Incremental Updates**: After the initial backfill, the script performs incremental updates, only fetching new stars and updating metadata for existing repos at specified intervals.
-- **Rate Limit Handling**: The script respects GitHub's API rate limits and implements a sleep mechanism when limits are nearly reached.
-- **Efficient Data Storage**: The script stores the last update time for each repository, allowing for efficient updates of metadata.
-- **arXiv URL Extraction**: The script extracts all arXiv URLs found in the repository's README and description.
-- **Primary arXiv URL Inference**: The script attempts to infer which arXiv URL is most likely associated with the repository, based on several heuristics.
-- **BibTeX Citation Extraction**: The script extracts any BibTeX citations found in the repository's README.
-
-## Collected Data
-
-For each starred repository, the following information is collected:
-
-- Repository metadata (ID, name, description, URL, etc.)
-- Star lists (tags) associated with the repository
-- Extracted arXiv URLs from the README and description
-- Inferred primary arXiv URL
-- Extracted BibTeX citations from the README
+## How it works
+1. The GitHub Action runs daily at midnight UTC (or can be manually triggered).
+2. It executes two main scripts:
+   - `scrape_stars.py`: Fetches all starred repositories and their metadata.
+   - `update_star_lists.py`: Retrieves star lists for each repository.
+3. The scripts:
+   - Fetch all starred repositories and their metadata
+   - Retrieve all star lists (tags) for the user
+   - Associate each repository with its corresponding lists
+   - Extract arXiv URLs and BibTeX citations from README files (when available)
+   - Handle rate limiting using both preemptive and reactive strategies
+4. Results are saved in `github_stars.json`
+5. If there are changes, the action commits and pushes the updated file to the repository
+6. A React-based dashboard is built and deployed to GitHub Pages, allowing users to explore their starred repositories
 
 ## Setup
-
 1. Fork this repository
 2. Go to your forked repository's settings
 3. Navigate to "Secrets and variables" > "Actions"
-4. Add two new repository secrets:
-   - `GITHUB_USERNAME`: Your GitHub username
+4. Add the following repository secret:
    - `GITHUB_TOKEN`: A GitHub personal access token with `repo` scope
 5. The action will now run automatically every day, or you can trigger it manually from the "Actions" tab
+6. Enable GitHub Pages in your repository settings, setting the source to the `gh-pages` branch
 
-## Development
+## File Structure
+- `scrape_stars.py`: Main script for fetching starred repositories and metadata
+- `update_star_lists.py`: Script for retrieving and organizing star lists
+- `.github/workflows/update_stars.yml`: GitHub Actions workflow file for data scraping
+- `.github/workflows/deploy-to-gh-pages.yml`: GitHub Actions workflow file for deploying the dashboard
+- `github_stars.json`: Output file containing all starred repository data
+- `src/`: Directory containing React components for the dashboard
+- `public/`: Directory containing public assets for the dashboard
 
-To set up the project for development:
+## Dashboard
+The dashboard is built using React and Tailwind CSS. It provides the following features:
+- Search functionality to find repositories by name or description
+- Filtering by star lists (tags)
+- Expandable repository cards showing detailed information
+- Links to GitHub repositories and associated arXiv papers (when available)
 
-1. Clone the repository
-2. Install the required dependencies:
-   ```
-   pip install requests loguru pytest
-   ```
-3. Run the tests:
-   ```
-   pytest
-   ```
+To view the dashboard, visit `https://<your-github-username>.github.io/stars/` after the GitHub Actions workflow has completed.
+
+## Customization
+You can customize the behavior of the scripts by modifying the following constants in the Python files:
+- `STARS_FILE`: Name of the output JSON file
+- `BACKFILL_CHUNK_SIZE`: Number of repositories to process in each backfill chunk
+- `COMMIT_INTERVAL`: Number of lists to process before committing changes
+- `RATE_LIMIT_THRESHOLD`: Number of API requests to keep in reserve
+- `DEFAULT_RATE_LIMIT` and `DEFAULT_RATE_LIMIT_WINDOW`: Default rate limiting for web scraping
+
+You can also customize the dashboard by modifying the React components in the `src/` directory.
 
 ## Manual Trigger
-
-You can manually trigger the workflow from the "Actions" tab in your GitHub repository.
+You can manually trigger the workflows from the "Actions" tab in your GitHub repository.
 
 ## Viewing Results
-
 After the action runs successfully, you can view the updated `github_stars.json` file in the repository. This file contains a JSON object with:
-
 - `last_updated`: Timestamp of when the data was last scraped
 - `repositories`: An object where each key is a repository name, and the value is another object containing:
   - `lists`: An array of lists (tags) associated with that repository
   - `metadata`: An object containing the collected metadata for the repository
-  - `last_updated`: Timestamp of when this repository's data was last updated
-  - `arxiv`: An object containing:
-    - `urls`: An array of all arXiv URLs found in the README
-    - `primary_url`: The inferred primary arXiv URL associated with the repository
-    - `bibtex_citations`: An array of BibTeX citations found in the README
+  - `arxiv`: An object containing arXiv-related information (if available)
 
-## Logs
+You can also explore your starred repositories interactively using the deployed dashboard.
 
-The script generates a log file `scraper.log` which rotates when it reaches 10 MB. This log file can be useful for debugging and monitoring the scraping process.
+## Limitations
+- The script can only retrieve up to 3000 repositories per list due to GitHub's pagination limits.
+- Web scraping is used for retrieving star lists, which may break if GitHub significantly changes their HTML structure.
+
+## Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+This project is open source and available under the [MIT License](LICENSE).
