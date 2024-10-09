@@ -13,8 +13,8 @@ from arxiv_metadata_collector import (
     extract_identifier,
     deduplicate_papers,
     process_papers,
-    fetch_arxiv_metadata
-    fetch_semantic_scholar_data
+    fetch_arxiv_metadata,
+    fetch_semantic_scholar_data,
     fetch_semantic_scholar_data_batch,
     load_existing_data,
     save_data,
