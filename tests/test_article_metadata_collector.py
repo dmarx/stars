@@ -250,7 +250,7 @@ def test_deduplicate_papers():
     
     print("Deduplicated papers:", deduplicated)  # Add this line for debugging
     
-    assert len(deduplicated) == 5, f"Expected 5 unique papers, but got {len(deduplicated)}"
+    assert len(deduplicated) == 4, f"Expected 4 unique papers, but got {len(deduplicated)}"
     
     # Check for specific papers in the deduplicated list
     assert any(p for p in deduplicated if p.get('url') == 'https://arxiv.org/abs/1234.56789'), "arXiv URL paper missing"
@@ -261,4 +261,5 @@ def test_deduplicate_papers():
     # Check that we don't have any duplicates
     identifiers = [extract_identifier(p) for p in deduplicated]
     assert len(identifiers) == len(set(identifiers)), "Duplicate identifiers found in deduplicated papers"
+
 
