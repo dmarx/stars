@@ -25,8 +25,9 @@ def extract_arxiv_id(url):
     parsed_url = urlparse(url)
     if parsed_url.netloc == 'arxiv.org':
         path_parts = parsed_url.path.split('/')
-        if 'abs' in path_parts:
-            return path_parts[-1]
+        if 'abs' in path_parts or 'pdf' in path_parts:
+            # Remove .pdf extension if present
+            return path_parts[-1].replace('.pdf', '')
     return None
 
 def fetch_arxiv_metadata(arxiv_id):
@@ -40,17 +41,27 @@ def fetch_arxiv_metadata(arxiv_id):
     if response.status_code == 200:
         data = xmltodict.parse(response.content)
         entry = data['feed']['entry']
+        
+        # Handle potential variations in author structure
+        if isinstance(entry.get('author'), list):
+            authors = [author['name'] for author in entry['author']]
+        elif isinstance(entry.get('author'), dict):
+            authors = [entry['author']['name']]
+        else:
+            authors = []
+
         return {
             'source': 'arXiv',
             'id': entry['id'],
             'title': entry['title'],
-            'authors': [author['name'] for author in entry['author']],
+            'authors': authors,
             'abstract': entry['summary'],
             'categories': entry['category'] if isinstance(entry['category'], list) else [entry['category']],
             'published': entry['published'],
             'updated': entry['updated']
         }
     return None
+
 
 def fetch_semantic_scholar_data(identifier, id_type='arxiv'):
     base_url = "https://api.semanticscholar.org/v1/paper/"
