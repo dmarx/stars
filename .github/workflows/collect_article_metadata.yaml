@@ -1,0 +1,57 @@
+name: Collect Comprehensive Article Metadata
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly on Sunday at 00:00 UTC
+  workflow_dispatch:  # Allow manual triggering
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests xmltodict pyyaml loguru pytest
+
+    - name: Run tests
+      run: pytest tests/
+
+  collect-metadata:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests xmltodict pyyaml loguru
+
+    - name: Run metadata collector
+      run: python arxiv_metadata_collector.py
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Commit and push if changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add comprehensive_metadata.json
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update comprehensive paper metadata" && git push)
