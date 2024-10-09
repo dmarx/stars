@@ -186,11 +186,18 @@ def test_process_papers(mock_commit_and_push, mock_save_data, mock_fetch_semanti
         'authors': ['John Doe'],
         'abstract': 'ArXiv abstract'
     }
-    mock_fetch_semantic_scholar.return_value = {
-        'title': 'Semantic Scholar Paper',
-        'authors': ['Jane Smith'],
-        'abstract': 'Semantic Scholar abstract'
-    }
+    mock_fetch_semantic_scholar.side_effect = [
+        {
+            'title': 'Semantic Scholar ArXiv Paper',
+            'authors': ['John Doe'],
+            'abstract': 'Semantic Scholar ArXiv abstract'
+        },
+        {
+            'title': 'Semantic Scholar DOI Paper',
+            'authors': ['Jane Smith'],
+            'abstract': 'Semantic Scholar DOI abstract'
+        }
+    ]
 
     result = process_papers(papers, existing_data)
 
@@ -198,8 +205,8 @@ def test_process_papers(mock_commit_and_push, mock_save_data, mock_fetch_semanti
 
     assert '1234.56789' in result['papers'], "ArXiv ID not found in result"
     assert '10.1234/example' in result['papers'], "DOI not found in result"
-    assert result['papers']['1234.56789']['title'] == 'ArXiv Paper', "Incorrect title for ArXiv paper"
-    assert result['papers']['10.1234/example']['title'] == 'Semantic Scholar Paper', "Incorrect title for DOI paper"
+    assert result['papers']['1234.56789']['title'] == 'Semantic Scholar ArXiv Paper', "Incorrect title for ArXiv paper"
+    assert result['papers']['10.1234/example']['title'] == 'Semantic Scholar DOI Paper', "Incorrect title for DOI paper"
     assert mock_save_data.call_count > 0, "save_data not called"
     assert mock_commit_and_push.call_count > 0, "commit_and_push not called"
 
