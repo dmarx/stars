@@ -7,7 +7,7 @@ import os
 # Add the parent directory to the Python path to import the main script
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from arxiv_metadata_collector import extract_arxiv_id, parse_bibtex, load_existing_data, save_data, fetch_arxiv_metadata, fetch_semantic_scholar_data, process_papers, deduplicate_papers, extract_identifier
+from arxiv_metadata_collector import extract_arxiv_id, parse_bibtex, extract_identifier, deduplicate_papers, process_papers, fetch_semantic_scholar_data_batch
 from utils import controlled_request
 
 def test_extract_identifier():
@@ -182,34 +182,30 @@ def test_fetch_semantic_scholar_data(mock_controlled_request):
     assert result['influential_citation_count'] == 5
     assert result['reference_count'] == 20
     
-@patch('arxiv_metadata_collector.fetch_arxiv_metadata')
-@patch('arxiv_metadata_collector.fetch_semantic_scholar_data')
+@patch('arxiv_metadata_collector.fetch_semantic_scholar_data_batch')
 @patch('arxiv_metadata_collector.save_data')
 @patch('arxiv_metadata_collector.commit_and_push')
-def test_process_papers(mock_commit_and_push, mock_save_data, mock_fetch_semantic_scholar, mock_fetch_arxiv):
+def test_process_papers(mock_commit_and_push, mock_save_data, mock_fetch_semantic_scholar_batch):
     papers = [
         {'url': 'https://arxiv.org/abs/1234.56789'},
         {'bibtex': '@article{example, doi={10.1234/example}, title={Example Title}}'}
     ]
     existing_data = {'papers': {}}
 
-    mock_fetch_arxiv.return_value = {
-        'title': 'ArXiv Paper',
-        'authors': ['John Doe'],
-        'abstract': 'ArXiv abstract'
-    }
-    mock_fetch_semantic_scholar.side_effect = [
-        {
+    mock_fetch_semantic_scholar_batch.return_value = {
+        'arxiv:1234.56789': {
             'title': 'Semantic Scholar ArXiv Paper',
             'authors': ['John Doe'],
-            'abstract': 'Semantic Scholar ArXiv abstract'
+            'abstract': 'Semantic Scholar ArXiv abstract',
+            'paperId': 'arxiv1234'
         },
-        {
+        'doi:10.1234/example': {
             'title': 'Semantic Scholar DOI Paper',
             'authors': ['Jane Smith'],
-            'abstract': 'Semantic Scholar DOI abstract'
+            'abstract': 'Semantic Scholar DOI abstract',
+            'paperId': 'doi1234'
         }
-    ]
+    }
 
     result = process_papers(papers, existing_data)
 
@@ -221,6 +217,13 @@ def test_process_papers(mock_commit_and_push, mock_save_data, mock_fetch_semanti
     assert result['papers']['doi:10.1234/example']['title'] == 'Semantic Scholar DOI Paper', "Incorrect title for DOI paper"
     assert mock_save_data.call_count > 0, "save_data not called"
     assert mock_commit_and_push.call_count > 0, "commit_and_push not called"
+
+    # Check that fetch_semantic_scholar_data_batch was called with correct arguments
+    expected_batch = [
+        {'id': '1234.56789', 'id_type': 'arxiv'},
+        {'id': '10.1234/example', 'id_type': 'doi'}
+    ]
+    mock_fetch_semantic_scholar_batch.assert_called_once_with(expected_batch)
 
 def test_deduplicate_papers():
     papers = [
