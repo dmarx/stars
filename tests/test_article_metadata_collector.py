@@ -162,3 +162,34 @@ def test_fetch_semantic_scholar_data(mock_controlled_request):
     assert result['citation_count'] == 10
     assert result['influential_citation_count'] == 5
     assert result['reference_count'] == 20
+
+@patch('arxiv_metadata_collector.fetch_arxiv_metadata')
+@patch('arxiv_metadata_collector.fetch_semantic_scholar_data')
+@patch('arxiv_metadata_collector.save_data')
+@patch('arxiv_metadata_collector.commit_and_push')
+def test_process_papers(mock_commit_and_push, mock_save_data, mock_fetch_semantic_scholar, mock_fetch_arxiv):
+    papers = [
+        {'url': 'https://arxiv.org/abs/1234.56789'},
+        {'bibtex': '@article{example, doi={10.1234/example}, title={Example Title}}'}
+    ]
+    existing_data = {'papers': {}}
+
+    mock_fetch_arxiv.return_value = {
+        'title': 'ArXiv Paper',
+        'authors': ['John Doe'],
+        'abstract': 'ArXiv abstract'
+    }
+    mock_fetch_semantic_scholar.return_value = {
+        'title': 'Semantic Scholar Paper',
+        'authors': ['Jane Smith'],
+        'abstract': 'Semantic Scholar abstract'
+    }
+
+    result = process_papers(papers, existing_data)
+
+    assert '1234.56789' in result['papers']
+    assert '10.1234/example' in result['papers']
+    assert result['papers']['1234.56789']['title'] == 'ArXiv Paper'
+    assert result['papers']['10.1234/example']['title'] == 'Semantic Scholar Paper'
+    assert mock_save_data.call_count > 0
+    assert mock_commit_and_push.call_count > 0
