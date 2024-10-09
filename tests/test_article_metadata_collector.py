@@ -8,6 +8,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from arxiv_metadata_collector import extract_arxiv_id, parse_bibtex, load_existing_data, save_data, fetch_arxiv_metadata, fetch_semantic_scholar_data
+from utils import controlled_request
 
 def test_extract_arxiv_id():
     assert extract_arxiv_id("https://arxiv.org/abs/1234.56789") == "1234.56789"
@@ -66,9 +67,8 @@ def test_save_data(tmp_path):
         saved_data = json.loads(file.read_text())
         assert saved_data == test_data
 
-@patch('arxiv_metadata_collector.requests.get')
-@patch('arxiv_metadata_collector.handle_rate_limit')
-def test_fetch_arxiv_metadata(mock_handle_rate_limit, mock_get):
+@patch('arxiv_metadata_collector.controlled_request')
+def test_fetch_arxiv_metadata(mock_controlled_request):
     mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.content = """
@@ -86,7 +86,7 @@ def test_fetch_arxiv_metadata(mock_handle_rate_limit, mock_get):
         </entry>
     </feed>
     """
-    mock_get.return_value = mock_response
+    mock_controlled_request.return_value = mock_response
 
     result = fetch_arxiv_metadata('1234.56789')
 
@@ -97,9 +97,8 @@ def test_fetch_arxiv_metadata(mock_handle_rate_limit, mock_get):
     assert result['published'] == '2023-01-01T00:00:00Z'
     assert result['updated'] == '2023-01-02T00:00:00Z'
 
-@patch('arxiv_metadata_collector.requests.get')
-@patch('arxiv_metadata_collector.handle_rate_limit')
-def test_fetch_arxiv_metadata_multiple_categories(mock_handle_rate_limit, mock_get):
+@patch('arxiv_metadata_collector.controlled_request')
+def test_fetch_arxiv_metadata_multiple_categories(mock_controlled_request):
     mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.content = """
@@ -118,7 +117,7 @@ def test_fetch_arxiv_metadata_multiple_categories(mock_handle_rate_limit, mock_g
         </entry>
     </feed>
     """
-    mock_get.return_value = mock_response
+    mock_controlled_request.return_value = mock_response
 
     result = fetch_arxiv_metadata('1234.56789')
 
