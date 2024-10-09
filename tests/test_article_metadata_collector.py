@@ -7,8 +7,15 @@ import os
 # Add the parent directory to the Python path to import the main script
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from arxiv_metadata_collector import extract_arxiv_id, parse_bibtex, load_existing_data, save_data, fetch_arxiv_metadata, fetch_semantic_scholar_data, process_papers, deduplicate_papers
+from arxiv_metadata_collector import extract_arxiv_id, parse_bibtex, load_existing_data, save_data, fetch_arxiv_metadata, fetch_semantic_scholar_data, process_papers, deduplicate_papers, extract_identifier
 from utils import controlled_request
+
+def test_extract_identifier():
+    assert extract_identifier({'url': 'https://arxiv.org/abs/1234.56789'}) == '1234.56789'
+    assert extract_identifier({'bibtex': '@article{example, doi={10.1234/example}}'}) == '10.1234/example'
+    assert extract_identifier({'bibtex': '@article{example, arxiv={1234.56789}}'}) == '1234.56789'
+    assert extract_identifier({'bibtex': '@article{example, title={Unique Title}}'}) == 'Unique Title'
+    assert extract_identifier({'other': 'data'}) is None
 
 def test_extract_arxiv_id():
     assert extract_arxiv_id("https://arxiv.org/abs/1234.56789") == "1234.56789"
@@ -202,11 +209,14 @@ def test_deduplicate_papers():
         {'bibtex': '@article{example2, doi={10.1234/example}, title={Example Title 2}}'},  # Duplicate DOI
         {'bibtex': '@article{example3, title={Unique Title}}'},
         {'bibtex': '@article{example4, title={Unique Title}}'},  # Duplicate title
+        {'bibtex': '@article{example5, arxiv={5678.91011}}'},
+        {'bibtex': '@article{example6, arxiv={5678.91011}}'},  # Duplicate arXiv in BibTeX
     ]
 
     deduplicated = deduplicate_papers(papers)
     
-    assert len(deduplicated) == 4  # Should have 4 unique papers
-    assert any(p for p in deduplicated if p.get('url') == 'https://arxiv.org/abs/1234.56789')
-    assert any(p for p in deduplicated if 'Example Title 1' in p.get('bibtex', ''))
-    assert any(p for p in deduplicated if 'Unique Title' in p.get('bibtex', ''))
+    assert len(deduplicated) == 5  # Should have 5 unique papers
+    assert any(extract_identifier(p) == '1234.56789' for p in deduplicated)
+    assert any(extract_identifier(p) == '10.1234/example' for p in deduplicated)
+    assert any(extract_identifier(p) == 'Unique Title' for p in deduplicated)
+    assert any(extract_identifier(p) == '5678.91011' for p in deduplicated)
