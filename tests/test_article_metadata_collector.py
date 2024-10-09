@@ -27,20 +27,32 @@ def test_extract_identifier():
     }"""
     assert extract_identifier({'bibtex': complex_bibtex}) == '10.5678/complex'
 
+    # Test with single-line complex BibTeX
+    single_line_complex = "@article{example, title={Single Line Example}, author={Smith, Jane}, doi={10.9876/single}}"
+    assert extract_identifier({'bibtex': single_line_complex}) == '10.9876/single'
+
 def test_extract_arxiv_id():
     assert extract_arxiv_id("https://arxiv.org/abs/1234.56789") == "1234.56789"
     assert extract_arxiv_id("https://arxiv.org/pdf/1234.56789.pdf") == "1234.56789"
     assert extract_arxiv_id("https://example.com") is None
 
 def test_parse_bibtex():
-    bibtex = """@article{example,
+    # Test single-line BibTeX
+    single_line_bibtex = "@article{example, title={Example Title}, author={Doe, John}, doi={10.1234/example}}"
+    parsed = parse_bibtex(single_line_bibtex)
+    assert parsed['title'] == 'Example Title'
+    assert parsed['author'] == 'Doe, John'
+    assert parsed['doi'] == '10.1234/example'
+
+    # Test multi-line BibTeX
+    multi_line_bibtex = """@article{example,
         title={Example Title},
         author={Doe, John and Smith, Jane},
         journal={Example Journal},
         year={2023},
         doi={10.1234/example}
     }"""
-    parsed = parse_bibtex(bibtex)
+    parsed = parse_bibtex(multi_line_bibtex)
     assert parsed['title'] == 'Example Title'
     assert parsed['author'] == 'Doe, John and Smith, Jane'
     assert parsed['journal'] == 'Example Journal'
