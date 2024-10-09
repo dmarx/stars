@@ -193,3 +193,20 @@ def test_process_papers(mock_commit_and_push, mock_save_data, mock_fetch_semanti
     assert result['papers']['10.1234/example']['title'] == 'Semantic Scholar Paper'
     assert mock_save_data.call_count > 0
     assert mock_commit_and_push.call_count > 0
+
+def test_deduplicate_papers():
+    papers = [
+        {'url': 'https://arxiv.org/abs/1234.56789'},
+        {'url': 'https://arxiv.org/abs/1234.56789'},  # Duplicate arXiv URL
+        {'bibtex': '@article{example1, doi={10.1234/example}, title={Example Title 1}}'},
+        {'bibtex': '@article{example2, doi={10.1234/example}, title={Example Title 2}}'},  # Duplicate DOI
+        {'bibtex': '@article{example3, title={Unique Title}}'},
+        {'bibtex': '@article{example4, title={Unique Title}}'},  # Duplicate title
+    ]
+
+    deduplicated = deduplicate_papers(papers)
+    
+    assert len(deduplicated) == 4  # Should have 4 unique papers
+    assert any(p for p in deduplicated if p.get('url') == 'https://arxiv.org/abs/1234.56789')
+    assert any(p for p in deduplicated if 'Example Title 1' in p.get('bibtex', ''))
+    assert any(p for p in deduplicated if 'Unique Title' in p.get('bibtex', ''))
