@@ -67,10 +67,9 @@ def deduplicate_papers(papers):
     for paper in papers:
         identifier = extract_identifier(paper)
         if identifier:
-            if 'url' in paper:
-                if identifier not in seen_identifiers['arxiv']:
-                    unique_papers.append(paper)
-                    seen_identifiers['arxiv'].add(identifier)
+            if 'url' in paper and identifier not in seen_identifiers['arxiv']:
+                unique_papers.append(paper)
+                seen_identifiers['arxiv'].add(identifier)
             elif 'bibtex' in paper:
                 bibtex_data = parse_bibtex(paper['bibtex'])
                 if 'doi' in bibtex_data and bibtex_data['doi'] not in seen_identifiers['doi']:
