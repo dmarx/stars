@@ -29,6 +29,19 @@ def extract_arxiv_id(url):
             return path_parts[-1].replace('.pdf', '')
     return None
 
+def parse_bibtex(bibtex_str):
+    fields = {}
+    for line in bibtex_str.strip().split('\n'):
+        if '=' in line:
+            key, value = line.split('=', 1)
+            key = key.strip().lower()
+            value = value.strip().strip(',').strip('{').strip('}').strip()
+            if key == 'doi':
+                # Remove any surrounding quotes or braces from the DOI
+                value = value.strip('"').strip("'").strip('{').strip('}')
+            fields[key] = value
+    return fields
+
 def extract_identifier(paper):
     if 'url' in paper:
         return extract_arxiv_id(paper['url'])
@@ -129,19 +142,6 @@ def fetch_semantic_scholar_data(identifier, id_type='arxiv'):
             'reference_count': data.get('referenceCount')
         }
     return None
-
-def parse_bibtex(bibtex_str):
-    fields = {}
-    for line in bibtex_str.strip().split('\n'):
-        if '=' in line:
-            key, value = line.split('=', 1)
-            key = key.strip().lower()
-            value = value.strip().strip(',').strip('{').strip('}').strip()
-            if key == 'doi':
-                # Remove any surrounding quotes or braces from the DOI
-                value = value.strip('"').strip("'").strip('{').strip('}')
-            fields[key] = value
-    return fields
 
 def load_existing_data():
     if os.path.exists(ARXIV_METADATA_FILE):
