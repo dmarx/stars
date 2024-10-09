@@ -163,41 +163,31 @@ def process_papers(papers, existing_data):
                     commit_and_push(ARXIV_METADATA_FILE)
                 changes_made = False
 
-        if 'url' in paper:
-            arxiv_id = extract_arxiv_id(paper['url'])
-            if arxiv_id and arxiv_id not in paper_ids:
-                paper_ids.add(arxiv_id)
-                if arxiv_id not in existing_data['papers']:
+        identifier = extract_identifier(paper)
+        if identifier and identifier not in paper_ids:
+            paper_ids.add(identifier)
+            if identifier not in existing_data['papers']:
+                if 'url' in paper:
+                    arxiv_id = extract_arxiv_id(paper['url'])
                     arxiv_data = fetch_arxiv_metadata(arxiv_id)
                     if arxiv_data:
                         semantic_scholar_data = fetch_semantic_scholar_data(arxiv_id, 'arxiv')
                         if semantic_scholar_data:
                             arxiv_data.update(semantic_scholar_data)
-                        existing_data['papers'][arxiv_id] = arxiv_data
+                        existing_data['papers'][identifier] = arxiv_data
                         changes_made = True
-
-        if 'bibtex' in paper:
-            bibtex_data = parse_bibtex(paper['bibtex'])
-            doi = bibtex_data.get('doi')
-            title = bibtex_data.get('title')
-
-            if doi and doi not in paper_ids:
-                paper_ids.add(doi)
-                if doi not in existing_data['papers']:
-                    semantic_scholar_data = fetch_semantic_scholar_data(doi, 'doi')
+                elif 'bibtex' in paper:
+                    bibtex_data = parse_bibtex(paper['bibtex'])
+                    doi = bibtex_data.get('doi')
+                    if doi:
+                        semantic_scholar_data = fetch_semantic_scholar_data(doi, 'doi')
+                    else:
+                        title = bibtex_data.get('title')
+                        author = bibtex_data.get('author')
+                        semantic_scholar_data = fetch_semantic_scholar_data(f"{title} {author}", 'search')
                     if semantic_scholar_data:
-                        existing_data['papers'][doi] = semantic_scholar_data
-                        existing_data['papers'][doi]['bibtex'] = bibtex_data
-                        changes_made = True
-
-            elif title and not any(title.lower() in p['title'].lower() for p in existing_data['papers'].values()):
-                identifier = f"{title} {bibtex_data.get('author')}"
-                semantic_scholar_data = fetch_semantic_scholar_data(identifier, 'search')
-                if semantic_scholar_data:
-                    paper_id = semantic_scholar_data['paperId']
-                    if paper_id not in existing_data['papers']:
-                        existing_data['papers'][paper_id] = semantic_scholar_data
-                        existing_data['papers'][paper_id]['bibtex'] = bibtex_data
+                        existing_data['papers'][identifier] = semantic_scholar_data
+                        existing_data['papers'][identifier]['bibtex'] = bibtex_data
                         changes_made = True
 
     if changes_made:
