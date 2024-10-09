@@ -34,7 +34,7 @@ def extract_identifier(paper):
         return extract_arxiv_id(paper['url'])
     elif 'bibtex' in paper:
         bibtex_data = parse_bibtex(paper['bibtex'])
-        return bibtex_data.get('doi') or bibtex_data.get('title')
+        return bibtex_data.get('doi') or bibtex_data.get('arxiv') or bibtex_data.get('title')
     return None
 
 def deduplicate_papers(papers):
@@ -179,8 +179,11 @@ def process_papers(papers, existing_data):
                 elif 'bibtex' in paper:
                     bibtex_data = parse_bibtex(paper['bibtex'])
                     doi = bibtex_data.get('doi')
+                    arxiv = bibtex_data.get('arxiv')
                     if doi:
                         semantic_scholar_data = fetch_semantic_scholar_data(doi, 'doi')
+                    elif arxiv:
+                        semantic_scholar_data = fetch_semantic_scholar_data(arxiv, 'arxiv')
                     else:
                         title = bibtex_data.get('title')
                         author = bibtex_data.get('author')
