@@ -1,4 +1,5 @@
 import subprocess
+import time
 from loguru import logger
 
 def commit_and_push(file_to_commit):
