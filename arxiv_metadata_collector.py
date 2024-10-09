@@ -80,9 +80,8 @@ def fetch_semantic_scholar_data(identifier, id_type='arxiv'):
             "query": identifier,
             "limit": 1
         }
-        search_response = requests.get(search_url, params=params)
-        handle_rate_limit(search_response, RATE_LIMIT_THRESHOLD)
-        if search_response.status_code == 200:
+        search_response = controlled_request(search_url, params=params)
+        if search_response and search_response.status_code == 200:
             search_data = search_response.json()
             if search_data['data']:
                 url = f"{base_url}{search_data['data'][0]['paperId']}"
@@ -91,9 +90,8 @@ def fetch_semantic_scholar_data(identifier, id_type='arxiv'):
         else:
             return None
 
-    response = requests.get(url)
-    handle_rate_limit(response, RATE_LIMIT_THRESHOLD)
-    if response.status_code == 200:
+    response = controlled_request(url)
+    if response and response.status_code == 200:
         data = response.json()
         return {
             'source': 'Semantic Scholar',
