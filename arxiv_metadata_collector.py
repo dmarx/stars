@@ -31,15 +31,21 @@ def extract_arxiv_id(url):
 
 def parse_bibtex(bibtex_str):
     fields = {}
-    for line in bibtex_str.strip().split('\n'):
-        if '=' in line:
-            key, value = line.split('=', 1)
-            key = key.strip().lower()
-            value = value.strip().strip(',').strip('{').strip('}').strip()
-            if key == 'doi':
-                # Remove any surrounding quotes or braces from the DOI
-                value = value.strip('"').strip("'").strip('{').strip('}')
-            fields[key] = value
+    # Remove any surrounding whitespace and curly braces
+    bibtex_str = bibtex_str.strip().strip('{').strip('}')
+    
+    # Use regex to find all key-value pairs
+    pattern = r'(\w+)\s*=\s*[{"]?((?:[^{"}]|{[^}]*})*)["}]?'
+    matches = re.findall(pattern, bibtex_str, re.DOTALL)
+    
+    for key, value in matches:
+        key = key.lower()
+        value = value.strip().strip(',').strip('{').strip('}').strip()
+        if key == 'doi':
+            # Remove any surrounding quotes or braces from the DOI
+            value = value.strip('"').strip("'").strip('{').strip('}')
+        fields[key] = value
+    
     return fields
 
 def extract_identifier(paper):
