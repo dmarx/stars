@@ -248,8 +248,17 @@ def test_deduplicate_papers():
 
     deduplicated = deduplicate_papers(papers)
     
-    assert len(deduplicated) == 5  # Should have 5 unique papers
-    assert any(extract_identifier(p) == '1234.56789' for p in deduplicated)
-    assert any(extract_identifier(p) == '10.1234/example' for p in deduplicated)
-    assert any(extract_identifier(p) == 'Unique Title' for p in deduplicated)
-    assert any(extract_identifier(p) == '5678.91011' for p in deduplicated)
+    print("Deduplicated papers:", deduplicated)  # Add this line for debugging
+    
+    assert len(deduplicated) == 5, f"Expected 5 unique papers, but got {len(deduplicated)}"
+    
+    # Check for specific papers in the deduplicated list
+    assert any(p for p in deduplicated if p.get('url') == 'https://arxiv.org/abs/1234.56789'), "arXiv URL paper missing"
+    assert any(p for p in deduplicated if 'doi={10.1234/example}' in p.get('bibtex', '')), "DOI paper missing"
+    assert any(p for p in deduplicated if 'title={Unique Title}' in p.get('bibtex', '')), "Unique title paper missing"
+    assert any(p for p in deduplicated if 'arxiv={5678.91011}' in p.get('bibtex', '')), "arXiv in BibTeX paper missing"
+    
+    # Check that we don't have any duplicates
+    identifiers = [extract_identifier(p) for p in deduplicated]
+    assert len(identifiers) == len(set(identifiers)), "Duplicate identifiers found in deduplicated papers"
+
