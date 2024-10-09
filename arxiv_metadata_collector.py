@@ -143,17 +143,18 @@ def process_papers(papers, existing_data):
                     commit_and_push(ARXIV_METADATA_FILE)
                 changes_made = False
 
-        arxiv_id = extract_arxiv_id(paper['url'])
-        if arxiv_id and arxiv_id not in paper_ids:
-            paper_ids.add(arxiv_id)
-            if arxiv_id not in existing_data['papers']:
-                arxiv_data = fetch_arxiv_metadata(arxiv_id)
-                if arxiv_data:
-                    semantic_scholar_data = fetch_semantic_scholar_data(arxiv_id, 'arxiv')
-                    if semantic_scholar_data:
-                        arxiv_data.update(semantic_scholar_data)
-                    existing_data['papers'][arxiv_id] = arxiv_data
-                    changes_made = True
+        if 'url' in paper:
+            arxiv_id = extract_arxiv_id(paper['url'])
+            if arxiv_id and arxiv_id not in paper_ids:
+                paper_ids.add(arxiv_id)
+                if arxiv_id not in existing_data['papers']:
+                    arxiv_data = fetch_arxiv_metadata(arxiv_id)
+                    if arxiv_data:
+                        semantic_scholar_data = fetch_semantic_scholar_data(arxiv_id, 'arxiv')
+                        if semantic_scholar_data:
+                            arxiv_data.update(semantic_scholar_data)
+                        existing_data['papers'][arxiv_id] = arxiv_data
+                        changes_made = True
 
         if 'bibtex' in paper:
             bibtex_data = parse_bibtex(paper['bibtex'])
