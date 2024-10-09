@@ -21,6 +21,14 @@ ARXIV_METADATA_FILE = config['ARXIV_METADATA_FILE']
 # Configure logger
 logger.add("arxiv_metadata_collector.log", rotation="10 MB")
 
+def extract_arxiv_id(url):
+    parsed_url = urlparse(url)
+    if parsed_url.netloc == 'arxiv.org':
+        path_parts = parsed_url.path.split('/')
+        if 'abs' in path_parts or 'pdf' in path_parts:
+            return path_parts[-1].replace('.pdf', '')
+    return None
+
 def extract_identifier(paper):
     if 'url' in paper:
         return extract_arxiv_id(paper['url'])
