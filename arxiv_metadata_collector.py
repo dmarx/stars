@@ -5,6 +5,7 @@ from urllib.parse import urlparse, parse_qs
 import time
 import re
 import os
+from typing import List, Dict
 import yaml
 from loguru import logger
 from utils import commit_and_push, controlled_request
@@ -13,6 +14,9 @@ from utils import commit_and_push, controlled_request
 with open('config.yaml', 'r') as config_file:
     config = yaml.safe_load(config_file)
 
+SEMANTIC_SCHOLAR_BATCH_URL = "https://api.semanticscholar.org/graph/v1/paper/batch"
+SEMANTIC_SCHOLAR_FIELDS = "title,authors,abstract,year,venue,url,doi,arxivId,paperId,citationCount,influentialCitationCount,referenceCount"
+BATCH_SIZE = 500  # Maximum allowed by the API
 COMMIT_INTERVAL = config['COMMIT_INTERVAL']
 CHUNK_SIZE = config['CHUNK_SIZE']
 #RATE_LIMIT_THRESHOLD = config['RATE_LIMIT_THRESHOLD']
@@ -166,6 +170,48 @@ def fetch_semantic_scholar_data(identifier, id_type='arxiv'):
         }
     return None
 
+def fetch_semantic_scholar_data_batch(identifiers: List[Dict[str, str]]) -> Dict[str, Dict]:
+    """
+    Fetch data for multiple papers from Semantic Scholar using the batch API.
+    
+    :param identifiers: List of dictionaries with 'id' and 'id_type' keys
+    :return: Dictionary of paper data, keyed by the original identifier
+    """
+    results = {}
+    for i in range(0, len(identifiers), BATCH_SIZE):
+        batch = identifiers[i:i+BATCH_SIZE]
+        ids = [f"{id_info['id_type']}:{id_info['id']}" for id_info in batch]
+        
+        response = controlled_request(
+            SEMANTIC_SCHOLAR_BATCH_URL,
+            method='post',
+            params={'fields': SEMANTIC_SCHOLAR_FIELDS},
+            json={"ids": ids}
+        )
+        
+        if response and response.status_code == 200:
+            batch_results = response.json()
+            for paper, id_info in zip(batch_results, batch):
+                if paper:  # Check if paper data is not None
+                    original_id = f"{id_info['id_type']}:{id_info['id']}"
+                    results[original_id] = {
+                        'source': 'Semantic Scholar',
+                        'title': paper.get('title'),
+                        'authors': [author['name'] for author in paper.get('authors', [])],
+                        'abstract': paper.get('abstract'),
+                        'year': paper.get('year'),
+                        'venue': paper.get('venue'),
+                        'url': paper.get('url'),
+                        'doi': paper.get('doi'),
+                        'arxivId': paper.get('arxivId'),
+                        'paperId': paper.get('paperId'),
+                        'citation_count': paper.get('citationCount'),
+                        'influential_citation_count': paper.get('influentialCitationCount'),
+                        'reference_count': paper.get('referenceCount')
+                    }
+    
+    return results
+
 def load_existing_data():
     if os.path.exists(ARXIV_METADATA_FILE):
         with open(ARXIV_METADATA_FILE, 'r') as f:
@@ -179,45 +225,22 @@ def save_data(data):
 def process_papers(papers, existing_data):
     changes_made = False
     paper_ids = set()
+    semantic_scholar_batch = []
 
-    for i, paper in enumerate(papers):
-        if i > 0 and i % CHUNK_SIZE == 0:
-            logger.info(f"Processed {i} papers")
-            if changes_made:
-                save_data(existing_data)
-                if i % (CHUNK_SIZE * COMMIT_INTERVAL) == 0:
-                    commit_and_push(ARXIV_METADATA_FILE)
-                changes_made = False
-
+    for paper in papers:
         identifier = extract_identifier(paper)
         if identifier and identifier not in paper_ids:
             paper_ids.add(identifier)
             if identifier not in existing_data['papers']:
-                if 'url' in paper:
-                    arxiv_id = extract_arxiv_id(paper['url'])
-                    arxiv_data = fetch_arxiv_metadata(arxiv_id)
-                    if arxiv_data:
-                        semantic_scholar_data = fetch_semantic_scholar_data(arxiv_id, 'arxiv')
-                        if semantic_scholar_data:
-                            arxiv_data.update(semantic_scholar_data)
-                        existing_data['papers'][identifier] = arxiv_data
-                        changes_made = True
-                elif 'bibtex' in paper:
-                    bibtex_data = parse_bibtex(paper['bibtex'])
-                    doi = bibtex_data.get('doi')
-                    arxiv = bibtex_data.get('arxiv')
-                    if doi:
-                        semantic_scholar_data = fetch_semantic_scholar_data(doi, 'doi')
-                    elif arxiv:
-                        semantic_scholar_data = fetch_semantic_scholar_data(arxiv, 'arxiv')
-                    else:
-                        title = bibtex_data.get('title')
-                        author = bibtex_data.get('author')
-                        semantic_scholar_data = fetch_semantic_scholar_data(f"{title} {author}", 'search')
-                    if semantic_scholar_data:
-                        existing_data['papers'][identifier] = semantic_scholar_data
-                        existing_data['papers'][identifier]['bibtex'] = bibtex_data
-                        changes_made = True
+                id_type, id_value = identifier.split(':', 1)
+                semantic_scholar_batch.append({'id': id_value, 'id_type': id_type})
+
+    if semantic_scholar_batch:
+        semantic_scholar_data = fetch_semantic_scholar_data_batch(semantic_scholar_batch)
+        for identifier, data in semantic_scholar_data.items():
+            if data:
+                existing_data['papers'][identifier] = data
+                changes_made = True
 
     if changes_made:
         save_data(existing_data)
