@@ -128,8 +128,8 @@ def test_fetch_arxiv_metadata_multiple_categories(mock_controlled_request):
     assert result['published'] == '2023-01-01T00:00:00Z'
     assert result['updated'] == '2023-01-02T00:00:00Z'
 
-@patch('arxiv_metadata_collector.requests.get')
-def test_fetch_semantic_scholar_data(mock_get):
+@patch('arxiv_metadata_collector.controlled_request')
+def test_fetch_semantic_scholar_data(mock_controlled_request):
     mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.json.return_value = {
@@ -146,9 +146,8 @@ def test_fetch_semantic_scholar_data(mock_get):
         'influentialCitationCount': 5,
         'referenceCount': 20
     }
-    mock_get.return_value = mock_response
+    mock_controlled_request.return_value = mock_response
 
-    from arxiv_metadata_collector import fetch_semantic_scholar_data
     result = fetch_semantic_scholar_data('1234.56789', 'arxiv')
 
     assert result['title'] == 'Example Title'
