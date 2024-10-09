@@ -23,17 +23,19 @@ def test_extract_arxiv_id():
     assert extract_arxiv_id("https://example.com") is None
 
 def test_parse_bibtex():
-    bibtex = """@article{example2023,
+    bibtex = """@article{example,
         title={Example Title},
         author={Doe, John and Smith, Jane},
         journal={Example Journal},
-        year={2023}
+        year={2023},
+        doi={10.1234/example}
     }"""
     parsed = parse_bibtex(bibtex)
     assert parsed['title'] == 'Example Title'
     assert parsed['author'] == 'Doe, John and Smith, Jane'
     assert parsed['journal'] == 'Example Journal'
     assert parsed['year'] == '2023'
+    assert parsed['doi'] == '10.1234/example'
 
 @pytest.fixture
 def mock_json_file(tmp_path):
