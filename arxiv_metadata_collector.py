@@ -4,6 +4,22 @@ import xmltodict
 from urllib.parse import urlparse, parse_qs
 import time
 import re
+import os
+import yaml
+from loguru import logger
+from utils import commit_and_push, handle_rate_limit
+
+# Load configuration
+with open('config.yaml', 'r') as config_file:
+    config = yaml.safe_load(config_file)
+
+COMMIT_INTERVAL = config['COMMIT_INTERVAL']
+CHUNK_SIZE = config['CHUNK_SIZE']
+RATE_LIMIT_THRESHOLD = config['RATE_LIMIT_THRESHOLD']
+ARXIV_METADATA_FILE = config['ARXIV_METADATA_FILE']
+
+# Configure logger
+logger.add("arxiv_metadata_collector.log", rotation="10 MB")
 
 def extract_arxiv_id(url):
     parsed_url = urlparse(url)
@@ -20,6 +36,7 @@ def fetch_arxiv_metadata(arxiv_id):
         "max_results": 1
     }
     response = requests.get(base_url, params=params)
+    handle_rate_limit(response, RATE_LIMIT_THRESHOLD)
     if response.status_code == 200:
         data = xmltodict.parse(response.content)
         entry = data['feed']['entry']
@@ -48,6 +65,7 @@ def fetch_semantic_scholar_data(identifier, id_type='arxiv'):
             "limit": 1
         }
         search_response = requests.get(search_url, params=params)
+        handle_rate_limit(search_response, RATE_LIMIT_THRESHOLD)
         if search_response.status_code == 200:
             search_data = search_response.json()
             if search_data['data']:
@@ -58,6 +76,7 @@ def fetch_semantic_scholar_data(identifier, id_type='arxiv'):
             return None
 
     response = requests.get(url)
+    handle_rate_limit(response, RATE_LIMIT_THRESHOLD)
     if response.status_code == 200:
         data = response.json()
         return {
@@ -87,61 +106,88 @@ def parse_bibtex(bibtex_str):
             fields[key] = value
     return fields
 
-def main():
-    with open('github_stars.json', 'r') as f:
-        data = json.load(f)
+def load_existing_data():
+    if os.path.exists(ARXIV_METADATA_FILE):
+        with open(ARXIV_METADATA_FILE, 'r') as f:
+            return json.load(f)
+    return {"last_updated": None, "papers": {}}
 
-    metadata = {}
-    paper_ids = set()  # Set to keep track of papers we've already processed
+def save_data(data):
+    with open(ARXIV_METADATA_FILE, 'w') as f:
+        json.dump(data, f, indent=2)
 
-    for repo_name, repo_data in data['repositories'].items():
-        if 'arxiv' in repo_data:
-            arxiv_urls = repo_data['arxiv'].get('urls', [])
-            bibtex_citations = repo_data['arxiv'].get('bibtex_citations', [])
+def process_papers(papers, existing_data):
+    changes_made = False
+    paper_ids = set()
 
-            for url in arxiv_urls:
-                arxiv_id = extract_arxiv_id(url)
-                if arxiv_id and arxiv_id not in paper_ids:
-                    paper_ids.add(arxiv_id)
-                    metadata[url] = fetch_arxiv_metadata(arxiv_id)
+    for i, paper in enumerate(papers):
+        if i > 0 and i % CHUNK_SIZE == 0:
+            logger.info(f"Processed {i} papers")
+            if changes_made:
+                save_data(existing_data)
+                if i % (CHUNK_SIZE * COMMIT_INTERVAL) == 0:
+                    commit_and_push(ARXIV_METADATA_FILE)
+                changes_made = False
+
+        arxiv_id = extract_arxiv_id(paper['url'])
+        if arxiv_id and arxiv_id not in paper_ids:
+            paper_ids.add(arxiv_id)
+            if arxiv_id not in existing_data['papers']:
+                arxiv_data = fetch_arxiv_metadata(arxiv_id)
+                if arxiv_data:
                     semantic_scholar_data = fetch_semantic_scholar_data(arxiv_id, 'arxiv')
                     if semantic_scholar_data:
-                        metadata[url].update(semantic_scholar_data)
-                        if semantic_scholar_data.get('doi'):
-                            paper_ids.add(semantic_scholar_data['doi'])
-                        if semantic_scholar_data.get('paperId'):
-                            paper_ids.add(semantic_scholar_data['paperId'])
-                    time.sleep(3)  # Respect API rate limits
+                        arxiv_data.update(semantic_scholar_data)
+                    existing_data['papers'][arxiv_id] = arxiv_data
+                    changes_made = True
 
-            for bibtex in bibtex_citations:
-                bibtex_data = parse_bibtex(bibtex)
-                doi = bibtex_data.get('doi')
-                title = bibtex_data.get('title')
-                
-                if doi and doi in paper_ids:
-                    continue
-                if title and any(title.lower() in metadata[url]['title'].lower() for url in metadata):
-                    continue
+        if 'bibtex' in paper:
+            bibtex_data = parse_bibtex(paper['bibtex'])
+            doi = bibtex_data.get('doi')
+            title = bibtex_data.get('title')
 
-                identifier = doi or f"{title} {bibtex_data.get('author')}"
-                id_type = 'doi' if doi else 'search'
-                semantic_scholar_data = fetch_semantic_scholar_data(identifier, id_type)
-                
+            if doi and doi not in paper_ids:
+                paper_ids.add(doi)
+                if doi not in existing_data['papers']:
+                    semantic_scholar_data = fetch_semantic_scholar_data(doi, 'doi')
+                    if semantic_scholar_data:
+                        existing_data['papers'][doi] = semantic_scholar_data
+                        existing_data['papers'][doi]['bibtex'] = bibtex_data
+                        changes_made = True
+
+            elif title and not any(title.lower() in p['title'].lower() for p in existing_data['papers'].values()):
+                identifier = f"{title} {bibtex_data.get('author')}"
+                semantic_scholar_data = fetch_semantic_scholar_data(identifier, 'search')
                 if semantic_scholar_data:
-                    url = semantic_scholar_data['url']
-                    if url not in metadata:
-                        metadata[url] = semantic_scholar_data
-                        metadata[url]['bibtex'] = bibtex_data
-                        if semantic_scholar_data.get('doi'):
-                            paper_ids.add(semantic_scholar_data['doi'])
-                        if semantic_scholar_data.get('arxivId'):
-                            paper_ids.add(semantic_scholar_data['arxivId'])
-                        if semantic_scholar_data.get('paperId'):
-                            paper_ids.add(semantic_scholar_data['paperId'])
-                    time.sleep(3)  # Respect API rate limits
+                    paper_id = semantic_scholar_data['paperId']
+                    if paper_id not in existing_data['papers']:
+                        existing_data['papers'][paper_id] = semantic_scholar_data
+                        existing_data['papers'][paper_id]['bibtex'] = bibtex_data
+                        changes_made = True
 
-    with open('comprehensive_metadata.json', 'w') as f:
-        json.dump(metadata, f, indent=2)
+    if changes_made:
+        save_data(existing_data)
+        commit_and_push(ARXIV_METADATA_FILE)
+
+    return existing_data
+
+def main():
+    existing_data = load_existing_data()
+
+    with open('github_stars.json', 'r') as f:
+        github_stars_data = json.load(f)
+
+    papers = []
+    for repo_data in github_stars_data['repositories'].values():
+        if 'arxiv' in repo_data:
+            for url in repo_data['arxiv'].get('urls', []):
+                papers.append({'url': url})
+            for bibtex in repo_data['arxiv'].get('bibtex_citations', []):
+                papers.append({'bibtex': bibtex})
+
+    logger.info(f"Found {len(papers)} papers to process")
+    process_papers(papers, existing_data)
+    logger.info("arXiv metadata collection completed")
 
 if __name__ == "__main__":
     main()
