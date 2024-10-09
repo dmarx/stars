@@ -21,7 +21,7 @@ def test_extract_arxiv_id():
     assert extract_arxiv_id("https://arxiv.org/abs/1234.56789") == "1234.56789"
     assert extract_arxiv_id("https://arxiv.org/pdf/1234.56789.pdf") == "1234.56789"
     assert extract_arxiv_id("1234.56789") == "1234.56789"
-    assert extract_arxiv_id("arXiv:1234.56789v2") == "1234.56789v2"
+    assert extract_arxiv_id("arXiv:1234.56789v2") == "1234.56789"
     assert extract_arxiv_id("https://example.com") is None
 
 def test_parse_bibtex():
@@ -215,17 +215,17 @@ def test_process_papers(mock_commit_and_push, mock_save_data, mock_fetch_semanti
 
     print("Result:", result)  # Add this line to print the result
 
-    assert '1234.56789' in result['papers'], "ArXiv ID not found in result"
-    assert '10.1234/example' in result['papers'], "DOI not found in result"
-    assert result['papers']['1234.56789']['title'] == 'Semantic Scholar ArXiv Paper', "Incorrect title for ArXiv paper"
-    assert result['papers']['10.1234/example']['title'] == 'Semantic Scholar DOI Paper', "Incorrect title for DOI paper"
+    assert 'arxiv:1234.56789' in result['papers'], "ArXiv ID not found in result"
+    assert 'doi:10.1234/example' in result['papers'], "DOI not found in result"
+    assert result['papers']['arxiv:1234.56789']['title'] == 'Semantic Scholar ArXiv Paper', "Incorrect title for ArXiv paper"
+    assert result['papers']['doi:10.1234/example']['title'] == 'Semantic Scholar DOI Paper', "Incorrect title for DOI paper"
     assert mock_save_data.call_count > 0, "save_data not called"
     assert mock_commit_and_push.call_count > 0, "commit_and_push not called"
 
 def test_deduplicate_papers():
     papers = [
         {'url': 'https://arxiv.org/abs/1234.56789'},
-        {'url': 'https://arxiv.org/pdf/1234.56789.pdf'},  # Duplicate arXiv URL in different format
+        {'url': 'https://arxiv.org/pdf/1234.56789v2.pdf'},  # Duplicate arXiv URL in different format with version
         {'bibtex': '@article{example1, doi={10.1234/example}, title={Example Title 1}}'},
         {'bibtex': '@article{example2, doi={10.1234/example}, title={Example Title 2}}'},  # Duplicate DOI
         {'bibtex': '@article{example3, title={Unique Title}}'},
