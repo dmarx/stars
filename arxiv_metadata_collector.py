@@ -7,7 +7,7 @@ import re
 import os
 import yaml
 from loguru import logger
-from utils import commit_and_push, handle_rate_limit
+from utils import commit_and_push, controlled_request
 
 # Load configuration
 with open('config.yaml', 'r') as config_file:
@@ -15,7 +15,7 @@ with open('config.yaml', 'r') as config_file:
 
 COMMIT_INTERVAL = config['COMMIT_INTERVAL']
 CHUNK_SIZE = config['CHUNK_SIZE']
-RATE_LIMIT_THRESHOLD = config['RATE_LIMIT_THRESHOLD']
+#RATE_LIMIT_THRESHOLD = config['RATE_LIMIT_THRESHOLD']
 ARXIV_METADATA_FILE = config['ARXIV_METADATA_FILE']
 
 # Configure logger
@@ -26,7 +26,6 @@ def extract_arxiv_id(url):
     if parsed_url.netloc == 'arxiv.org':
         path_parts = parsed_url.path.split('/')
         if 'abs' in path_parts or 'pdf' in path_parts:
-            # Remove .pdf extension if present
             return path_parts[-1].replace('.pdf', '')
     return None
 
@@ -36,9 +35,8 @@ def fetch_arxiv_metadata(arxiv_id):
         "id_list": arxiv_id,
         "max_results": 1
     }
-    response = requests.get(base_url, params=params)
-    handle_rate_limit(response, RATE_LIMIT_THRESHOLD)
-    if response.status_code == 200:
+    response = controlled_request(base_url, params=params)
+    if response and response.status_code == 200:
         data = xmltodict.parse(response.content)
         entry = data['feed']['entry']
         
