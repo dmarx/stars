@@ -21,13 +21,25 @@ ARXIV_METADATA_FILE = config['ARXIV_METADATA_FILE']
 # Configure logger
 logger.add("arxiv_metadata_collector.log", rotation="10 MB")
 
-def extract_arxiv_id(url):
-    parsed_url = urlparse(url)
-    if parsed_url.netloc == 'arxiv.org':
-        path_parts = parsed_url.path.split('/')
-        if 'abs' in path_parts or 'pdf' in path_parts:
-            return path_parts[-1].replace('.pdf', '')
+def extract_identifier(paper):
+    if 'url' in paper:
+        return extract_arxiv_id(paper['url'])
+    elif 'bibtex' in paper:
+        bibtex_data = parse_bibtex(paper['bibtex'])
+        return bibtex_data.get('doi') or bibtex_data.get('title')
     return None
+
+def deduplicate_papers(papers):
+    unique_papers = []
+    seen_identifiers = set()
+
+    for paper in papers:
+        identifier = extract_identifier(paper)
+        if identifier and identifier not in seen_identifiers:
+            unique_papers.append(paper)
+            seen_identifiers.add(identifier)
+
+    return unique_papers
 
 def fetch_arxiv_metadata(arxiv_id):
     base_url = "http://export.arxiv.org/api/query"
@@ -200,8 +212,12 @@ def main():
             for bibtex in repo_data['arxiv'].get('bibtex_citations', []):
                 papers.append({'bibtex': bibtex})
 
-    logger.info(f"Found {len(papers)} papers to process")
-    process_papers(papers, existing_data)
+    logger.info(f"Found {len(papers)} papers before deduplication")
+    
+    deduplicated_papers = deduplicate_papers(papers)
+    logger.info(f"Deduplicated to {len(deduplicated_papers)} unique papers")
+
+    process_papers(deduplicated_papers, existing_data)
     logger.info("arXiv metadata collection completed")
 
 if __name__ == "__main__":
