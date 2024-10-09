@@ -1,0 +1,7 @@
+# Shared configuration
+COMMIT_INTERVAL: 5
+CHUNK_SIZE: 100
+RATE_LIMIT_THRESHOLD: 100
+
+# arXiv metadata collector specific
+ARXIV_METADATA_FILE: 'article_metadata.json'
