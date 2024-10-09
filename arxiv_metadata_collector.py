@@ -132,11 +132,14 @@ def fetch_semantic_scholar_data(identifier, id_type='arxiv'):
 
 def parse_bibtex(bibtex_str):
     fields = {}
-    for line in bibtex_str.strip().split('\n')[1:-1]:  # Skip first and last lines
+    for line in bibtex_str.strip().split('\n'):
         if '=' in line:
             key, value = line.split('=', 1)
             key = key.strip().lower()
             value = value.strip().strip(',').strip('{').strip('}').strip()
+            if key == 'doi':
+                # Remove any surrounding quotes or braces from the DOI
+                value = value.strip('"').strip("'").strip('{').strip('}')
             fields[key] = value
     return fields
 
