@@ -28,13 +28,13 @@ def extract_arxiv_id(url_or_id):
         if parsed_url.netloc == 'arxiv.org':
             path_parts = parsed_url.path.split('/')
             if 'abs' in path_parts or 'pdf' in path_parts:
-                return path_parts[-1].replace('.pdf', '')
+                return path_parts[-1].replace('.pdf', '').split('v')[0]  # Remove version number
     else:
         # Check if it's already an arXiv ID
-        arxiv_pattern = r'\d{4}\.\d{4,5}(v\d+)?'
+        arxiv_pattern = r'(\d{4}\.\d{4,5})(v\d+)?'
         match = re.search(arxiv_pattern, url_or_id)
         if match:
-            return match.group()
+            return match.group(1)  # Return only the base ID without version
     return None
 
 def parse_bibtex(bibtex_str):
