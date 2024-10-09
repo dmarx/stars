@@ -50,18 +50,25 @@ def fetch_arxiv_metadata(arxiv_id):
         else:
             authors = []
 
+        # Handle potential variations in category structure
+        if isinstance(entry.get('category'), list):
+            categories = [cat['@term'] for cat in entry['category']]
+        elif isinstance(entry.get('category'), dict):
+            categories = [entry['category']['@term']]
+        else:
+            categories = []
+
         return {
             'source': 'arXiv',
             'id': entry['id'],
             'title': entry['title'],
             'authors': authors,
             'abstract': entry['summary'],
-            'categories': entry['category'] if isinstance(entry['category'], list) else [entry['category']],
+            'categories': categories,
             'published': entry['published'],
             'updated': entry['updated']
         }
     return None
-
 
 def fetch_semantic_scholar_data(identifier, id_type='arxiv'):
     base_url = "https://api.semanticscholar.org/v1/paper/"
