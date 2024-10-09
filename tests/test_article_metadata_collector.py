@@ -7,7 +7,7 @@ import os
 # Add the parent directory to the Python path to import the main script
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from arxiv_metadata_collector import extract_arxiv_id, parse_bibtex, load_existing_data, save_data
+from arxiv_metadata_collector import extract_arxiv_id, parse_bibtex, load_existing_data, save_data, fetch_arxiv_metadata, fetch_semantic_scholar_data
 
 def test_extract_arxiv_id():
     assert extract_arxiv_id("https://arxiv.org/abs/1234.56789") == "1234.56789"
