@@ -21,12 +21,20 @@ ARXIV_METADATA_FILE = config['ARXIV_METADATA_FILE']
 # Configure logger
 logger.add("arxiv_metadata_collector.log", rotation="10 MB")
 
-def extract_arxiv_id(url):
-    parsed_url = urlparse(url)
-    if parsed_url.netloc == 'arxiv.org':
-        path_parts = parsed_url.path.split('/')
-        if 'abs' in path_parts or 'pdf' in path_parts:
-            return path_parts[-1].replace('.pdf', '')
+def extract_arxiv_id(url_or_id):
+    # Check if it's a URL
+    if url_or_id.startswith('http'):
+        parsed_url = urlparse(url_or_id)
+        if parsed_url.netloc == 'arxiv.org':
+            path_parts = parsed_url.path.split('/')
+            if 'abs' in path_parts or 'pdf' in path_parts:
+                return path_parts[-1].replace('.pdf', '')
+    else:
+        # Check if it's already an arXiv ID
+        arxiv_pattern = r'\d{4}\.\d{4,5}(v\d+)?'
+        match = re.search(arxiv_pattern, url_or_id)
+        if match:
+            return match.group()
     return None
 
 def parse_bibtex(bibtex_str):
@@ -50,10 +58,19 @@ def parse_bibtex(bibtex_str):
 
 def extract_identifier(paper):
     if 'url' in paper:
-        return extract_arxiv_id(paper['url'])
+        arxiv_id = extract_arxiv_id(paper['url'])
+        if arxiv_id:
+            return f"arxiv:{arxiv_id}"
     elif 'bibtex' in paper:
         bibtex_data = parse_bibtex(paper['bibtex'])
-        return bibtex_data.get('doi') or bibtex_data.get('arxiv') or bibtex_data.get('title')
+        if 'doi' in bibtex_data:
+            return f"doi:{bibtex_data['doi']}"
+        elif 'arxiv' in bibtex_data:
+            arxiv_id = extract_arxiv_id(bibtex_data['arxiv'])
+            if arxiv_id:
+                return f"arxiv:{arxiv_id}"
+        elif 'title' in bibtex_data:
+            return f"title:{bibtex_data['title']}"
     return None
 
 def deduplicate_papers(papers):
