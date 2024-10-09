@@ -17,6 +17,16 @@ def test_extract_identifier():
     assert extract_identifier({'bibtex': '@article{example, title={Unique Title}}'}) == 'Unique Title'
     assert extract_identifier({'other': 'data'}) is None
 
+    # Test with more complex BibTeX entries
+    complex_bibtex = """@article{example,
+        title={Complex Example},
+        author={Doe, John},
+        journal={Complex Journal},
+        year={2023},
+        doi={10.5678/complex}
+    }"""
+    assert extract_identifier({'bibtex': complex_bibtex}) == '10.5678/complex'
+
 def test_extract_arxiv_id():
     assert extract_arxiv_id("https://arxiv.org/abs/1234.56789") == "1234.56789"
     assert extract_arxiv_id("https://arxiv.org/pdf/1234.56789.pdf") == "1234.56789"
