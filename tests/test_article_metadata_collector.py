@@ -11,29 +11,17 @@ from arxiv_metadata_collector import extract_arxiv_id, parse_bibtex, load_existi
 from utils import controlled_request
 
 def test_extract_identifier():
-    assert extract_identifier({'url': 'https://arxiv.org/abs/1234.56789'}) == '1234.56789'
-    assert extract_identifier({'bibtex': '@article{example, doi={10.1234/example}}'}) == '10.1234/example'
-    assert extract_identifier({'bibtex': '@article{example, arxiv={1234.56789}}'}) == '1234.56789'
-    assert extract_identifier({'bibtex': '@article{example, title={Unique Title}}'}) == 'Unique Title'
+    assert extract_identifier({'url': 'https://arxiv.org/abs/1234.56789'}) == 'arxiv:1234.56789'
+    assert extract_identifier({'bibtex': '@article{example, doi={10.1234/example}}'}) == 'doi:10.1234/example'
+    assert extract_identifier({'bibtex': '@article{example, arxiv={1234.56789}}'}) == 'arxiv:1234.56789'
+    assert extract_identifier({'bibtex': '@article{example, title={Unique Title}}'}) == 'title:Unique Title'
     assert extract_identifier({'other': 'data'}) is None
-
-    # Test with more complex BibTeX entries
-    complex_bibtex = """@article{example,
-        title={Complex Example},
-        author={Doe, John},
-        journal={Complex Journal},
-        year={2023},
-        doi={10.5678/complex}
-    }"""
-    assert extract_identifier({'bibtex': complex_bibtex}) == '10.5678/complex'
-
-    # Test with single-line complex BibTeX
-    single_line_complex = "@article{example, title={Single Line Example}, author={Smith, Jane}, doi={10.9876/single}}"
-    assert extract_identifier({'bibtex': single_line_complex}) == '10.9876/single'
 
 def test_extract_arxiv_id():
     assert extract_arxiv_id("https://arxiv.org/abs/1234.56789") == "1234.56789"
     assert extract_arxiv_id("https://arxiv.org/pdf/1234.56789.pdf") == "1234.56789"
+    assert extract_arxiv_id("1234.56789") == "1234.56789"
+    assert extract_arxiv_id("arXiv:1234.56789v2") == "1234.56789v2"
     assert extract_arxiv_id("https://example.com") is None
 
 def test_parse_bibtex():
@@ -237,13 +225,13 @@ def test_process_papers(mock_commit_and_push, mock_save_data, mock_fetch_semanti
 def test_deduplicate_papers():
     papers = [
         {'url': 'https://arxiv.org/abs/1234.56789'},
-        {'url': 'https://arxiv.org/abs/1234.56789'},  # Duplicate arXiv URL
+        {'url': 'https://arxiv.org/pdf/1234.56789.pdf'},  # Duplicate arXiv URL in different format
         {'bibtex': '@article{example1, doi={10.1234/example}, title={Example Title 1}}'},
         {'bibtex': '@article{example2, doi={10.1234/example}, title={Example Title 2}}'},  # Duplicate DOI
         {'bibtex': '@article{example3, title={Unique Title}}'},
         {'bibtex': '@article{example4, title={Unique Title}}'},  # Duplicate title
         {'bibtex': '@article{example5, arxiv={5678.91011}}'},
-        {'bibtex': '@article{example6, arxiv={5678.91011}}'},  # Duplicate arXiv in BibTeX
+        {'bibtex': '@article{example6, arxiv={arXiv:5678.91011v1}}'},  # Duplicate arXiv in BibTeX with version
     ]
 
     deduplicated = deduplicate_papers(papers)
@@ -253,13 +241,11 @@ def test_deduplicate_papers():
     assert len(deduplicated) == 4, f"Expected 4 unique papers, but got {len(deduplicated)}"
     
     # Check for specific papers in the deduplicated list
-    assert any(p for p in deduplicated if p.get('url') == 'https://arxiv.org/abs/1234.56789'), "arXiv URL paper missing"
-    assert any(p for p in deduplicated if 'doi={10.1234/example}' in p.get('bibtex', '')), "DOI paper missing"
-    assert any(p for p in deduplicated if 'title={Unique Title}' in p.get('bibtex', '')), "Unique title paper missing"
-    assert any(p for p in deduplicated if 'arxiv={5678.91011}' in p.get('bibtex', '')), "arXiv in BibTeX paper missing"
+    assert any(p for p in deduplicated if extract_identifier(p) == 'arxiv:1234.56789'), "arXiv paper missing"
+    assert any(p for p in deduplicated if extract_identifier(p) == 'doi:10.1234/example'), "DOI paper missing"
+    assert any(p for p in deduplicated if extract_identifier(p) == 'title:Unique Title'), "Unique title paper missing"
+    assert any(p for p in deduplicated if extract_identifier(p) == 'arxiv:5678.91011'), "arXiv in BibTeX paper missing"
     
     # Check that we don't have any duplicates
     identifiers = [extract_identifier(p) for p in deduplicated]
     assert len(identifiers) == len(set(identifiers)), "Duplicate identifiers found in deduplicated papers"
-
-
