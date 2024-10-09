@@ -67,7 +67,8 @@ def test_save_data(tmp_path):
         assert saved_data == test_data
 
 @patch('arxiv_metadata_collector.requests.get')
-def test_fetch_arxiv_metadata(mock_get):
+@patch('arxiv_metadata_collector.handle_rate_limit')
+def test_fetch_arxiv_metadata(mock_handle_rate_limit, mock_get):
     mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.content = """
@@ -75,7 +76,9 @@ def test_fetch_arxiv_metadata(mock_get):
         <entry>
             <id>http://arxiv.org/abs/1234.56789v1</id>
             <title>Example Title</title>
-            <author><name>John Doe</name></author>
+            <author>
+                <name>John Doe</name>
+            </author>
             <summary>Example abstract</summary>
             <category term="cs.AI"/>
             <published>2023-01-01T00:00:00Z</published>
@@ -85,13 +88,44 @@ def test_fetch_arxiv_metadata(mock_get):
     """
     mock_get.return_value = mock_response
 
-    from arxiv_metadata_collector import fetch_arxiv_metadata
     result = fetch_arxiv_metadata('1234.56789')
 
     assert result['title'] == 'Example Title'
     assert result['authors'] == ['John Doe']
     assert result['abstract'] == 'Example abstract'
     assert result['categories'] == ['cs.AI']
+    assert result['published'] == '2023-01-01T00:00:00Z'
+    assert result['updated'] == '2023-01-02T00:00:00Z'
+
+@patch('arxiv_metadata_collector.requests.get')
+@patch('arxiv_metadata_collector.handle_rate_limit')
+def test_fetch_arxiv_metadata_multiple_categories(mock_handle_rate_limit, mock_get):
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.content = """
+    <feed>
+        <entry>
+            <id>http://arxiv.org/abs/1234.56789v1</id>
+            <title>Example Title</title>
+            <author>
+                <name>John Doe</name>
+            </author>
+            <summary>Example abstract</summary>
+            <category term="cs.AI"/>
+            <category term="cs.LG"/>
+            <published>2023-01-01T00:00:00Z</published>
+            <updated>2023-01-02T00:00:00Z</updated>
+        </entry>
+    </feed>
+    """
+    mock_get.return_value = mock_response
+
+    result = fetch_arxiv_metadata('1234.56789')
+
+    assert result['title'] == 'Example Title'
+    assert result['authors'] == ['John Doe']
+    assert result['abstract'] == 'Example abstract'
+    assert result['categories'] == ['cs.AI', 'cs.LG']
     assert result['published'] == '2023-01-01T00:00:00Z'
     assert result['updated'] == '2023-01-02T00:00:00Z'
 
