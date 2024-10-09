@@ -28,3 +28,19 @@ def handle_rate_limit(response, threshold):
             time.sleep(sleep_time)
         else:
             logger.info(f"Rate limit low but reset time has passed. Proceeding cautiously.")
+
+def controlled_request(url, params=None, max_retries=3, delay=1):
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, params=params)
+            response.raise_for_status()
+            time.sleep(delay)  # Wait for 1 second before the next request
+            return response
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 429:
+                logger.warning(f"Rate limit exceeded. Retrying in {2**attempt} seconds.")
+                time.sleep(2**attempt)  # Exponential backoff
+            else:
+                raise
+    logger.error("Max retries reached. Unable to complete the request.")
+    return None
