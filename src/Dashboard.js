@@ -335,17 +335,17 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <header className="mb-8">
-        <h1 className="text-4xl font-bold text-center mb-6">GitHub Stars Dashboard</h1>
-        <div className="max-w-4xl mx-auto">
-          <button
-            onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
-            className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            {showAdvancedSearch ? 'Hide' : 'Show'} Advanced Search
-          </button>
-          {showAdvancedSearch && (
+  <div className="container mx-auto px-4 py-8">
+    <header className="mb-8">
+      <h1 className="text-4xl font-bold text-center mb-6">GitHub Stars Dashboard</h1>
+      <div className="max-w-4xl mx-auto">
+        <button
+          onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
+          className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          {showAdvancedSearch ? 'Hide' : 'Show'} Advanced Search
+        </button>
+        {showAdvancedSearch && (
           <AdvancedSearch 
             conditions={searchConditions}
             setConditions={setSearchConditions}
@@ -353,9 +353,10 @@ const Dashboard = () => {
             allLists={allLists}
           />
         )}
-      </header>
-      
-      <main>
+      </div>
+    </header>
+    
+    <main>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">Repositories ({filteredRepos.length})</h2>
           <SortDropdown 
