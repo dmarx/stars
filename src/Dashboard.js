@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp, Search, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, Search, Plus, X } from 'lucide-react';
 
 const SortDropdown = ({ sortOption, sortDirection, handleSortChange }) => {
   const [isOpen, setIsOpen] = useState(false);
