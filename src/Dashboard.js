@@ -47,12 +47,108 @@ const SortDropdown = ({ sortOption, sortDirection, handleSortChange }) => {
   );
 };
 
-const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, fieldOptions }) => {
+const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, fieldOptions, allLists }) => {
+  const getOperators = (fieldType) => {
+    switch (fieldType) {
+      case 'string':
+        return [
+          { value: 'contains', label: 'contains' },
+          { value: 'equals', label: 'equals' },
+          { value: 'starts_with', label: 'starts with' },
+          { value: 'ends_with', label: 'ends with' },
+        ];
+      case 'number':
+        return [
+          { value: 'equals', label: 'equals' },
+          { value: 'greater_than', label: 'greater than' },
+          { value: 'less_than', label: 'less than' },
+        ];
+      case 'date':
+        return [
+          { value: 'equals', label: 'equals' },
+          { value: 'after', label: 'after' },
+          { value: 'before', label: 'before' },
+        ];
+      case 'list':
+        return [
+          { value: 'includes', label: 'includes' },
+          { value: 'excludes', label: 'excludes' },
+        ];
+      default:
+        return [{ value: 'equals', label: 'equals' }];
+    }
+  };
+
+  const getInputType = (field) => {
+    switch (field) {
+      case 'stars':
+        return 'number';
+      case 'created_at':
+      case 'updated_at':
+      case 'pushed_at':
+      case 'starred_at':
+        return 'date';
+      case 'lists':
+        return 'list';
+      default:
+        return 'text';
+    }
+  };
+
+  const renderInput = () => {
+    const inputType = getInputType(condition.field);
+    switch (inputType) {
+      case 'number':
+        return (
+          <input
+            type="number"
+            value={condition.value}
+            onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
+            className="px-2 py-1 border rounded"
+          />
+        );
+      case 'date':
+        return (
+          <input
+            type="date"
+            value={condition.value}
+            onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
+            className="px-2 py-1 border rounded"
+          />
+        );
+      case 'list':
+        return (
+          <select
+            multiple
+            value={condition.value.split(',')}
+            onChange={(e) => updateCondition({ ...condition, value: Array.from(e.target.selectedOptions, option => option.value).join(',') })}
+            className="px-2 py-1 border rounded"
+          >
+            {allLists.map(list => (
+              <option key={list} value={list}>{list}</option>
+            ))}
+          </select>
+        );
+      default:
+        return (
+          <input
+            type="text"
+            value={condition.value}
+            onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
+            className="px-2 py-1 border rounded"
+          />
+        );
+    }
+  };
+
+  const fieldType = getInputType(condition.field);
+  const operators = getOperators(fieldType);
+
   return (
     <div className="flex items-center space-x-2 mb-2">
       <select
         value={condition.field}
-        onChange={(e) => updateCondition({ ...condition, field: e.target.value })}
+        onChange={(e) => updateCondition({ ...condition, field: e.target.value, operator: getOperators(getInputType(e.target.value))[0].value })}
         className="px-2 py-1 border rounded"
       >
         {fieldOptions.map(option => (
@@ -64,23 +160,17 @@ const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, 
         onChange={(e) => updateCondition({ ...condition, operator: e.target.value })}
         className="px-2 py-1 border rounded"
       >
-        <option value="contains">contains</option>
-        <option value="equals">equals</option>
-        <option value="greater_than">greater than</option>
-        <option value="less_than">less than</option>
+        {operators.map(op => (
+          <option key={op.value} value={op.value}>{op.label}</option>
+        ))}
       </select>
-      <input
-        type="text"
-        value={condition.value}
-        onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
-        className="px-2 py-1 border rounded"
-      />
+      {renderInput()}
       <button onClick={removeCondition} className="text-red-500"><X size={20} /></button>
     </div>
   );
 };
 
-const AdvancedSearch = ({ conditions, setConditions, fieldOptions }) => {
+const AdvancedSearch = ({ conditions, setConditions, fieldOptions, allLists }) => {
   const addCondition = () => {
     setConditions([...conditions, { field: 'name', operator: 'contains', value: '', conjunction: 'AND' }]);
   };
@@ -105,6 +195,7 @@ const AdvancedSearch = ({ conditions, setConditions, fieldOptions }) => {
             updateCondition={(newCondition) => updateCondition(index, newCondition)}
             removeCondition={() => removeCondition(index)}
             fieldOptions={fieldOptions}
+            allLists={allLists}
           />
           {index < conditions.length - 1 && (
             <select
@@ -131,6 +222,7 @@ const Dashboard = () => {
   const [sortDirection, setSortDirection] = useState('desc');
   const [searchConditions, setSearchConditions] = useState([]);
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+  const [allLists, setAllLists] = useState([]);
 
   const fieldOptions = [
     { value: 'name', label: 'Name' },
@@ -149,6 +241,11 @@ const Dashboard = () => {
       .then(response => response.json())
       .then(jsonData => {
         setData(jsonData);
+        const lists = new Set();
+        Object.values(jsonData.repositories).forEach(repo => {
+          (repo.lists || []).forEach(list => lists.add(list));
+        });
+        setAllLists(Array.from(lists).sort());
       })
       .catch(error => console.error('Error fetching data:', error));
   }, []);
@@ -168,11 +265,25 @@ const Dashboard = () => {
             case 'equals':
               matches = String(fieldValue).toLowerCase() === condition.value.toLowerCase();
               break;
+            case 'starts_with':
+              matches = String(fieldValue).toLowerCase().startsWith(condition.value.toLowerCase());
+              break;
+            case 'ends_with':
+              matches = String(fieldValue).toLowerCase().endsWith(condition.value.toLowerCase());
+              break;
             case 'greater_than':
-              matches = Number(fieldValue) > Number(condition.value);
+            case 'after':
+              matches = new Date(fieldValue) > new Date(condition.value);
               break;
             case 'less_than':
-              matches = Number(fieldValue) < Number(condition.value);
+            case 'before':
+              matches = new Date(fieldValue) < new Date(condition.value);
+              break;
+            case 'includes':
+              matches = condition.value.split(',').some(val => repo.lists.includes(val));
+              break;
+            case 'excludes':
+              matches = !condition.value.split(',').some(val => repo.lists.includes(val));
               break;
             default:
               matches = true;
@@ -235,13 +346,13 @@ const Dashboard = () => {
             {showAdvancedSearch ? 'Hide' : 'Show'} Advanced Search
           </button>
           {showAdvancedSearch && (
-            <AdvancedSearch 
-              conditions={searchConditions}
-              setConditions={setSearchConditions}
-              fieldOptions={fieldOptions}
-            />
-          )}
-        </div>
+          <AdvancedSearch 
+            conditions={searchConditions}
+            setConditions={setSearchConditions}
+            fieldOptions={fieldOptions}
+            allLists={allLists}
+          />
+        )}
       </header>
       
       <main>
@@ -260,10 +371,11 @@ const Dashboard = () => {
                 className="px-6 py-4 cursor-pointer hover:bg-gray-50"
                 onClick={() => toggleRepoExpansion(name)}
               >
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center mb-2">
                   <h3 className="text-lg font-semibold text-blue-600">{name}</h3>
                   <span className="text-sm font-medium text-gray-600">{repo.metadata && repo.metadata.stars} ★</span>
                 </div>
+                <p className="text-sm text-gray-600">{repo.metadata && repo.metadata.description}</p>
               </div>
               {expandedRepo === name && (
                 <div className="px-6 py-4 border-t border-gray-100">
