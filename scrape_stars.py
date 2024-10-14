@@ -143,65 +143,61 @@ def get_readme_content(repo_full_name, token):
             return base64.b64decode(content).decode('utf-8')
     return None
 
-def extract_arxiv_urls(text):
+# def extract_arxiv_urls(text):
+#     arxiv_pattern = r'(?:arxiv\.org/(?:abs|pdf)/|arxiv:)(\d{4}\.\d{4,5})'
+#     return list(OrderedDict.fromkeys(re.findall(arxiv_pattern, text)))
+
+def extract_arxiv_id(url):
+    arxiv_pattern = r'(?:arxiv\.org/(?:abs|pdf)/|arxiv:)(\d{4}\.\d{4,5})'
+    match = re.search(arxiv_pattern, url)
+    return match.group(1) if match else None
+
+def extract_arxiv_ids(text):
     arxiv_pattern = r'(?:arxiv\.org/(?:abs|pdf)/|arxiv:)(\d{4}\.\d{4,5})'
     return list(OrderedDict.fromkeys(re.findall(arxiv_pattern, text)))
 
-def extract_bibtex(text):
-    bibtex_pattern = r'(@\w+\{[^@]*\})'
-    return re.findall(bibtex_pattern, text, re.DOTALL)
-
-def infer_primary_arxiv_url(description, readme_content, arxiv_urls):
-    if description and arxiv_urls:
-        desc_urls = extract_arxiv_urls(description)
-        if desc_urls:
-            return f"https://arxiv.org/abs/{desc_urls[0]}"
+def infer_primary_arxiv_id(description, readme_content, arxiv_ids):
+    if description and arxiv_ids:
+        desc_ids = extract_arxiv_ids(description)
+        if desc_ids:
+            return desc_ids[0]
     
     if readme_content:
         # Check for arXiv badge
         badge_pattern = r'\[!\[arXiv\].*\]\(https://arxiv\.org/abs/(\d{4}\.\d{4,5})\)'
         badge_match = re.search(badge_pattern, readme_content)
         if badge_match:
-            return f"https://arxiv.org/abs/{badge_match.group(1)}"
+            return badge_match.group(1)
     
-    if len(arxiv_urls) == 1:
-        return f"https://arxiv.org/abs/{arxiv_urls[0]}"
+    if len(arxiv_ids) == 1:
+        return arxiv_ids[0]
     
     return None
+
+def extract_bibtex(text):
+    bibtex_pattern = r'(@\w+\{[^@]*\})'
+    return re.findall(bibtex_pattern, text, re.DOTALL)
 
 def process_repo(repo_name, repo_data, token):
     readme_content = get_readme_content(repo_name, token)
     
-    arxiv_urls = []
+    arxiv_ids = []
     if readme_content:
-        arxiv_urls = extract_arxiv_urls(readme_content)
+        arxiv_ids = extract_arxiv_ids(readme_content)
         bibtex_citations = extract_bibtex(readme_content)
     else:
         bibtex_citations = []
     
     description = repo_data['metadata'].get('description', '')
-    primary_arxiv_url = infer_primary_arxiv_url(description, readme_content, arxiv_urls)
+    primary_arxiv_id = infer_primary_arxiv_id(description, readme_content, arxiv_ids)
     
     repo_data['arxiv'] = {
-        'urls': [f"https://arxiv.org/abs/{url}" for url in arxiv_urls],
-        'primary_url': primary_arxiv_url,
+        'ids': arxiv_ids,
+        'primary_id': primary_arxiv_id,
         'bibtex_citations': bibtex_citations
     }
     
     return repo_data
-
-def commit_and_push():
-    try:
-        subprocess.run(["git", "config", "--global", "user.name", "GitHub Action"], check=True)
-        subprocess.run(["git", "config", "--global", "user.email", "action@github.com"], check=True)
-        subprocess.run(["git", "add", STARS_FILE], check=True)
-        subprocess.run(["git", "commit", "-m", "Update GitHub stars data"], check=True)
-        subprocess.run(["git", "push"], check=True)
-        logger.info("Changes committed and pushed successfully.")
-    except subprocess.CalledProcessError as e:
-        logger.error(f"Error during git operations: {e}")
-        logger.warning("Exiting early due to potential conflict.")
-        sys.exit(1)
 
 def process_repo_batch(repos, token, existing_data):
     for item in repos:
@@ -225,6 +221,19 @@ def process_repo_batch(repos, token, existing_data):
             # Update the lists for existing repos
             existing_data['repositories'][repo_name]['lists'] = item.get('star_lists', [])
     return existing_data
+
+def commit_and_push():
+    try:
+        subprocess.run(["git", "config", "--global", "user.name", "GitHub Action"], check=True)
+        subprocess.run(["git", "config", "--global", "user.email", "action@github.com"], check=True)
+        subprocess.run(["git", "add", STARS_FILE], check=True)
+        subprocess.run(["git", "commit", "-m", "Update GitHub stars data"], check=True)
+        subprocess.run(["git", "push"], check=True)
+        logger.info("Changes committed and pushed successfully.")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error during git operations: {e}")
+        logger.warning("Exiting early due to potential conflict.")
+        sys.exit(1)
 
 def get_git_remote_username():
     try:
