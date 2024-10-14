@@ -4,17 +4,17 @@ import json
 import base64
 from datetime import datetime, UTC
 import sys
-import os
+from pathlib import Path
 import requests
 
 # Add the parent directory to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scrape_stars import (
     get_starred_repos, get_repo_metadata, extract_metadata,
-    get_readme_content, extract_arxiv_urls, extract_bibtex,
-    infer_primary_arxiv_url, process_repo, process_stars,
-    handle_rate_limit, check_initial_rate_limit
+    get_readme_content, extract_arxiv_id, extract_arxiv_ids,
+    extract_bibtex, infer_primary_arxiv_id, process_repo,
+    process_stars, handle_rate_limit, check_initial_rate_limit
 )
 
 @pytest.fixture
@@ -78,28 +78,33 @@ def test_get_readme_content(mock_response):
         content = get_readme_content("test/repo", 'testtoken')
     assert content == "Test README"
 
-def test_extract_arxiv_urls():
+def test_extract_arxiv_id():
+    assert extract_arxiv_id("https://arxiv.org/abs/2104.08653") == "2104.08653"
+    assert extract_arxiv_id("arxiv:2105.14075") == "2105.14075"
+    assert extract_arxiv_id("No arXiv ID here") is None
+
+def test_extract_arxiv_ids():
     text = "Check out arxiv.org/abs/2104.08653 and arxiv:2105.14075"
-    urls = extract_arxiv_urls(text)
-    assert urls == ['2104.08653', '2105.14075']
+    ids = extract_arxiv_ids(text)
+    assert ids == ['2104.08653', '2105.14075']
 
 def test_extract_bibtex():
     text = "@article{test2021, title={Test}, author={Tester}, year={2021}}"
     bibtex = extract_bibtex(text)
     assert bibtex == [text]
 
-def test_infer_primary_arxiv_url():
+def test_infer_primary_arxiv_id():
     description = "Implementation of arxiv:2104.08653"
     readme = "Check out our paper: [arXiv:2105.14075](https://arxiv.org/abs/2105.14075)"
-    urls = ['2104.08653', '2105.14075']
-    primary = infer_primary_arxiv_url(description, readme, urls)
-    assert primary == "https://arxiv.org/abs/2104.08653"
+    ids = ['2104.08653', '2105.14075']
+    primary = infer_primary_arxiv_id(description, readme, ids)
+    assert primary == "2104.08653"
 
-@pytest.mark.parametrize("repo_data,expected_urls,expected_primary", [
+@pytest.mark.parametrize("repo_data,expected_ids,expected_primary", [
     (
         {"metadata": {"description": "arxiv:2104.08653"}},
-        ["https://arxiv.org/abs/2104.08653"],
-        "https://arxiv.org/abs/2104.08653"
+        ["2104.08653"],
+        "2104.08653"
     ),
     (
         {"metadata": {"description": "No arXiv"}},
@@ -107,11 +112,11 @@ def test_infer_primary_arxiv_url():
         None
     )
 ])
-def test_process_repo(repo_data, expected_urls, expected_primary):
-    with patch('scrape_stars.get_readme_content', return_value="arxiv:2104.08653" if expected_urls else ""):
+def test_process_repo(repo_data, expected_ids, expected_primary):
+    with patch('scrape_stars.get_readme_content', return_value="arxiv:2104.08653" if expected_ids else ""):
         processed = process_repo("test/repo", repo_data, 'testtoken')
-    assert processed['arxiv']['urls'] == expected_urls
-    assert processed['arxiv']['primary_url'] == expected_primary
+    assert processed['arxiv']['ids'] == expected_ids
+    assert processed['arxiv']['primary_id'] == expected_primary
 
 def test_handle_rate_limit():
     mock_response = MagicMock()
