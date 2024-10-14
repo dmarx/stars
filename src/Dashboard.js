@@ -47,79 +47,108 @@ const SortDropdown = ({ sortOption, sortDirection, handleSortChange }) => {
   );
 };
 
-const AdvancedSearch = ({ advancedFilters, setAdvancedFilters }) => {
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setAdvancedFilters(prev => ({ ...prev, [name]: value }));
+const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, fieldOptions }) => {
+  return (
+    <div className="flex items-center space-x-2 mb-2">
+      <select
+        value={condition.field}
+        onChange={(e) => updateCondition({ ...condition, field: e.target.value })}
+        className="px-2 py-1 border rounded"
+      >
+        {fieldOptions.map(option => (
+          <option key={option.value} value={option.value}>{option.label}</option>
+        ))}
+      </select>
+      <select
+        value={condition.operator}
+        onChange={(e) => updateCondition({ ...condition, operator: e.target.value })}
+        className="px-2 py-1 border rounded"
+      >
+        <option value="contains">contains</option>
+        <option value="equals">equals</option>
+        <option value="greater_than">greater than</option>
+        <option value="less_than">less than</option>
+      </select>
+      <input
+        type="text"
+        value={condition.value}
+        onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
+        className="px-2 py-1 border rounded"
+      />
+      <button onClick={removeCondition} className="text-red-500"><X size={20} /></button>
+    </div>
+  );
+};
+
+const AdvancedSearch = ({ conditions, setConditions, fieldOptions }) => {
+  const addCondition = () => {
+    setConditions([...conditions, { field: 'name', operator: 'contains', value: '', conjunction: 'AND' }]);
+  };
+
+  const updateCondition = (index, newCondition) => {
+    const newConditions = [...conditions];
+    newConditions[index] = newCondition;
+    setConditions(newConditions);
+  };
+
+  const removeCondition = (index) => {
+    setConditions(conditions.filter((_, i) => i !== index));
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-4">
-        <div>
-          <label htmlFor="minStars" className="block text-sm font-medium text-gray-700">Min Stars</label>
-          <input
-            type="number"
-            id="minStars"
-            name="minStars"
-            value={advancedFilters.minStars}
-            onChange={handleInputChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+    <div className="bg-gray-100 p-4 rounded-lg mb-4">
+      <h3 className="text-lg font-semibold mb-2">Advanced Search</h3>
+      {conditions.map((condition, index) => (
+        <div key={index}>
+          <AdvancedSearchCondition
+            condition={condition}
+            updateCondition={(newCondition) => updateCondition(index, newCondition)}
+            removeCondition={() => removeCondition(index)}
+            fieldOptions={fieldOptions}
           />
+          {index < conditions.length - 1 && (
+            <select
+              value={condition.conjunction}
+              onChange={(e) => updateCondition(index, { ...condition, conjunction: e.target.value })}
+              className="mb-2 px-2 py-1 border rounded"
+            >
+              <option value="AND">AND</option>
+              <option value="OR">OR</option>
+            </select>
+          )}
         </div>
-        <div>
-          <label htmlFor="createdAfter" className="block text-sm font-medium text-gray-700">Created After</label>
-          <input
-            type="date"
-            id="createdAfter"
-            name="createdAfter"
-            value={advancedFilters.createdAfter}
-            onChange={handleInputChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-          />
-        </div>
-        <div>
-          <label htmlFor="createdBefore" className="block text-sm font-medium text-gray-700">Created Before</label>
-          <input
-            type="date"
-            id="createdBefore"
-            name="createdBefore"
-            value={advancedFilters.createdBefore}
-            onChange={handleInputChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-          />
-        </div>
-      </div>
+      ))}
+      <button onClick={addCondition} className="flex items-center text-blue-500"><Plus size={20} /> Add condition</button>
     </div>
   );
 };
 
 const Dashboard = () => {
   const [data, setData] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedLists, setSelectedLists] = useState([]);
   const [filteredRepos, setFilteredRepos] = useState([]);
-  const [allLists, setAllLists] = useState([]);
   const [expandedRepo, setExpandedRepo] = useState(null);
   const [sortOption, setSortOption] = useState('stars');
   const [sortDirection, setSortDirection] = useState('desc');
+  const [searchConditions, setSearchConditions] = useState([]);
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
-  const [advancedFilters, setAdvancedFilters] = useState({
-    minStars: '',
-    createdAfter: '',
-    createdBefore: '',
-  });
+
+  const fieldOptions = [
+    { value: 'name', label: 'Name' },
+    { value: 'description', label: 'Description' },
+    { value: 'language', label: 'Language' },
+    { value: 'stars', label: 'Stars' },
+    { value: 'created_at', label: 'Created At' },
+    { value: 'updated_at', label: 'Updated At' },
+    { value: 'pushed_at', label: 'Pushed At' },
+    { value: 'starred_at', label: 'Starred At' },
+    { value: 'lists', label: 'Lists' },
+  ];
 
   useEffect(() => {
     fetch(`${process.env.PUBLIC_URL}/github_stars.json`)
       .then(response => response.json())
       .then(jsonData => {
         setData(jsonData);
-        const lists = new Set();
-        Object.values(jsonData.repositories).forEach(repo => {
-          (repo.lists || []).forEach(list => lists.add(list));
-        });
-        setAllLists(Array.from(lists).sort());
       })
       .catch(error => console.error('Error fetching data:', error));
   }, []);
@@ -127,16 +156,30 @@ const Dashboard = () => {
   useEffect(() => {
     if (data && data.repositories) {
       let filtered = Object.entries(data.repositories).filter(([name, repo]) => {
-        const matchesSearch = 
-          (name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-          ((repo.metadata && repo.metadata.description) || '').toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesLists = selectedLists.length === 0 || 
-          selectedLists.every(list => repo.lists && repo.lists.includes(list));
-        const matchesAdvanced = 
-          (!advancedFilters.minStars || repo.metadata.stars >= parseInt(advancedFilters.minStars)) &&
-          (!advancedFilters.createdAfter || new Date(repo.metadata.created_at) >= new Date(advancedFilters.createdAfter)) &&
-          (!advancedFilters.createdBefore || new Date(repo.metadata.created_at) <= new Date(advancedFilters.createdBefore));
-        return matchesSearch && matchesLists && matchesAdvanced;
+        return searchConditions.every((condition, index) => {
+          const fieldValue = condition.field === 'name' ? name : 
+                             condition.field === 'lists' ? repo.lists :
+                             repo.metadata[condition.field];
+          let matches;
+          switch (condition.operator) {
+            case 'contains':
+              matches = String(fieldValue).toLowerCase().includes(condition.value.toLowerCase());
+              break;
+            case 'equals':
+              matches = String(fieldValue).toLowerCase() === condition.value.toLowerCase();
+              break;
+            case 'greater_than':
+              matches = Number(fieldValue) > Number(condition.value);
+              break;
+            case 'less_than':
+              matches = Number(fieldValue) < Number(condition.value);
+              break;
+            default:
+              matches = true;
+          }
+          if (index === 0) return matches;
+          return condition.conjunction === 'AND' ? matches : true;
+        });
       });
 
       filtered.sort((a, b) => {
@@ -161,7 +204,7 @@ const Dashboard = () => {
 
       setFilteredRepos(filtered);
     }
-  }, [searchTerm, selectedLists, data, sortOption, sortDirection, advancedFilters]);
+  }, [searchConditions, data, sortOption, sortDirection]);
 
   const handleSortChange = (option) => {
     if (option === sortOption) {
@@ -170,14 +213,6 @@ const Dashboard = () => {
       setSortOption(option);
       setSortDirection('desc');
     }
-  };
-
-  const toggleList = (list) => {
-    setSelectedLists(prev => 
-      prev.includes(list) 
-        ? prev.filter(l => l !== list)
-        : [...prev, list]
-    );
   };
 
   const toggleRepoExpansion = (name) => {
@@ -193,111 +228,84 @@ const Dashboard = () => {
       <header className="mb-8">
         <h1 className="text-4xl font-bold text-center mb-6">GitHub Stars Dashboard</h1>
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center mb-4">
-            <input
-              type="text"
-              placeholder="Search repositories..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-grow px-4 py-2 rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
-              className="px-4 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              {showAdvancedSearch ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
-            </button>
-          </div>
+          <button
+            onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
+            className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            {showAdvancedSearch ? 'Hide' : 'Show'} Advanced Search
+          </button>
           {showAdvancedSearch && (
             <AdvancedSearch 
-              advancedFilters={advancedFilters}
-              setAdvancedFilters={setAdvancedFilters}
+              conditions={searchConditions}
+              setConditions={setSearchConditions}
+              fieldOptions={fieldOptions}
             />
           )}
         </div>
       </header>
       
-      <div className="flex flex-col md:flex-row gap-8">
-        <aside className="md:w-1/4">
-          <h3 className="text-xl font-semibold mb-4">Filter by Lists</h3>
-          <div className="space-y-2">
-            {allLists.map(list => (
-              <label key={list} className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={selectedLists.includes(list)}
-                  onChange={() => toggleList(list)}
-                  className="mr-2"
-                />
-                <span>{list}</span>
-              </label>
-            ))}
-          </div>
-        </aside>
-
-        <main className="md:w-3/4">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold">Repositories ({filteredRepos.length})</h2>
-            <SortDropdown 
-              sortOption={sortOption}
-              sortDirection={sortDirection}
-              handleSortChange={handleSortChange}
-            />
-          </div>
-          <ul className="space-y-4">
-            {filteredRepos.map(([name, repo]) => (
-              <li key={name} className="bg-white shadow rounded-lg overflow-hidden">
-                <div 
-                  className="px-6 py-4 cursor-pointer hover:bg-gray-50"
-                  onClick={() => toggleRepoExpansion(name)}
-                >
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-semibold text-blue-600">{name}</h3>
-                    <span className="text-sm font-medium text-gray-600">{repo.metadata && repo.metadata.stars} ★</span>
-                  </div>
+      <main>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold">Repositories ({filteredRepos.length})</h2>
+          <SortDropdown 
+            sortOption={sortOption}
+            sortDirection={sortDirection}
+            handleSortChange={handleSortChange}
+          />
+        </div>
+        <ul className="space-y-4">
+          {filteredRepos.map(([name, repo]) => (
+            <li key={name} className="bg-white shadow rounded-lg overflow-hidden">
+              <div 
+                className="px-6 py-4 cursor-pointer hover:bg-gray-50"
+                onClick={() => toggleRepoExpansion(name)}
+              >
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-blue-600">{name}</h3>
+                  <span className="text-sm font-medium text-gray-600">{repo.metadata && repo.metadata.stars} ★</span>
                 </div>
-                {expandedRepo === name && (
-                  <div className="px-6 py-4 border-t border-gray-100">
-                    <p className="text-gray-700 mb-2">{repo.metadata && repo.metadata.description}</p>
-                    <p className="text-sm text-gray-600 mb-2">Language: {repo.metadata && repo.metadata.language}</p>
-                    <p className="text-sm text-gray-600 mb-2">Created: {new Date(repo.metadata.created_at).toLocaleDateString()}</p>
-                    <p className="text-sm text-gray-600 mb-2">Last updated: {new Date(repo.metadata.updated_at).toLocaleDateString()}</p>
-                    <p className="text-sm text-gray-600 mb-2">Last pushed: {new Date(repo.metadata.pushed_at).toLocaleDateString()}</p>
-                    <p className="text-sm text-gray-600 mb-2">Starred at: {new Date(repo.metadata.starred_at).toLocaleDateString()}</p>
-                    {repo.lists && repo.lists.length > 0 && (
-                      <p className="text-sm text-gray-600 mb-2">Lists: {repo.lists.join(', ')}</p>
-                    )}
-                    {repo.arxiv && repo.arxiv.primary_id && (
-                      <p className="text-sm mb-2">
-                        Primary arXiv: <a href={`https://arxiv.org/abs/${repo.arxiv.primary_id}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                          {repo.arxiv.primary_id}
+              </div>
+              {expandedRepo === name && (
+                <div className="px-6 py-4 border-t border-gray-100">
+                  <p className="text-gray-700 mb-2">{repo.metadata && repo.metadata.description}</p>
+                  <p className="text-sm text-gray-600 mb-2">Language: {repo.metadata && repo.metadata.language}</p>
+                  <p className="text-sm text-gray-600 mb-2">Created: {new Date(repo.metadata.created_at).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-600 mb-2">Last updated: {new Date(repo.metadata.updated_at).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-600 mb-2">Last pushed: {new Date(repo.metadata.pushed_at).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-600 mb-2">Starred at: {new Date(repo.metadata.starred_at).toLocaleDateString()}</p>
+                  {repo.lists && repo.lists.length > 0 && (
+                    <p className="text-sm text-gray-600 mb-2">Lists: {repo.lists.join(', ')}</p>
+                  )}
+                  {repo.arxiv && repo.arxiv.primary_id && (
+                    <p className="text-sm mb-2">
+                      Primary arXiv: <a href={`https://arxiv.org/abs/${repo.arxiv.primary_id}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                        {repo.arxiv.primary_id}
+                      </a>
+                    </p>
+                  )}
+                  {repo.arxiv && repo.arxiv.ids && repo.arxiv.ids.length > 0 && (
+                    <p className="text-sm mb-2">
+                      All arXiv IDs: {repo.arxiv.ids.map(id => (
+                        <a key={id} href={`https://arxiv.org/abs/${id}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline mr-2">
+                          {id}
                         </a>
-                      </p>
-                    )}
-                    {repo.arxiv && repo.arxiv.ids && repo.arxiv.ids.length > 0 && (
-                      <p className="text-sm mb-2">
-                        All arXiv IDs: {repo.arxiv.ids.map(id => (
-                          <a key={id} href={`https://arxiv.org/abs/${id}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline mr-2">
-                            {id}
-                          </a>
-                        ))}
-                      </p>
-                    )}
-                    <a 
-                      href={`https://github.com/${name}`} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="inline-block mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"
-    >
-                      View on GitHub
-                    </a>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        </main>
-      </div>
+                      ))}
+                    </p>
+                  )}
+                  <a 
+                    href={`https://github.com/${name}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="inline-block mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"
+                  >
+                    View on GitHub
+                  </a>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      </main>
     </div>
   );
 };
