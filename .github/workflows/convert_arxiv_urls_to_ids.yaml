@@ -1,0 +1,29 @@
+name: Update Star Lists
+
+on:
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  convert-urls-to-ids:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Run star lists update script
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_USERNAME: ${{ github.repository_owner }}
+      run: |
+        python scripts/convert_arxiv_urls_to_ids.py
+
+    # - name: Commit and push if changes
+    #   run: |
+    #     git config --global user.name 'GitHub Action'
+    #     git config --global user.email 'action@github.com'
+    #     git add github_stars.json
+    #     git diff --quiet && git diff --staged --quiet || (git commit -m "Update star lists data" && git push)
