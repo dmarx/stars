@@ -60,14 +60,14 @@ const Dashboard = () => {
     }
   }, [searchTerm, selectedLists, data, sortOption, sortDirection]);
 
-  const handleSortChange = (option) => {
-    if (option === sortOption) {
-      setSortDirection(prev => prev === 'desc' ? 'asc' : 'desc');
-    } else {
-      setSortOption(option);
-      setSortDirection('desc');
-    }
-  };
+  // const handleSortChange = (option) => {
+  //   if (option === sortOption) {
+  //     setSortDirection(prev => prev === 'desc' ? 'asc' : 'desc');
+  //   } else {
+  //     setSortOption(option);
+  //     setSortDirection('desc');
+  //   }
+  // };
 
   const toggleList = (list) => {
     setSelectedLists(prev => 
