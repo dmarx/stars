@@ -1,4 +1,4 @@
-name: Update Star Lists
+name: Convert Arxiv URLs to IDs
 
 on:
   workflow_dispatch:  # Allow manual triggering
