@@ -1,4 +1,98 @@
 import React, { useState, useEffect } from 'react';
+import { ChevronDown, ChevronUp, Search, X } from 'lucide-react';
+
+const SortDropdown = ({ sortOption, sortDirection, handleSortChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const options = [
+    { value: 'stars', label: 'Stars' },
+    { value: 'name', label: 'Name' },
+    { value: 'updated_at', label: 'Last Updated' },
+    { value: 'created_at', label: 'Created' },
+    { value: 'pushed_at', label: 'Last Pushed' },
+    { value: 'starred_at', label: 'Starred At' },
+  ];
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between w-48 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
+      >
+        {options.find(opt => opt.value === sortOption).label}
+        {isOpen ? <ChevronUp className="w-5 h-5 ml-2" /> : <ChevronDown className="w-5 h-5 ml-2" />}
+      </button>
+      {isOpen && (
+        <div className="absolute right-0 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+          <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+            {options.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => {
+                  handleSortChange(option.value);
+                  setIsOpen(false);
+                }}
+                className="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                role="menuitem"
+              >
+                {option.label}
+                {sortOption === option.value && (
+                  <span>{sortDirection === 'desc' ? '▼' : '▲'}</span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const AdvancedSearch = ({ advancedFilters, setAdvancedFilters }) => {
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setAdvancedFilters(prev => ({ ...prev, [name]: value }));
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-4">
+        <div>
+          <label htmlFor="minStars" className="block text-sm font-medium text-gray-700">Min Stars</label>
+          <input
+            type="number"
+            id="minStars"
+            name="minStars"
+            value={advancedFilters.minStars}
+            onChange={handleInputChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+          />
+        </div>
+        <div>
+          <label htmlFor="createdAfter" className="block text-sm font-medium text-gray-700">Created After</label>
+          <input
+            type="date"
+            id="createdAfter"
+            name="createdAfter"
+            value={advancedFilters.createdAfter}
+            onChange={handleInputChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+          />
+        </div>
+        <div>
+          <label htmlFor="createdBefore" className="block text-sm font-medium text-gray-700">Created Before</label>
+          <input
+            type="date"
+            id="createdBefore"
+            name="createdBefore"
+            value={advancedFilters.createdBefore}
+            onChange={handleInputChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Dashboard = () => {
   const [data, setData] = useState(null);
@@ -9,6 +103,12 @@ const Dashboard = () => {
   const [expandedRepo, setExpandedRepo] = useState(null);
   const [sortOption, setSortOption] = useState('stars');
   const [sortDirection, setSortDirection] = useState('desc');
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+  const [advancedFilters, setAdvancedFilters] = useState({
+    minStars: '',
+    createdAfter: '',
+    createdBefore: '',
+  });
 
   useEffect(() => {
     fetch(`${process.env.PUBLIC_URL}/github_stars.json`)
@@ -32,10 +132,13 @@ const Dashboard = () => {
           ((repo.metadata && repo.metadata.description) || '').toLowerCase().includes(searchTerm.toLowerCase());
         const matchesLists = selectedLists.length === 0 || 
           selectedLists.every(list => repo.lists && repo.lists.includes(list));
-        return matchesSearch && matchesLists;
+        const matchesAdvanced = 
+          (!advancedFilters.minStars || repo.metadata.stars >= parseInt(advancedFilters.minStars)) &&
+          (!advancedFilters.createdAfter || new Date(repo.metadata.created_at) >= new Date(advancedFilters.createdAfter)) &&
+          (!advancedFilters.createdBefore || new Date(repo.metadata.created_at) <= new Date(advancedFilters.createdBefore));
+        return matchesSearch && matchesLists && matchesAdvanced;
       });
 
-      // Apply sorting
       filtered.sort((a, b) => {
         const [, repoA] = a;
         const [, repoB] = b;
@@ -58,16 +161,16 @@ const Dashboard = () => {
 
       setFilteredRepos(filtered);
     }
-  }, [searchTerm, selectedLists, data, sortOption, sortDirection]);
+  }, [searchTerm, selectedLists, data, sortOption, sortDirection, advancedFilters]);
 
-  // const handleSortChange = (option) => {
-  //   if (option === sortOption) {
-  //     setSortDirection(prev => prev === 'desc' ? 'asc' : 'desc');
-  //   } else {
-  //     setSortOption(option);
-  //     setSortDirection('desc');
-  //   }
-  // };
+  const handleSortChange = (option) => {
+    if (option === sortOption) {
+      setSortDirection(prev => prev === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortOption(option);
+      setSortDirection('desc');
+    }
+  };
 
   const toggleList = (list) => {
     setSelectedLists(prev => 
@@ -81,15 +184,6 @@ const Dashboard = () => {
     setExpandedRepo(expandedRepo === name ? null : name);
   };
 
-  const handleSortChange = (option) => {
-    if (option === sortOption) {
-      setSortDirection(prev => prev === 'desc' ? 'asc' : 'desc');
-    } else {
-      setSortOption(option);
-      setSortDirection('desc');
-    }
-  };
-
   if (!data) {
     return <div className="flex items-center justify-center h-screen text-2xl">Loading...</div>;
   }
@@ -98,14 +192,28 @@ const Dashboard = () => {
     <div className="container mx-auto px-4 py-8">
       <header className="mb-8">
         <h1 className="text-4xl font-bold text-center mb-6">GitHub Stars Dashboard</h1>
-        <div className="max-w-2xl mx-auto">
-          <input
-            type="text"
-            placeholder="Search repositories..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center mb-4">
+            <input
+              type="text"
+              placeholder="Search repositories..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="flex-grow px-4 py-2 rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
+              className="px-4 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {showAdvancedSearch ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
+            </button>
+          </div>
+          {showAdvancedSearch && (
+            <AdvancedSearch 
+              advancedFilters={advancedFilters}
+              setAdvancedFilters={setAdvancedFilters}
+            />
+          )}
         </div>
       </header>
       
@@ -128,21 +236,13 @@ const Dashboard = () => {
         </aside>
 
         <main className="md:w-3/4">
-          <div className="flex flex-wrap justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold mb-2">Repositories ({filteredRepos.length})</h2>
-            <div className="flex flex-wrap items-center space-x-2 space-y-2">
-              <span className="text-sm font-medium">Sort by:</span>
-              {['stars', 'name', 'updated_at', 'created_at', 'pushed_at', 'starred_at'].map(option => (
-                <button
-                  key={option}
-                  onClick={() => handleSortChange(option)}
-                  className={`px-3 py-1 rounded ${sortOption === option ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-                >
-                  {option.charAt(0).toUpperCase() + option.slice(1).replace('_', ' ')} 
-                  {sortOption === option && (sortDirection === 'desc' ? '▼' : '▲')}
-                </button>
-              ))}
-            </div>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold">Repositories ({filteredRepos.length})</h2>
+            <SortDropdown 
+              sortOption={sortOption}
+              sortDirection={sortDirection}
+              handleSortChange={handleSortChange}
+            />
           </div>
           <ul className="space-y-4">
             {filteredRepos.map(([name, repo]) => (
@@ -188,7 +288,7 @@ const Dashboard = () => {
                       target="_blank" 
                       rel="noopener noreferrer" 
                       className="inline-block mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"
-                    >
+    >
                       View on GitHub
                     </a>
                   </div>
