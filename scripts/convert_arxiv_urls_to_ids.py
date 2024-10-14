@@ -7,6 +7,8 @@ class ArXivURLParsingError(Exception):
     pass
 
 def extract_arxiv_id(url):
+    if url is None:
+        return None
     # Regular expression to match arXiv IDs
     pattern = r'arxiv\.org/abs/(\d+\.\d+)'
     match = re.search(pattern, url)
@@ -19,14 +21,17 @@ def convert_arxiv_urls_to_ids(data):
         if 'arxiv' in repo:
             if 'urls' in repo['arxiv']:
                 print(f"Processing URLs for repository: {repo_name}", file=sys.stderr)
-                arxiv_ids = [extract_arxiv_id(url) for url in repo['arxiv']['urls']]
-                repo['arxiv']['ids'] = arxiv_ids
+                arxiv_ids = [extract_arxiv_id(url) for url in repo['arxiv']['urls'] if url is not None]
+                repo['arxiv']['ids'] = [id for id in arxiv_ids if id is not None]
                 del repo['arxiv']['urls']
 
             if 'primary_url' in repo['arxiv']:
                 print(f"Processing primary URL for repository: {repo_name}", file=sys.stderr)
-                primary_id = extract_arxiv_id(repo['arxiv']['primary_url'])
-                repo['arxiv']['primary_id'] = primary_id
+                primary_url = repo['arxiv']['primary_url']
+                if primary_url is not None:
+                    primary_id = extract_arxiv_id(primary_url)
+                    if primary_id is not None:
+                        repo['arxiv']['primary_id'] = primary_id
                 del repo['arxiv']['primary_url']
 
 # Load the JSON file
