@@ -7,6 +7,8 @@ const Dashboard = () => {
   const [filteredRepos, setFilteredRepos] = useState([]);
   const [allLists, setAllLists] = useState([]);
   const [expandedRepo, setExpandedRepo] = useState(null);
+  const [sortOption, setSortOption] = useState('stars');
+  const [sortDirection, setSortDirection] = useState('desc');
 
   useEffect(() => {
     fetch(`${process.env.PUBLIC_URL}/github_stars.json`)
@@ -24,18 +26,48 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (data && data.repositories) {
-      setFilteredRepos(
-        Object.entries(data.repositories).filter(([name, repo]) => {
-          const matchesSearch = 
-            (name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-            ((repo.metadata && repo.metadata.description) || '').toLowerCase().includes(searchTerm.toLowerCase());
-          const matchesLists = selectedLists.length === 0 || 
-            selectedLists.every(list => repo.lists && repo.lists.includes(list));
-          return matchesSearch && matchesLists;
-        })
-      );
+      let filtered = Object.entries(data.repositories).filter(([name, repo]) => {
+        const matchesSearch = 
+          (name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+          ((repo.metadata && repo.metadata.description) || '').toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesLists = selectedLists.length === 0 || 
+          selectedLists.every(list => repo.lists && repo.lists.includes(list));
+        return matchesSearch && matchesLists;
+      });
+
+      // Apply sorting
+      filtered.sort((a, b) => {
+        const [, repoA] = a;
+        const [, repoB] = b;
+        const direction = sortDirection === 'desc' ? -1 : 1;
+
+        switch (sortOption) {
+          case 'stars':
+            return (repoB.metadata.stars - repoA.metadata.stars) * direction;
+          case 'name':
+            return a[0].localeCompare(b[0]) * direction;
+          case 'updated_at':
+          case 'created_at':
+          case 'pushed_at':
+          case 'starred_at':
+            return (new Date(repoB.metadata[sortOption]) - new Date(repoA.metadata[sortOption])) * direction;
+          default:
+            return 0;
+        }
+      });
+
+      setFilteredRepos(filtered);
     }
-  }, [searchTerm, selectedLists, data]);
+  }, [searchTerm, selectedLists, data, sortOption, sortDirection]);
+
+  const handleSortChange = (option) => {
+    if (option === sortOption) {
+      setSortDirection(prev => prev === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortOption(option);
+      setSortDirection('desc');
+    }
+  };
 
   const toggleList = (list) => {
     setSelectedLists(prev => 
@@ -47,6 +79,15 @@ const Dashboard = () => {
 
   const toggleRepoExpansion = (name) => {
     setExpandedRepo(expandedRepo === name ? null : name);
+  };
+
+  const handleSortChange = (option) => {
+    if (option === sortOption) {
+      setSortDirection(prev => prev === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortOption(option);
+      setSortDirection('desc');
+    }
   };
 
   if (!data) {
@@ -87,7 +128,22 @@ const Dashboard = () => {
         </aside>
 
         <main className="md:w-3/4">
-          <h2 className="text-2xl font-semibold mb-4">Repositories ({filteredRepos.length})</h2>
+          <div className="flex flex-wrap justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold mb-2">Repositories ({filteredRepos.length})</h2>
+            <div className="flex flex-wrap items-center space-x-2 space-y-2">
+              <span className="text-sm font-medium">Sort by:</span>
+              {['stars', 'name', 'updated_at', 'created_at', 'pushed_at', 'starred_at'].map(option => (
+                <button
+                  key={option}
+                  onClick={() => handleSortChange(option)}
+                  className={`px-3 py-1 rounded ${sortOption === option ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                >
+                  {option.charAt(0).toUpperCase() + option.slice(1).replace('_', ' ')} 
+                  {sortOption === option && (sortDirection === 'desc' ? '▼' : '▲')}
+                </button>
+              ))}
+            </div>
+          </div>
           <ul className="space-y-4">
             {filteredRepos.map(([name, repo]) => (
               <li key={name} className="bg-white shadow rounded-lg overflow-hidden">
@@ -104,6 +160,10 @@ const Dashboard = () => {
                   <div className="px-6 py-4 border-t border-gray-100">
                     <p className="text-gray-700 mb-2">{repo.metadata && repo.metadata.description}</p>
                     <p className="text-sm text-gray-600 mb-2">Language: {repo.metadata && repo.metadata.language}</p>
+                    <p className="text-sm text-gray-600 mb-2">Created: {new Date(repo.metadata.created_at).toLocaleDateString()}</p>
+                    <p className="text-sm text-gray-600 mb-2">Last updated: {new Date(repo.metadata.updated_at).toLocaleDateString()}</p>
+                    <p className="text-sm text-gray-600 mb-2">Last pushed: {new Date(repo.metadata.pushed_at).toLocaleDateString()}</p>
+                    <p className="text-sm text-gray-600 mb-2">Starred at: {new Date(repo.metadata.starred_at).toLocaleDateString()}</p>
                     {repo.lists && repo.lists.length > 0 && (
                       <p className="text-sm text-gray-600 mb-2">Lists: {repo.lists.join(', ')}</p>
                     )}
