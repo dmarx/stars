@@ -107,11 +107,20 @@ const Dashboard = () => {
                     {repo.lists && repo.lists.length > 0 && (
                       <p className="text-sm text-gray-600 mb-2">Lists: {repo.lists.join(', ')}</p>
                     )}
-                    {repo.arxiv && repo.arxiv.primary_url && (
+                    {repo.arxiv && repo.arxiv.primary_id && (
                       <p className="text-sm mb-2">
-                        arXiv: <a href={repo.arxiv.primary_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                          {repo.arxiv.primary_url}
+                        Primary arXiv: <a href={`https://arxiv.org/abs/${repo.arxiv.primary_id}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                          {repo.arxiv.primary_id}
                         </a>
+                      </p>
+                    )}
+                    {repo.arxiv && repo.arxiv.ids && repo.arxiv.ids.length > 0 && (
+                      <p className="text-sm mb-2">
+                        All arXiv IDs: {repo.arxiv.ids.map(id => (
+                          <a key={id} href={`https://arxiv.org/abs/${id}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline mr-2">
+                            {id}
+                          </a>
+                        ))}
                       </p>
                     )}
                     <a 
