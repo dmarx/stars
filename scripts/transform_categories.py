@@ -19,7 +19,12 @@ def commit_and_push(file_to_commit):
 def transform_categories(data):
     for paper_id, paper_info in data.items():
         if 'categories' in paper_info:
-            paper_info['categories'] = [cat['@term'] for cat in paper_info['categories']]
+            try:
+                paper_info['categories'] = [cat['@term'] for cat in paper_info['categories']]
+            except Exception as e:
+                logger.info(paper_id)
+                logger.info(paper_info['categories'])
+                raise e
     return data
 
 def main():
