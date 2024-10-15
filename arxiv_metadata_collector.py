@@ -11,9 +11,10 @@ from utils import commit_and_push, controlled_request
 with open('config.yaml', 'r') as config_file:
     config = yaml.safe_load(config_file)
 
-COMMIT_INTERVAL = config['COMMIT_INTERVAL']
-CHUNK_SIZE = config['CHUNK_SIZE']
+COMMIT_INTERVAL = 1 #config['COMMIT_INTERVAL']
+CHUNK_SIZE = 1 # config['CHUNK_SIZE']
 ARXIV_METADATA_FILE = 'arxiv_metadata.json'
+ARXIV_API_BATCH_SIZE = 300 #100  # arXiv API allows up to 100 IDs per request
 
 # Configure logger
 logger.add("arxiv_metadata_collector.log", rotation="10 MB")
@@ -32,28 +33,34 @@ def extract_arxiv_id(url_or_id):
         return url_or_id.split('v')[0]  # Remove version number if present
     return None
 
-def fetch_arxiv_metadata(arxiv_id):
+def fetch_arxiv_metadata_batch(arxiv_ids):
     base_url = "http://export.arxiv.org/api/query"
     params = {
-        "id_list": arxiv_id,
-        "max_results": 1
+        "id_list": ','.join(arxiv_ids),
+        "max_results": len(arxiv_ids)
     }
     response = controlled_request(base_url, params=params)
     if response and response.status_code == 200:
         data = xmltodict.parse(response.content)
-        entry = data['feed']['entry']
+        entries = data['feed']['entry']
+        if not isinstance(entries, list):
+            entries = [entries]
         
-        return {
-            'id': entry['id'],
-            'title': entry['title'],
-            'authors': [author['name'] for author in (entry['author'] if isinstance(entry['author'], list) else [entry['author']])],
-            'abstract': entry['summary'],
-            'categories': entry['category'] if isinstance(entry['category'], list) else [entry['category']],
-            'published': entry['published'],
-            'updated': entry['updated'],
-            'doi': entry.get('arxiv:doi', {}).get('#text') if 'arxiv:doi' in entry else None
-        }
-    return None
+        results = {}
+        for entry in entries:
+            arxiv_id = entry['id'].split('/abs/')[-1].split('v')[0]
+            results[arxiv_id] = {
+                'id': entry['id'],
+                'title': entry['title'],
+                'authors': [author['name'] for author in (entry['author'] if isinstance(entry['author'], list) else [entry['author']])],
+                'abstract': entry['summary'],
+                'categories': entry['category'] if isinstance(entry['category'], list) else [entry['category']],
+                'published': entry['published'],
+                'updated': entry['updated'],
+                'doi': entry.get('arxiv:doi', {}).get('#text') if 'arxiv:doi' in entry else None
+            }
+        return results
+    return {}
 
 def load_existing_data():
     if os.path.exists(ARXIV_METADATA_FILE):
@@ -67,8 +74,16 @@ def save_data(data):
 
 def process_arxiv_ids(arxiv_ids, existing_data):
     changes_made = False
+    new_arxiv_ids = [id for id in arxiv_ids if id not in existing_data]
 
-    for i, arxiv_id in enumerate(arxiv_ids):
+    for i in range(0, len(new_arxiv_ids), ARXIV_API_BATCH_SIZE):
+        batch = new_arxiv_ids[i:i+ARXIV_API_BATCH_SIZE]
+        metadata_batch = fetch_arxiv_metadata_batch(batch)
+        
+        if metadata_batch:
+            existing_data.update(metadata_batch)
+            changes_made = True
+
         if i > 0 and i % CHUNK_SIZE == 0:
             logger.info(f"Processed {i} arXiv IDs")
             if changes_made:
@@ -76,12 +91,6 @@ def process_arxiv_ids(arxiv_ids, existing_data):
                 if i % (CHUNK_SIZE * COMMIT_INTERVAL) == 0:
                     commit_and_push(ARXIV_METADATA_FILE)
                 changes_made = False
-
-        if arxiv_id not in existing_data:
-            metadata = fetch_arxiv_metadata(arxiv_id)
-            if metadata:
-                existing_data[arxiv_id] = metadata
-                changes_made = True
 
     if changes_made:
         save_data(existing_data)
