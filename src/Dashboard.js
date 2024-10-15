@@ -278,9 +278,12 @@ const Dashboard = () => {
 
         const matchesAdvancedSearch = searchConditions.every((condition) => {
           const fieldValue = condition.field === 'name' ? name : 
-                             condition.field === 'lists' ? repo.lists :
+                             condition.field === 'lists' ? repo.lists || [] :
                              condition.field.startsWith('arxiv_') ? getArxivFieldValue(repo, condition.field) :
                              repo.metadata[condition.field];
+          
+          if (fieldValue === null || fieldValue === undefined) return false;
+        
           let matches;
           switch (condition.operator) {
             case 'contains':
@@ -304,10 +307,10 @@ const Dashboard = () => {
               matches = new Date(fieldValue) < new Date(condition.value);
               break;
             case 'includes':
-              matches = condition.value.split(',').some(val => fieldValue.includes(val));
+              matches = Array.isArray(fieldValue) && condition.value.split(',').some(val => fieldValue.includes(val));
               break;
             case 'excludes':
-              matches = !condition.value.split(',').some(val => fieldValue.includes(val));
+              matches = Array.isArray(fieldValue) && !condition.value.split(',').some(val => fieldValue.includes(val));
               break;
             default:
               matches = true;
@@ -379,45 +382,45 @@ const Dashboard = () => {
     return match ? match[1] : null;
   };
 
-  const getArxivFieldValue = (repo, field) => {
-    const arxivId = extractArXivId(repo.arxiv?.primary_id || repo.arxiv?.primary_url);
-    const paperMetadata = arxivMetadata[arxivId];
-    if (!paperMetadata) return null;
+const getArxivFieldValue = (repo, field) => {
+  const arxivId = extractArXivId(repo.arxiv?.primary_id || repo.arxiv?.primary_url);
+  const paperMetadata = arxivMetadata[arxivId];
+  if (!paperMetadata) return null;
 
-    switch (field) {
-      case 'arxiv_category':
-        return paperMetadata.categories;
-      case 'arxiv_published':
-        return paperMetadata.published;
-      case 'arxiv_updated':
-        return paperMetadata.updated;
-      default:
-        return null;
-    }
-  };
+  switch (field) {
+    case 'arxiv_category':
+      return paperMetadata.categories || [];
+    case 'arxiv_published':
+      return paperMetadata.published || null;
+    case 'arxiv_updated':
+      return paperMetadata.updated || null;
+    default:
+      return null;
+  }
+};
 
   const ArXivBadge = ({ arxivInfo }) => {
-    const arxivId = extractArXivId(arxivInfo.primary_id || arxivInfo.primary_url);
-    const paperMetadata = arxivMetadata[arxivId];
+  const arxivId = extractArXivId(arxivInfo.primary_id || arxivInfo.primary_url);
+  const paperMetadata = arxivMetadata[arxivId];
 
-    return (
-      <div className="flex items-center space-x-2">
-        <a
-          href={`https://arxiv.org/abs/${arxivId}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <FileText size={14} className="mr-1" />
-          arXiv
-        </a>
-        {paperMetadata && (
-          <span className="text-xs text-gray-500">{paperMetadata.primary_category}</span>
-        )}
-      </div>
-    );
-  };
+  return (
+    <div className="flex items-center space-x-2">
+      <a
+        href={`https://arxiv.org/abs/${arxivId}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <FileText size={14} className="mr-1" />
+        arXiv
+      </a>
+      {paperMetadata && paperMetadata.primary_category && (
+        <span className="text-xs text-gray-500">{paperMetadata.primary_category}</span>
+      )}
+    </div>
+  );
+};
 
   const ExpandedRepoView = ({ repo, name }) => {
     const arxivId = extractArXivId(repo.arxiv?.primary_id || repo.arxiv?.primary_url);
