@@ -14,7 +14,7 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Run star lists update script
+    - name: Convert IDs to URLs
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_USERNAME: ${{ github.repository_owner }}
