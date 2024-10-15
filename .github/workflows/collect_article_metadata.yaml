@@ -1,8 +1,8 @@
 name: Collect Comprehensive Article Metadata
 
 on:
-  schedule:
-    - cron: '0 0 * * 0'  # Run weekly on Sunday at 00:00 UTC
+  # schedule:
+  #   - cron: '0 0 * * 0'  # Run weekly on Sunday at 00:00 UTC
   workflow_dispatch:  # Allow manual triggering
   # push:
   #   branches: [ main ]
