@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - scripts/transform_categories.py
+      - .github/workflows/fix_arxiv_categories.yaml
   workflow_dispatch:  # Allow manual triggering
 
 jobs:
