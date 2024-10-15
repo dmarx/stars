@@ -277,64 +277,67 @@ const Dashboard = () => {
           (repo.metadata.description && repo.metadata.description.toLowerCase().includes(textSearch.toLowerCase()));
 
         const matchesAdvancedSearch = searchConditions.every((condition) => {
-  const fieldValue = condition.field === 'name' ? name : 
-                     condition.field === 'lists' ? repo.lists || [] :
-                     condition.field.startsWith('arxiv_') ? getArxivFieldValue(repo, condition.field) :
-                     repo.metadata[condition.field];
-  
-  if (fieldValue === null || fieldValue === undefined) return false;
+          const fieldValue = condition.field === 'name' ? name : 
+                             condition.field === 'lists' ? repo.lists || [] :
+                             condition.field.startsWith('arxiv_') ? getArxivFieldValue(repo, condition.field) :
+                             repo.metadata[condition.field];
+          
+          if (fieldValue === null || fieldValue === undefined) return false;
 
-  let matches;
-  switch (condition.operator) {
-    case 'contains':
-      matches = Array.isArray(fieldValue) 
-        ? fieldValue.some(value => String(value).toLowerCase().includes(condition.value.toLowerCase()))
-        : String(fieldValue).toLowerCase().includes(condition.value.toLowerCase());
-      break;
-    case 'equals':
-      matches = Array.isArray(fieldValue)
-        ? fieldValue.some(value => String(value).toLowerCase() === condition.value.toLowerCase())
-        : String(fieldValue).toLowerCase() === condition.value.toLowerCase();
-      break;
-    case 'starts_with':
-      matches = Array.isArray(fieldValue)
-        ? fieldValue.some(value => String(value).toLowerCase().startsWith(condition.value.toLowerCase()))
-        : String(fieldValue).toLowerCase().startsWith(condition.value.toLowerCase());
-      break;
-    case 'ends_with':
-      matches = Array.isArray(fieldValue)
-        ? fieldValue.some(value => String(value).toLowerCase().endsWith(condition.value.toLowerCase()))
-        : String(fieldValue).toLowerCase().endsWith(condition.value.toLowerCase());
-      break;
-    case 'greater_than':
-    case 'after':
-      matches = new Date(fieldValue) > new Date(condition.value);
-      break;
-    case 'less_than':
-    case 'before':
-      matches = new Date(fieldValue) < new Date(condition.value);
-      break;
-    case 'includes':
-      matches = Array.isArray(fieldValue) && condition.value.split(',').some(val => 
-        fieldValue.some(category => category.toLowerCase().includes(val.toLowerCase()))
-      );
-      break;
-    case 'excludes':
-      matches = Array.isArray(fieldValue) && !condition.value.split(',').some(val => 
-        fieldValue.some(category => category.toLowerCase().includes(val.toLowerCase()))
-      );
-      break;
-    default:
-      matches = true;
-  }
-  return matches;
-});
+          let matches;
+          switch (condition.operator) {
+            case 'contains':
+              matches = Array.isArray(fieldValue) 
+                ? fieldValue.some(value => String(value).toLowerCase().includes(condition.value.toLowerCase()))
+                : String(fieldValue).toLowerCase().includes(condition.value.toLowerCase());
+              break;
+            case 'equals':
+              matches = Array.isArray(fieldValue)
+                ? fieldValue.some(value => String(value).toLowerCase() === condition.value.toLowerCase())
+                : String(fieldValue).toLowerCase() === condition.value.toLowerCase();
+              break;
+            case 'starts_with':
+              matches = Array.isArray(fieldValue)
+                ? fieldValue.some(value => String(value).toLowerCase().startsWith(condition.value.toLowerCase()))
+                : String(fieldValue).toLowerCase().startsWith(condition.value.toLowerCase());
+              break;
+            case 'ends_with':
+              matches = Array.isArray(fieldValue)
+                ? fieldValue.some(value => String(value).toLowerCase().endsWith(condition.value.toLowerCase()))
+                : String(fieldValue).toLowerCase().endsWith(condition.value.toLowerCase());
+              break;
+            case 'greater_than':
+            case 'after':
+              matches = new Date(fieldValue) > new Date(condition.value);
+              break;
+            case 'less_than':
+            case 'before':
+              matches = new Date(fieldValue) < new Date(condition.value);
+              break;
+            case 'includes':
+              matches = Array.isArray(fieldValue) && condition.value.split(',').some(val => 
+                fieldValue.some(category => category.toLowerCase().includes(val.toLowerCase()))
+              );
+              break;
+            case 'excludes':
+              matches = Array.isArray(fieldValue) && !condition.value.split(',').some(val => 
+                fieldValue.some(category => category.toLowerCase().includes(val.toLowerCase()))
+              );
+              break;
+            default:
+              matches = true;
+          }
+          return matches;
+        });
 
-        const matchesCategories = selectedCategories.length === 0 || 
-          (repo.arxiv && selectedCategories.some(cat => getArxivFieldValue(repo, 'arxiv_category').includes(cat)));
-
-        return matchesTextSearch && matchesAdvancedSearch && matchesCategories;
+        return matchesTextSearch && matchesAdvancedSearch;
       });
+
+      //   const matchesCategories = selectedCategories.length === 0 || 
+      //     (repo.arxiv && selectedCategories.some(cat => getArxivFieldValue(repo, 'arxiv_category').includes(cat)));
+
+      //   return matchesTextSearch && matchesAdvancedSearch && matchesCategories;
+      // });
 
       filtered.sort((a, b) => {
         const [, repoA] = a;
@@ -363,7 +366,7 @@ const Dashboard = () => {
 
       setFilteredRepos(filtered);
     }
-  }, [data, sortOption, sortDirection, textSearch, searchConditions, selectedCategories, arxivMetadata]);
+  }, [data, sortOption, sortDirection, textSearch, searchConditions, arxivMetadata]);
 
   const handleSortChange = (option) => {
     if (option === sortOption) {
@@ -524,19 +527,6 @@ const getArxivFieldValue = (repo, field) => {
               allCategories={allCategories}
             />
           )}
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">Filter by arXiv Category</h3>
-            <select
-              multiple
-              value={selectedCategories}
-              onChange={(e) => setSelectedCategories(Array.from(e.target.selectedOptions, option => option.value))}
-              className="w-full p-2 border rounded"
-            >
-              {allCategories.map(category => (
-                <option key={category} value={category}>{category}</option>
-              ))}
-            </select>
-          </div>
         </div>
       </header>
       
