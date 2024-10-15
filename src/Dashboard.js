@@ -247,6 +247,7 @@ const Dashboard = () => {
     { value: 'arxiv_category', label: 'arXiv Category' },
     { value: 'arxiv_published', label: 'arXiv Published Date' },
     { value: 'arxiv_updated', label: 'arXiv Updated Date' },
+    { value: 'arxiv_primary', label: 'Has Primary arXiv Article' },
   ];
 
   useEffect(() => {
@@ -397,22 +398,24 @@ const Dashboard = () => {
     return match ? match[1] : null;
   };
 
-const getArxivFieldValue = (repo, field) => {
-  const arxivId = extractArXivId(repo.arxiv?.primary_id || repo.arxiv?.primary_url);
-  const paperMetadata = arxivMetadata[arxivId];
-  if (!paperMetadata) return null;
+  const getArxivFieldValue = (repo, field) => {
+    const arxivId = extractArXivId(repo.arxiv?.primary_id || repo.arxiv?.primary_url);
+    const paperMetadata = arxivMetadata[arxivId];
+    if (!paperMetadata) return null;
 
-  switch (field) {
-    case 'arxiv_category':
-      return paperMetadata.categories ? paperMetadata.categories.map(cat => cat['@term']) : [];
-    case 'arxiv_published':
-      return paperMetadata.published || null;
-    case 'arxiv_updated':
-      return paperMetadata.updated || null;
-    default:
-      return null;
-  }
-};
+    switch (field) {
+      case 'arxiv_category':
+        return paperMetadata.categories || [];
+      case 'arxiv_published':
+        return paperMetadata.published || null;
+      case 'arxiv_updated':
+        return paperMetadata.updated || null;
+      case 'arxiv_primary':
+        return arxivId ? 'yes' : 'no'; // Return 'yes' if there's a primary arXiv ID, 'no' otherwise
+      default:
+        return null;
+    }
+  };
 
   const ArXivBadge = ({ arxivInfo }) => {
   const arxivId = extractArXivId(arxivInfo.primary_id || arxivInfo.primary_url);
