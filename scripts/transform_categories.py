@@ -21,10 +21,12 @@ def transform_categories(data):
         if 'categories' in paper_info:
             try:
                 paper_info['categories'] = [cat['@term'] for cat in paper_info['categories']]
-            except Exception as e:
-                logger.info(paper_id)
-                logger.info(paper_info['categories'])
-                raise e
+            except TypeError:
+                continue
+            #except Exception as e:
+                #logger.info(paper_id)
+                #logger.info(paper_info['categories'])
+                #raise e
     return data
 
 def main():
