@@ -21,8 +21,7 @@ jobs:
       run: |
         python scripts/convert_arxiv_urls_to_ids.py
 
-    - name: Commit and push if changes
-      run: |
+        # commit and push if changes
         git config --global user.name 'GitHub Action'
         git config --global user.email 'action@github.com'
         git add github_stars.json
