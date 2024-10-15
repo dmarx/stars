@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp, Search, Plus, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, Search, Plus, X, ArrowUp, ArrowDown } from 'lucide-react';
 
 const SortDropdown = ({ sortOption, sortDirection, handleSortChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -223,6 +223,7 @@ const Dashboard = () => {
   const [searchConditions, setSearchConditions] = useState([]);
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [allLists, setAllLists] = useState([]);
+  const [textSearch, setTextSearch] = useState('');
 
   const fieldOptions = [
     { value: 'name', label: 'Name' },
@@ -253,7 +254,12 @@ const Dashboard = () => {
   useEffect(() => {
     if (data && data.repositories) {
       let filtered = Object.entries(data.repositories).filter(([name, repo]) => {
-        return searchConditions.every((condition, index) => {
+        const matchesTextSearch = 
+          textSearch === '' ||
+          name.toLowerCase().includes(textSearch.toLowerCase()) ||
+          (repo.metadata.description && repo.metadata.description.toLowerCase().includes(textSearch.toLowerCase()));
+
+        const matchesAdvancedSearch = searchConditions.every((condition, index) => {
           const fieldValue = condition.field === 'name' ? name : 
                              condition.field === 'lists' ? repo.lists :
                              repo.metadata[condition.field];
@@ -291,6 +297,8 @@ const Dashboard = () => {
           if (index === 0) return matches;
           return condition.conjunction === 'AND' ? matches : true;
         });
+
+        return matchesTextSearch && matchesAdvancedSearch;
       });
 
       filtered.sort((a, b) => {
@@ -315,7 +323,7 @@ const Dashboard = () => {
 
       setFilteredRepos(filtered);
     }
-  }, [searchConditions, data, sortOption, sortDirection]);
+  }, [searchConditions, data, sortOption, sortDirection, textSearch]);
 
   const handleSortChange = (option) => {
     if (option === sortOption) {
@@ -324,6 +332,10 @@ const Dashboard = () => {
       setSortOption(option);
       setSortDirection('desc');
     }
+  };
+
+  const toggleSortDirection = () => {
+    setSortDirection(prev => prev === 'desc' ? 'asc' : 'desc');
   };
 
   const toggleRepoExpansion = (name) => {
@@ -335,35 +347,53 @@ const Dashboard = () => {
   }
 
   return (
-  <div className="container mx-auto px-4 py-8">
-    <header className="mb-8">
-      <h1 className="text-4xl font-bold text-center mb-6">GitHub Stars Dashboard</h1>
-      <div className="max-w-4xl mx-auto">
-        <button
-          onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
-          className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {showAdvancedSearch ? 'Hide' : 'Show'} Advanced Search
-        </button>
-        {showAdvancedSearch && (
-          <AdvancedSearch 
-            conditions={searchConditions}
-            setConditions={setSearchConditions}
-            fieldOptions={fieldOptions}
-            allLists={allLists}
-          />
-        )}
-      </div>
-    </header>
-    
-    <main>
+    <div className="container mx-auto px-4 py-8">
+      <header className="mb-8">
+        <h1 className="text-4xl font-bold text-center mb-6">GitHub Stars Dashboard</h1>
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center mb-4">
+            <input
+              type="text"
+              placeholder="Search repositories..."
+              value={textSearch}
+              onChange={(e) => setTextSearch(e.target.value)}
+              className="flex-grow px-4 py-2 rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
+              className="px-4 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {showAdvancedSearch ? <X size={20} /> : <Search size={20} />}
+            </button>
+          </div>
+          {showAdvancedSearch && (
+            <AdvancedSearch 
+              conditions={searchConditions}
+              setConditions={setSearchConditions}
+              fieldOptions={fieldOptions}
+              allLists={allLists}
+            />
+          )}
+        </div>
+      </header>
+      
+      <main>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">Repositories ({filteredRepos.length})</h2>
-          <SortDropdown 
-            sortOption={sortOption}
-            sortDirection={sortDirection}
-            handleSortChange={handleSortChange}
-          />
+          <div className="flex items-center space-x-2">
+            <SortDropdown 
+              sortOption={sortOption}
+              sortDirection={sortDirection}
+              handleSortChange={handleSortChange}
+            />
+            <button
+              onClick={toggleSortDirection}
+              className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label={`Sort ${sortDirection === 'desc' ? 'descending' : 'ascending'}`}
+            >
+              {sortDirection === 'desc' ? <ArrowDown size={20} /> : <ArrowUp size={20} />}
+            </button>
+          </div>
         </div>
         <ul className="space-y-4">
           {filteredRepos.map(([name, repo]) => (
