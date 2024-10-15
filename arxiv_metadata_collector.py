@@ -1,66 +1,54 @@
 import json
-import requests
-import xmltodict
-from urllib.parse import urlparse
 import os
 import yaml
 from loguru import logger
-from utils import commit_and_push, controlled_request
+import arxiv
+from utils import commit_and_push
 
 # Load configuration
 with open('config.yaml', 'r') as config_file:
     config = yaml.safe_load(config_file)
 
-COMMIT_INTERVAL = 1 #config['COMMIT_INTERVAL']
-CHUNK_SIZE = 1 # config['CHUNK_SIZE']
+COMMIT_INTERVAL = config['COMMIT_INTERVAL']
+CHUNK_SIZE = config['CHUNK_SIZE']
 ARXIV_METADATA_FILE = 'arxiv_metadata.json'
-ARXIV_API_BATCH_SIZE = 100  # arXiv API allows up to 100 IDs per request
+ARXIV_API_BATCH_SIZE = 100  # arxiv package default is 100 results per query
 
 # Configure logger
 logger.add("arxiv_metadata_collector.log", rotation="10 MB")
 
 def extract_arxiv_id(url_or_id):
     if url_or_id.startswith('http'):
-        parsed_url = urlparse(url_or_id)
-        if parsed_url.netloc == 'arxiv.org':
-            path_parts = parsed_url.path.split('/')
-            if 'abs' in path_parts or 'pdf' in path_parts:
-                return path_parts[-1].replace('.pdf', '').split('v')[0]  # Remove version number
+        # Extract ID from URL
+        return url_or_id.split('/')[-1].split('v')[0]
     else:
-        # Check if it's already an arXiv ID
-        if url_or_id.startswith('arXiv:'):
-            url_or_id = url_or_id[6:]
-        return url_or_id.split('v')[0]  # Remove version number if present
-    return None
+        # Remove 'arXiv:' prefix if present and version number
+        return url_or_id.replace('arXiv:', '').split('v')[0]
 
 def fetch_arxiv_metadata_batch(arxiv_ids):
-    base_url = "http://export.arxiv.org/api/query"
-    params = {
-        "id_list": ','.join(arxiv_ids),
-        "max_results": len(arxiv_ids)
-    }
-    response = controlled_request(base_url, params=params)
-    if response and response.status_code == 200:
-        data = xmltodict.parse(response.content)
-        entries = data['feed']['entry']
-        if not isinstance(entries, list):
-            entries = [entries]
-        
-        results = {}
-        for entry in entries:
-            arxiv_id = entry['id'].split('/abs/')[-1].split('v')[0]
-            results[arxiv_id] = {
-                'id': entry['id'],
-                'title': entry['title'],
-                'authors': [author['name'] for author in (entry['author'] if isinstance(entry['author'], list) else [entry['author']])],
-                'abstract': entry['summary'],
-                'categories': entry['category'] if isinstance(entry['category'], list) else [entry['category']],
-                'published': entry['published'],
-                'updated': entry['updated'],
-                'doi': entry.get('arxiv:doi', {}).get('#text') if 'arxiv:doi' in entry else None
-            }
-        return results
-    return {}
+    client = arxiv.Client()
+    search = arxiv.Search(
+        id_list=arxiv_ids,
+        max_results=len(arxiv_ids)
+    )
+    
+    results = {}
+    for result in client.results(search):
+        arxiv_id = result.get_short_id()
+        results[arxiv_id] = {
+            'id': result.entry_id,
+            'title': result.title,
+            'authors': [author.name for author in result.authors],
+            'abstract': result.summary,
+            'categories': [category for category in result.categories],
+            'published': result.published.isoformat(),
+            'updated': result.updated.isoformat(),
+            'doi': result.doi,
+            'comment': result.comment,
+            'journal_ref': result.journal_ref,
+            'primary_category': result.primary_category
+        }
+    return results
 
 def load_existing_data():
     if os.path.exists(ARXIV_METADATA_FILE):
