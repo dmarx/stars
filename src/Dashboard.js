@@ -458,7 +458,15 @@ const Dashboard = () => {
               </div>
               {expandedRepo === name && (
                 <div className="px-6 py-4 border-t border-gray-100">
-                  {/* ... [expanded repo details remain unchanged] */}
+                  <p className="text-gray-700 mb-2">{repo.metadata && repo.metadata.description}</p>
+                  <p className="text-sm text-gray-600 mb-2">Language: {repo.metadata && repo.metadata.language}</p>
+                  <p className="text-sm text-gray-600 mb-2">Created: {new Date(repo.metadata.created_at).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-600 mb-2">Last updated: {new Date(repo.metadata.updated_at).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-600 mb-2">Last pushed: {new Date(repo.metadata.pushed_at).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-600 mb-2">Starred at: {new Date(repo.metadata.starred_at).toLocaleDateString()}</p>
+                  {repo.lists && repo.lists.length > 0 && (
+                    <p className="text-sm text-gray-600 mb-2">Lists: {repo.lists.join(', ')}</p>
+                  )}
                   {repo.arxiv && (repo.arxiv.primary_id || repo.arxiv.primary_url) && (
                     <p className="text-sm mb-2">
                       Primary arXiv: <a href={`https://arxiv.org/abs/${extractArXivId(repo.arxiv.primary_id || repo.arxiv.primary_url)}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
