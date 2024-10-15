@@ -1,6 +1,11 @@
 name: Transform arXiv Categories
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - scripts/transform_categories.py
   workflow_dispatch:  # Allow manual triggering
 
 jobs:
@@ -20,4 +25,4 @@ jobs:
         pip install loguru
     
     - name: Run transformation script
-      run: python transform_categories.py
+      run: python scripts/transform_categories.py
