@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import subprocess
 from loguru import logger
 
 def commit_and_push(file_to_commit):
