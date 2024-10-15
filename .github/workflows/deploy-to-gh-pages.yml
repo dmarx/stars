@@ -21,8 +21,10 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Copy github_stars.json to public directory
-      run: cp github_stars.json public/
+    - name: Copy data files to public directory
+      run: |
+        cp github_stars.json public/
+        cp arxiv_metadata.json public/
 
     - name: Build
       run: npm run build
