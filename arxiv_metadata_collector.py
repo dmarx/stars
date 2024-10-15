@@ -40,7 +40,7 @@ def fetch_arxiv_metadata_batch(arxiv_ids):
             'title': result.title,
             'authors': [author.name for author in result.authors],
             'abstract': result.summary,
-            'categories': [category for category in result.categories],
+            'categories': [category['@term'] for category in result.categories],
             'published': result.published.isoformat(),
             'updated': result.updated.isoformat(),
             'doi': result.doi,
