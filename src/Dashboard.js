@@ -10,6 +10,8 @@ const SortDropdown = ({ sortOption, sortDirection, handleSortChange }) => {
     { value: 'created_at', label: 'Created' },
     { value: 'pushed_at', label: 'Last Pushed' },
     { value: 'starred_at', label: 'Starred At' },
+    { value: 'arxiv_published', label: 'arXiv Published Date' },
+    { value: 'arxiv_updated', label: 'arXiv Updated Date' },
   ];
 
   return (
@@ -47,7 +49,7 @@ const SortDropdown = ({ sortOption, sortDirection, handleSortChange }) => {
   );
 };
 
-const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, fieldOptions, allLists }) => {
+const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, fieldOptions, allLists, allCategories }) => {
   const getOperators = (fieldType) => {
     switch (fieldType) {
       case 'string':
@@ -87,8 +89,11 @@ const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, 
       case 'updated_at':
       case 'pushed_at':
       case 'starred_at':
+      case 'arxiv_published':
+      case 'arxiv_updated':
         return 'date';
       case 'lists':
+      case 'arxiv_category':
         return 'list';
       default:
         return 'text';
@@ -117,6 +122,7 @@ const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, 
           />
         );
       case 'list':
+        const options = condition.field === 'lists' ? allLists : allCategories;
         return (
           <select
             multiple
@@ -124,8 +130,8 @@ const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, 
             onChange={(e) => updateCondition({ ...condition, value: Array.from(e.target.selectedOptions, option => option.value).join(',') })}
             className="px-2 py-1 border rounded"
           >
-            {allLists.map(list => (
-              <option key={list} value={list}>{list}</option>
+            {options.map(option => (
+              <option key={option} value={option}>{option}</option>
             ))}
           </select>
         );
@@ -170,7 +176,7 @@ const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, 
   );
 };
 
-const AdvancedSearch = ({ conditions, setConditions, fieldOptions, allLists }) => {
+const AdvancedSearch = ({ conditions, setConditions, fieldOptions, allLists, allCategories }) => {
   const addCondition = () => {
     setConditions([...conditions, { field: 'name', operator: 'contains', value: '', conjunction: 'AND' }]);
   };
@@ -196,6 +202,7 @@ const AdvancedSearch = ({ conditions, setConditions, fieldOptions, allLists }) =
             removeCondition={() => removeCondition(index)}
             fieldOptions={fieldOptions}
             allLists={allLists}
+            allCategories={allCategories}
           />
           {index < conditions.length - 1 && (
             <select
@@ -224,6 +231,8 @@ const Dashboard = () => {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [allLists, setAllLists] = useState([]);
   const [textSearch, setTextSearch] = useState('');
+  const [arxivMetadata, setArxivMetadata] = useState({});
+  const [selectedCategories, setSelectedCategories] = useState([]);
 
   const fieldOptions = [
     { value: 'name', label: 'Name' },
@@ -235,21 +244,29 @@ const Dashboard = () => {
     { value: 'pushed_at', label: 'Pushed At' },
     { value: 'starred_at', label: 'Starred At' },
     { value: 'lists', label: 'Lists' },
+    { value: 'arxiv_category', label: 'arXiv Category' },
+    { value: 'arxiv_published', label: 'arXiv Published Date' },
+    { value: 'arxiv_updated', label: 'arXiv Updated Date' },
   ];
 
   useEffect(() => {
-    fetch(`${process.env.PUBLIC_URL}/github_stars.json`)
-      .then(response => response.json())
-      .then(jsonData => {
-        setData(jsonData);
-        const lists = new Set();
-        Object.values(jsonData.repositories).forEach(repo => {
-          (repo.lists || []).forEach(list => lists.add(list));
-        });
-        setAllLists(Array.from(lists).sort());
-      })
-      .catch(error => console.error('Error fetching data:', error));
+    Promise.all([
+      fetch(`${process.env.PUBLIC_URL}/github_stars.json`).then(response => response.json()),
+      fetch(`${process.env.PUBLIC_URL}/arxiv_metadata.json`).then(response => response.json())
+    ])
+    .then(([jsonData, metadata]) => {
+      setData(jsonData);
+      setArxivMetadata(metadata);
+      const lists = new Set();
+      Object.values(jsonData.repositories).forEach(repo => {
+        (repo.lists || []).forEach(list => lists.add(list));
+      });
+      setAllLists(Array.from(lists).sort());
+    })
+    .catch(error => console.error('Error fetching data:', error));
   }, []);
+
+  const allCategories = [...new Set(Object.values(arxivMetadata).flatMap(paper => paper.categories))];
 
   useEffect(() => {
     if (data && data.repositories) {
@@ -259,9 +276,10 @@ const Dashboard = () => {
           name.toLowerCase().includes(textSearch.toLowerCase()) ||
           (repo.metadata.description && repo.metadata.description.toLowerCase().includes(textSearch.toLowerCase()));
 
-        const matchesAdvancedSearch = searchConditions.every((condition, index) => {
+        const matchesAdvancedSearch = searchConditions.every((condition) => {
           const fieldValue = condition.field === 'name' ? name : 
                              condition.field === 'lists' ? repo.lists :
+                             condition.field.startsWith('arxiv_') ? getArxivFieldValue(repo, condition.field) :
                              repo.metadata[condition.field];
           let matches;
           switch (condition.operator) {
@@ -286,19 +304,21 @@ const Dashboard = () => {
               matches = new Date(fieldValue) < new Date(condition.value);
               break;
             case 'includes':
-              matches = condition.value.split(',').some(val => repo.lists.includes(val));
+              matches = condition.value.split(',').some(val => fieldValue.includes(val));
               break;
             case 'excludes':
-              matches = !condition.value.split(',').some(val => repo.lists.includes(val));
+              matches = !condition.value.split(',').some(val => fieldValue.includes(val));
               break;
             default:
               matches = true;
           }
-          if (index === 0) return matches;
-          return condition.conjunction === 'AND' ? matches : true;
+          return matches;
         });
 
-        return matchesTextSearch && matchesAdvancedSearch;
+        const matchesCategories = selectedCategories.length === 0 || 
+          (repo.arxiv && selectedCategories.some(cat => getArxivFieldValue(repo, 'arxiv_category').includes(cat)));
+
+        return matchesTextSearch && matchesAdvancedSearch && matchesCategories;
       });
 
       filtered.sort((a, b) => {
@@ -316,6 +336,11 @@ const Dashboard = () => {
           case 'pushed_at':
           case 'starred_at':
             return (new Date(repoB.metadata[sortOption]) - new Date(repoA.metadata[sortOption])) * direction;
+          case 'arxiv_published':
+          case 'arxiv_updated':
+            const dateA = new Date(getArxivFieldValue(repoA, sortOption) || 0);
+            const dateB = new Date(getArxivFieldValue(repoB, sortOption) || 0);
+            return (dateB - dateA) * direction;
           default:
             return 0;
         }
@@ -323,7 +348,7 @@ const Dashboard = () => {
 
       setFilteredRepos(filtered);
     }
-  }, [searchConditions, data, sortOption, sortDirection, textSearch]);
+  }, [data, sortOption, sortDirection, textSearch, searchConditions, selectedCategories, arxivMetadata]);
 
   const handleSortChange = (option) => {
     if (option === sortOption) {
@@ -344,44 +369,94 @@ const Dashboard = () => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    // Trigger the search here. In this case, it's already reactive, so we might just want to
-    // provide some visual feedback that the search was submitted.
     console.log("Search submitted:", textSearch);
+  };
+
+  const extractArXivId = (idOrUrl) => {
+    if (!idOrUrl) return null;
+    if (!idOrUrl.includes('/')) return idOrUrl;
+    const match = idOrUrl.match(/\/(\d+\.\d+)/);
+    return match ? match[1] : null;
+  };
+
+  const getArxivFieldValue = (repo, field) => {
+    const arxivId = extractArXivId(repo.arxiv?.primary_id || repo.arxiv?.primary_url);
+    const paperMetadata = arxivMetadata[arxivId];
+    if (!paperMetadata) return null;
+
+    switch (field) {
+      case 'arxiv_category':
+        return paperMetadata.categories;
+      case 'arxiv_published':
+        return paperMetadata.published;
+      case 'arxiv_updated':
+        return paperMetadata.updated;
+      default:
+        return null;
+    }
+  };
+
+  const ArXivBadge = ({ arxivInfo }) => {
+    const arxivId = extractArXivId(arxivInfo.primary_id || arxivInfo.primary_url);
+    const paperMetadata = arxivMetadata[arxivId];
+
+    return (
+      <div className="flex items-center space-x-2">
+        <a
+          href={`https://arxiv.org/abs/${arxivId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <FileText size={14} className="mr-1" />
+          arXiv
+        </a>
+        {paperMetadata && (
+          <span className="text-xs text-gray-500">{paperMetadata.primary_category}</span>
+        )}
+      </div>
+    );
+  };
+
+  const ExpandedRepoView = ({ repo, name }) => {
+    const arxivId = extractArXivId(repo.arxiv?.primary_id || repo.arxiv?.primary_url);
+    const paperMetadata = arxivMetadata[arxivId];
+
+    return (
+      <div className="px-6 py-4 border-t border-gray-100">
+        <p className="text-gray-700 mb-2">{repo.metadata.description}</p>
+        <p className="text-sm text-gray-600 mb-2">Language: {repo.metadata.language}</p>
+        <p className="text-sm text-gray-600 mb-2">Created: {new Date(repo.metadata.created_at).toLocaleDateString()}</p>
+        <p className="text-sm text-gray-600 mb-2">Last updated: {new Date(repo.metadata.updated_at).toLocaleDateString()}</p>
+        <p className="text-sm text-gray-600 mb-2">Last pushed: {new Date(repo.metadata.pushed_at).toLocaleDateString()}</p>
+        <p className="text-sm text-gray-600 mb-2">Starred at: {new Date(repo.metadata.starred_at).toLocaleDateString()}</p>
+        {repo.lists && repo.lists.length > 0 && (
+          <p className="text-sm text-gray-600 mb-2">Lists: {repo.lists.join(', ')}</p>
+        )}
+        {paperMetadata && (
+          <div className="mt-4">
+            <h4 className="text-lg font-semibold mb-2">arXiv Paper Details</h4>
+            <p className="text-sm text-gray-700 mb-1">Title: {paperMetadata.title}</p>
+            <p className="text-sm text-gray-700 mb-1">Authors: {paperMetadata.authors.join(', ')}</p>
+            <p className="text-sm text-gray-700 mb-1">Published: {new Date(paperMetadata.published).toLocaleDateString()}</p>
+            <p className="text-sm text-gray-700 mb-1">Last Updated: {new Date(paperMetadata.updated).toLocaleDateString()}</p>
+            <p className="text-sm text-gray-700 mb-1">Categories: {paperMetadata.categories.join(', ')}</p>
+            <details className="mt-2">
+              <summary className="text-sm text-blue-600 cursor-pointer">Abstract</summary>
+              <p className="text-sm text-gray-700 mt-1">{paperMetadata.abstract}</p>
+            </details>
+          </div>
+        )}
+      </div>
+    );
   };
 
   if (!data) {
     return <div className="flex items-center justify-center h-screen text-2xl">Loading...</div>;
   }
 
-  const extractArXivId = (idOrUrl) => {
-    if (!idOrUrl) return null;
-    // If it's already an ID (doesn't contain '/')
-    if (!idOrUrl.includes('/')) return idOrUrl;
-    // Extract ID from URL
-    const match = idOrUrl.match(/\/(\d+\.\d+)/);
-    return match ? match[1] : null;
-  };
-
-  const ArXivBadge = ({ arxivInfo }) => {
-    const arxivId = extractArXivId(arxivInfo.primary_id || arxivInfo.primary_url);
-    if (!arxivId) return null;
-
-    return (
-      <a
-        href={`https://arxiv.org/abs/${arxivId}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-        aria-label={`View arXiv paper ${arxivId}`}
-        onClick={(e) => e.stopPropagation()} // Prevent expanding the repo when clicking the badge
-      >
-        <FileText size={14} className="mr-1" />
-        arXiv
-      </a>
-    );
-  };
-
- return (
+  return (
     <div className="container mx-auto px-4 py-8">
       <header className="mb-8">
         <h1 className="text-4xl font-bold text-center mb-6">GitHub Stars Dashboard</h1>
@@ -431,8 +506,22 @@ const Dashboard = () => {
               setConditions={setSearchConditions}
               fieldOptions={fieldOptions}
               allLists={allLists}
+              allCategories={allCategories}
             />
           )}
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold mb-2">Filter by arXiv Category</h3>
+            <select
+              multiple
+              value={selectedCategories}
+              onChange={(e) => setSelectedCategories(Array.from(e.target.selectedOptions, option => option.value))}
+              className="w-full p-2 border rounded"
+            >
+              {allCategories.map(category => (
+                <option key={category} value={category}>{category}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </header>
       
@@ -452,48 +541,12 @@ const Dashboard = () => {
                       <ArXivBadge arxivInfo={repo.arxiv} />
                     )}
                   </div>
-                  <span className="text-sm font-medium text-gray-600">{repo.metadata && repo.metadata.stars} ★</span>
+                  <span className="text-sm font-medium text-gray-600">{repo.metadata.stars} ★</span>
                 </div>
-                <p className="text-sm text-gray-600">{repo.metadata && repo.metadata.description}</p>
+                <p className="text-sm text-gray-600">{repo.metadata.description}</p>
               </div>
               {expandedRepo === name && (
-                <div className="px-6 py-4 border-t border-gray-100">
-                  <p className="text-gray-700 mb-2">{repo.metadata && repo.metadata.description}</p>
-                  <p className="text-sm text-gray-600 mb-2">Language: {repo.metadata && repo.metadata.language}</p>
-                  <p className="text-sm text-gray-600 mb-2">Created: {new Date(repo.metadata.created_at).toLocaleDateString()}</p>
-                  <p className="text-sm text-gray-600 mb-2">Last updated: {new Date(repo.metadata.updated_at).toLocaleDateString()}</p>
-                  <p className="text-sm text-gray-600 mb-2">Last pushed: {new Date(repo.metadata.pushed_at).toLocaleDateString()}</p>
-                  <p className="text-sm text-gray-600 mb-2">Starred at: {new Date(repo.metadata.starred_at).toLocaleDateString()}</p>
-                  {repo.lists && repo.lists.length > 0 && (
-                    <p className="text-sm text-gray-600 mb-2">Lists: {repo.lists.join(', ')}</p>
-                  )}
-                  {repo.arxiv && (repo.arxiv.primary_id || repo.arxiv.primary_url) && (
-                    <p className="text-sm mb-2">
-                      Primary arXiv: <a href={`https://arxiv.org/abs/${extractArXivId(repo.arxiv.primary_id || repo.arxiv.primary_url)}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                        {extractArXivId(repo.arxiv.primary_id || repo.arxiv.primary_url)}
-                      </a>
-                    </p>
-                  )}
-                  {repo.arxiv && repo.arxiv.ids && repo.arxiv.ids.length > 0 && (
-                    <p className="text-sm mb-2">
-                      All arXiv IDs: {repo.arxiv.ids.map(id => (
-                        <a key={id} href={`https://arxiv.org/abs/${id}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline mr-2">
-                          {id}
-                        </a>
-                      ))}
-                    </p>
-                  )}
-                  {/* If you still have 'urls' in your data, you might want to include this as well */}
-                  {repo.arxiv && repo.arxiv.urls && repo.arxiv.urls.length > 0 && (
-                    <p className="text-sm mb-2">
-                      All arXiv URLs: {repo.arxiv.urls.map(url => (
-                        <a key={url} href={url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline mr-2">
-                          {extractArXivId(url)}
-                        </a>
-                      ))}
-                    </p>
-                  )}
-                </div>
+                <ExpandedRepoView repo={repo} name={name} />
               )}
             </li>
           ))}
