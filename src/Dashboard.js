@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp, Search, Plus, X, ArrowUp, ArrowDown } from 'lucide-react';
+import { ChevronDown, ChevronUp, Search, Plus, X, ArrowUp, ArrowDown, SlidersHorizontal } from 'lucide-react';
 
 const SortDropdown = ({ sortOption, sortDirection, handleSortChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -342,16 +342,23 @@ const Dashboard = () => {
     setExpandedRepo(expandedRepo === name ? null : name);
   };
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    // Trigger the search here. In this case, it's already reactive, so we might just want to
+    // provide some visual feedback that the search was submitted.
+    console.log("Search submitted:", textSearch);
+  };
+
   if (!data) {
     return <div className="flex items-center justify-center h-screen text-2xl">Loading...</div>;
   }
 
-  return (
+ return (
     <div className="container mx-auto px-4 py-8">
       <header className="mb-8">
         <h1 className="text-4xl font-bold text-center mb-6">GitHub Stars Dashboard</h1>
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center mb-4">
+          <form onSubmit={handleSearchSubmit} className="flex items-center mb-4">
             <input
               type="text"
               placeholder="Search repositories..."
@@ -360,11 +367,35 @@ const Dashboard = () => {
               className="flex-grow px-4 py-2 rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
-              onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
+              type="submit"
               className="px-4 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label="Search"
             >
-              {showAdvancedSearch ? <X size={20} /> : <Search size={20} />}
+              <Search size={20} />
             </button>
+          </form>
+          <div className="flex justify-between items-center mb-4">
+            <button
+              onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
+              className="flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <SlidersHorizontal size={20} className="mr-2" />
+              {showAdvancedSearch ? 'Hide' : 'Show'} Advanced Search
+            </button>
+            <div className="flex items-center space-x-2">
+              <SortDropdown 
+                sortOption={sortOption}
+                sortDirection={sortDirection}
+                handleSortChange={handleSortChange}
+              />
+              <button
+                onClick={toggleSortDirection}
+                className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                aria-label={`Sort ${sortDirection === 'desc' ? 'descending' : 'ascending'}`}
+              >
+                {sortDirection === 'desc' ? <ArrowDown size={20} /> : <ArrowUp size={20} />}
+              </button>
+            </div>
           </div>
           {showAdvancedSearch && (
             <AdvancedSearch 
@@ -378,23 +409,7 @@ const Dashboard = () => {
       </header>
       
       <main>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold">Repositories ({filteredRepos.length})</h2>
-          <div className="flex items-center space-x-2">
-            <SortDropdown 
-              sortOption={sortOption}
-              sortDirection={sortDirection}
-              handleSortChange={handleSortChange}
-            />
-            <button
-              onClick={toggleSortDirection}
-              className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              aria-label={`Sort ${sortDirection === 'desc' ? 'descending' : 'ascending'}`}
-            >
-              {sortDirection === 'desc' ? <ArrowDown size={20} /> : <ArrowUp size={20} />}
-            </button>
-          </div>
-        </div>
+        <h2 className="text-2xl font-semibold mb-4">Repositories ({filteredRepos.length})</h2>
         <ul className="space-y-4">
           {filteredRepos.map(([name, repo]) => (
             <li key={name} className="bg-white shadow rounded-lg overflow-hidden">
