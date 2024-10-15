@@ -19,7 +19,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests xmltodict pyyaml loguru
+        pip install pyyaml loguru arxiv
 
     - name: Run arXiv metadata collector
       run: python arxiv_metadata_collector.py
