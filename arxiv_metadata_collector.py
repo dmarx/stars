@@ -14,7 +14,7 @@ with open('config.yaml', 'r') as config_file:
 COMMIT_INTERVAL = 1 #config['COMMIT_INTERVAL']
 CHUNK_SIZE = 1 # config['CHUNK_SIZE']
 ARXIV_METADATA_FILE = 'arxiv_metadata.json'
-ARXIV_API_BATCH_SIZE = 300 #100  # arXiv API allows up to 100 IDs per request
+ARXIV_API_BATCH_SIZE = 100  # arXiv API allows up to 100 IDs per request
 
 # Configure logger
 logger.add("arxiv_metadata_collector.log", rotation="10 MB")
