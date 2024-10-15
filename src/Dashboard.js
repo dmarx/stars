@@ -277,46 +277,58 @@ const Dashboard = () => {
           (repo.metadata.description && repo.metadata.description.toLowerCase().includes(textSearch.toLowerCase()));
 
         const matchesAdvancedSearch = searchConditions.every((condition) => {
-          const fieldValue = condition.field === 'name' ? name : 
-                             condition.field === 'lists' ? repo.lists || [] :
-                             condition.field.startsWith('arxiv_') ? getArxivFieldValue(repo, condition.field) :
-                             repo.metadata[condition.field];
-          
-          if (fieldValue === null || fieldValue === undefined) return false;
-        
-          let matches;
-          switch (condition.operator) {
-            case 'contains':
-              matches = String(fieldValue).toLowerCase().includes(condition.value.toLowerCase());
-              break;
-            case 'equals':
-              matches = String(fieldValue).toLowerCase() === condition.value.toLowerCase();
-              break;
-            case 'starts_with':
-              matches = String(fieldValue).toLowerCase().startsWith(condition.value.toLowerCase());
-              break;
-            case 'ends_with':
-              matches = String(fieldValue).toLowerCase().endsWith(condition.value.toLowerCase());
-              break;
-            case 'greater_than':
-            case 'after':
-              matches = new Date(fieldValue) > new Date(condition.value);
-              break;
-            case 'less_than':
-            case 'before':
-              matches = new Date(fieldValue) < new Date(condition.value);
-              break;
-            case 'includes':
-              matches = Array.isArray(fieldValue) && condition.value.split(',').some(val => fieldValue.includes(val));
-              break;
-            case 'excludes':
-              matches = Array.isArray(fieldValue) && !condition.value.split(',').some(val => fieldValue.includes(val));
-              break;
-            default:
-              matches = true;
-          }
-          return matches;
-        });
+  const fieldValue = condition.field === 'name' ? name : 
+                     condition.field === 'lists' ? repo.lists || [] :
+                     condition.field.startsWith('arxiv_') ? getArxivFieldValue(repo, condition.field) :
+                     repo.metadata[condition.field];
+  
+  if (fieldValue === null || fieldValue === undefined) return false;
+
+  let matches;
+  switch (condition.operator) {
+    case 'contains':
+      matches = Array.isArray(fieldValue) 
+        ? fieldValue.some(value => String(value).toLowerCase().includes(condition.value.toLowerCase()))
+        : String(fieldValue).toLowerCase().includes(condition.value.toLowerCase());
+      break;
+    case 'equals':
+      matches = Array.isArray(fieldValue)
+        ? fieldValue.some(value => String(value).toLowerCase() === condition.value.toLowerCase())
+        : String(fieldValue).toLowerCase() === condition.value.toLowerCase();
+      break;
+    case 'starts_with':
+      matches = Array.isArray(fieldValue)
+        ? fieldValue.some(value => String(value).toLowerCase().startsWith(condition.value.toLowerCase()))
+        : String(fieldValue).toLowerCase().startsWith(condition.value.toLowerCase());
+      break;
+    case 'ends_with':
+      matches = Array.isArray(fieldValue)
+        ? fieldValue.some(value => String(value).toLowerCase().endsWith(condition.value.toLowerCase()))
+        : String(fieldValue).toLowerCase().endsWith(condition.value.toLowerCase());
+      break;
+    case 'greater_than':
+    case 'after':
+      matches = new Date(fieldValue) > new Date(condition.value);
+      break;
+    case 'less_than':
+    case 'before':
+      matches = new Date(fieldValue) < new Date(condition.value);
+      break;
+    case 'includes':
+      matches = Array.isArray(fieldValue) && condition.value.split(',').some(val => 
+        fieldValue.some(category => category.toLowerCase().includes(val.toLowerCase()))
+      );
+      break;
+    case 'excludes':
+      matches = Array.isArray(fieldValue) && !condition.value.split(',').some(val => 
+        fieldValue.some(category => category.toLowerCase().includes(val.toLowerCase()))
+      );
+      break;
+    default:
+      matches = true;
+  }
+  return matches;
+});
 
         const matchesCategories = selectedCategories.length === 0 || 
           (repo.arxiv && selectedCategories.some(cat => getArxivFieldValue(repo, 'arxiv_category').includes(cat)));
@@ -389,7 +401,7 @@ const getArxivFieldValue = (repo, field) => {
 
   switch (field) {
     case 'arxiv_category':
-      return paperMetadata.categories || [];
+      return paperMetadata.categories ? paperMetadata.categories.map(cat => cat['@term']) : [];
     case 'arxiv_published':
       return paperMetadata.published || null;
     case 'arxiv_updated':
@@ -415,45 +427,37 @@ const getArxivFieldValue = (repo, field) => {
         <FileText size={14} className="mr-1" />
         arXiv
       </a>
-      {paperMetadata && paperMetadata.primary_category && (
-        <span className="text-xs text-gray-500">{paperMetadata.primary_category}</span>
+      {paperMetadata && paperMetadata.categories && paperMetadata.categories.length > 0 && (
+        <span className="text-xs text-gray-500">{paperMetadata.categories[0]['@term']}</span>
       )}
     </div>
   );
 };
 
   const ExpandedRepoView = ({ repo, name }) => {
-    const arxivId = extractArXivId(repo.arxiv?.primary_id || repo.arxiv?.primary_url);
-    const paperMetadata = arxivMetadata[arxivId];
+  const arxivId = extractArXivId(repo.arxiv?.primary_id || repo.arxiv?.primary_url);
+  const paperMetadata = arxivMetadata[arxivId];
 
-    return (
-      <div className="px-6 py-4 border-t border-gray-100">
-        <p className="text-gray-700 mb-2">{repo.metadata.description}</p>
-        <p className="text-sm text-gray-600 mb-2">Language: {repo.metadata.language}</p>
-        <p className="text-sm text-gray-600 mb-2">Created: {new Date(repo.metadata.created_at).toLocaleDateString()}</p>
-        <p className="text-sm text-gray-600 mb-2">Last updated: {new Date(repo.metadata.updated_at).toLocaleDateString()}</p>
-        <p className="text-sm text-gray-600 mb-2">Last pushed: {new Date(repo.metadata.pushed_at).toLocaleDateString()}</p>
-        <p className="text-sm text-gray-600 mb-2">Starred at: {new Date(repo.metadata.starred_at).toLocaleDateString()}</p>
-        {repo.lists && repo.lists.length > 0 && (
-          <p className="text-sm text-gray-600 mb-2">Lists: {repo.lists.join(', ')}</p>
-        )}
-        {paperMetadata && (
-          <div className="mt-4">
-            <h4 className="text-lg font-semibold mb-2">arXiv Paper Details</h4>
-            <p className="text-sm text-gray-700 mb-1">Title: {paperMetadata.title}</p>
-            <p className="text-sm text-gray-700 mb-1">Authors: {paperMetadata.authors.join(', ')}</p>
-            <p className="text-sm text-gray-700 mb-1">Published: {new Date(paperMetadata.published).toLocaleDateString()}</p>
-            <p className="text-sm text-gray-700 mb-1">Last Updated: {new Date(paperMetadata.updated).toLocaleDateString()}</p>
-            <p className="text-sm text-gray-700 mb-1">Categories: {paperMetadata.categories.join(', ')}</p>
-            <details className="mt-2">
-              <summary className="text-sm text-blue-600 cursor-pointer">Abstract</summary>
-              <p className="text-sm text-gray-700 mt-1">{paperMetadata.abstract}</p>
-            </details>
-          </div>
-        )}
-      </div>
-    );
-  };
+  return (
+    <div className="px-6 py-4 border-t border-gray-100">
+      {/* ... other fields ... */}
+      {paperMetadata && (
+        <div className="mt-4">
+          <h4 className="text-lg font-semibold mb-2">arXiv Paper Details</h4>
+          <p className="text-sm text-gray-700 mb-1">Title: {paperMetadata.title}</p>
+          <p className="text-sm text-gray-700 mb-1">Authors: {paperMetadata.authors.join(', ')}</p>
+          <p className="text-sm text-gray-700 mb-1">Published: {new Date(paperMetadata.published).toLocaleDateString()}</p>
+          <p className="text-sm text-gray-700 mb-1">Last Updated: {new Date(paperMetadata.updated).toLocaleDateString()}</p>
+          <p className="text-sm text-gray-700 mb-1">Categories: {paperMetadata.categories.map(cat => cat['@term']).join(', ')}</p>
+          <details className="mt-2">
+            <summary className="text-sm text-blue-600 cursor-pointer">Abstract</summary>
+            <p className="text-sm text-gray-700 mt-1">{paperMetadata.abstract}</p>
+          </details>
+        </div>
+      )}
+    </div>
+  );
+};
 
   if (!data) {
     return <div className="flex items-center justify-center h-screen text-2xl">Loading...</div>;
