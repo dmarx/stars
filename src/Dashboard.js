@@ -353,6 +353,19 @@ const Dashboard = () => {
     return <div className="flex items-center justify-center h-screen text-2xl">Loading...</div>;
   }
 
+  const ArXivBadge = ({ arxivId }) => (
+    <a
+      href={`https://arxiv.org/abs/${arxivId}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+      aria-label={`View arXiv paper ${arxivId}`}
+    >
+      <FileText size={14} className="mr-1" />
+      arXiv
+    </a>
+  );
+
  return (
     <div className="container mx-auto px-4 py-8">
       <header className="mb-8">
@@ -418,7 +431,12 @@ const Dashboard = () => {
                 onClick={() => toggleRepoExpansion(name)}
               >
                 <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-lg font-semibold text-blue-600">{name}</h3>
+                  <div className="flex items-center space-x-2">
+                    <h3 className="text-lg font-semibold text-blue-600">{name}</h3>
+                    {repo.arxiv && repo.arxiv.primary_id && (
+                      <ArXivBadge arxivId={repo.arxiv.primary_id} />
+                    )}
+                  </div>
                   <span className="text-sm font-medium text-gray-600">{repo.metadata && repo.metadata.stars} ★</span>
                 </div>
                 <p className="text-sm text-gray-600">{repo.metadata && repo.metadata.description}</p>
