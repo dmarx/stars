@@ -1,6 +1,5 @@
 import React from 'react';
 import { extractArXivId } from '../utils/arxivUtils';
-import { GitHub } from 'lucide-react';
 
 const ExpandedRepoView = ({ repo, name, arxivMetadata }) => {
   const arxivId = extractArXivId(repo.arxiv?.primary_id || repo.arxiv?.primary_url);
@@ -8,17 +7,6 @@ const ExpandedRepoView = ({ repo, name, arxivMetadata }) => {
 
   return (
     <div className="px-6 py-4 border-t border-gray-100">
-      <div className="flex items-center space-x-2 mb-2">
-        <a
-          href={`https://github.com/${name}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 hover:underline flex items-center"
-        >
-          <GitHub size={20} className="mr-1" />
-          {name}
-        </a>
-      </div>
       <p className="text-gray-700 mb-2">{repo.metadata.description}</p>
       <p className="text-sm text-gray-600 mb-2">Language: {repo.metadata.language}</p>
       <p className="text-sm text-gray-600 mb-2">Created: {new Date(repo.metadata.created_at).toLocaleDateString()}</p>
