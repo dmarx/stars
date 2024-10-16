@@ -1,8 +1,7 @@
 import React from 'react';
-import { X } from 'lucide-react';
 import { getOperators, getInputType } from '../utils/sortUtils';
 
-const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, fieldOptions, allLists, allCategories }) => {
+const AdvancedSearchCondition = ({ condition, updateCondition, fieldOptions, allLists, allCategories }) => {
   const renderInput = () => {
     const inputType = getInputType(condition.field);
     switch (inputType) {
@@ -12,7 +11,7 @@ const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, 
             type="number"
             value={condition.value}
             onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
-            className="px-2 py-1 border rounded"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         );
       case 'date':
@@ -21,7 +20,7 @@ const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, 
             type="date"
             value={condition.value}
             onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
-            className="px-2 py-1 border rounded"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         );
       case 'list':
@@ -31,7 +30,7 @@ const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, 
             multiple
             value={condition.value.split(',')}
             onChange={(e) => updateCondition({ ...condition, value: Array.from(e.target.selectedOptions, option => option.value).join(',') })}
-            className="px-2 py-1 border rounded"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             {options.map(option => (
               <option key={option} value={option}>{option}</option>
@@ -44,7 +43,7 @@ const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, 
             type="text"
             value={condition.value}
             onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
-            className="px-2 py-1 border rounded"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         );
     }
@@ -54,11 +53,11 @@ const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, 
   const operators = getOperators(fieldType);
 
   return (
-    <div className="flex items-center space-x-2 mb-2">
+    <div className="flex items-center space-x-2 flex-grow">
       <select
         value={condition.field}
         onChange={(e) => updateCondition({ ...condition, field: e.target.value, operator: getOperators(getInputType(e.target.value))[0].value })}
-        className="px-2 py-1 border rounded"
+        className="w-1/3 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         {fieldOptions.map(option => (
           <option key={option.value} value={option.value}>{option.label}</option>
@@ -67,14 +66,15 @@ const AdvancedSearchCondition = ({ condition, updateCondition, removeCondition, 
       <select
         value={condition.operator}
         onChange={(e) => updateCondition({ ...condition, operator: e.target.value })}
-        className="px-2 py-1 border rounded"
+        className="w-1/3 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         {operators.map(op => (
           <option key={op.value} value={op.value}>{op.label}</option>
         ))}
       </select>
-      {renderInput()}
-      <button onClick={removeCondition} className="text-red-500"><X size={20} /></button>
+      <div className="w-1/3">
+        {renderInput()}
+      </div>
     </div>
   );
 };
