@@ -20,19 +20,21 @@ const AdvancedSearch = ({ conditions, setConditions, fieldOptions, allLists, all
   return (
     <div className="bg-white p-6 rounded-lg shadow-md mb-6">
       <h3 className="text-xl font-semibold mb-4 text-gray-800">Advanced Search</h3>
-      {conditions.map((condition, index) => (
-        <div key={index} className="mb-4">
-          <div className="flex items-center mb-2">
-            {index > 0 && (
-              <select
-                value={condition.conjunction}
-                onChange={(e) => updateCondition(index, { ...condition, conjunction: e.target.value })}
-                className="mr-2 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="AND">AND</option>
-                <option value="OR">OR</option>
-              </select>
-            )}
+      <div className="space-y-4">
+        {conditions.map((condition, index) => (
+          <div key={index} className="flex items-start">
+            <div className="w-20 pt-2">
+              {index > 0 && (
+                <select
+                  value={condition.conjunction}
+                  onChange={(e) => updateCondition(index, { ...condition, conjunction: e.target.value })}
+                  className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="AND">AND</option>
+                  <option value="OR">OR</option>
+                </select>
+              )}
+            </div>
             <div className="flex-grow">
               <AdvancedSearchCondition
                 condition={condition}
@@ -50,12 +52,12 @@ const AdvancedSearch = ({ conditions, setConditions, fieldOptions, allLists, all
               <Trash2 size={20} />
             </button>
           </div>
-        </div>
-      ))}
-      <div className="flex justify-center">
+        ))}
+      </div>
+      <div className="flex justify-center mt-4">
         <button
           onClick={addCondition}
-          className="flex items-center justify-center px-4 py-2 mt-4 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
           <Plus size={20} className="mr-2" />
           Add condition
