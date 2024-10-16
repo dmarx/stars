@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
 import { getArxivFieldValue } from '../utils/arxivUtils';
 
-const useRepositories = (sortOption, sortDirection, textSearch, searchConditions) => {
+const useRepositories = () => {
   const [data, setData] = useState(null);
   const [filteredRepos, setFilteredRepos] = useState([]);
   const [allLists, setAllLists] = useState([]);
   const [arxivMetadata, setArxivMetadata] = useState({});
+  const [sortOption, setSortOption] = useState('stars');
+  const [sortDirection, setSortDirection] = useState('desc');
+  const [textSearch, setTextSearch] = useState('');
+  const [searchConditions, setSearchConditions] = useState([]);
 
   useEffect(() => {
     Promise.all([
@@ -41,6 +45,7 @@ const useRepositories = (sortOption, sortDirection, textSearch, searchConditions
           if (fieldValue === null || fieldValue === undefined) return false;
 
           // ... (rest of the matching logic)
+          return true; // Placeholder, implement actual matching logic here
         });
 
         return matchesTextSearch && matchesAdvancedSearch;
@@ -96,6 +101,12 @@ const useRepositories = (sortOption, sortDirection, textSearch, searchConditions
     handleSortChange,
     toggleSortDirection,
     arxivMetadata,
+    sortOption,
+    sortDirection,
+    textSearch,
+    setTextSearch,
+    searchConditions,
+    setSearchConditions
   };
 };
 
