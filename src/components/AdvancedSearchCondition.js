@@ -53,7 +53,7 @@ const AdvancedSearchCondition = ({ condition, updateCondition, fieldOptions, all
   const operators = getOperators(fieldType);
 
   return (
-    <div className="flex items-center space-x-2 flex-grow">
+    <div className="flex items-center space-x-2">
       <select
         value={condition.field}
         onChange={(e) => updateCondition({ ...condition, field: e.target.value, operator: getOperators(getInputType(e.target.value))[0].value })}
