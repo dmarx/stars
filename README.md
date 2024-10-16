@@ -44,6 +44,24 @@ This project automatically scrapes and organizes your GitHub stars, including st
 - `src/`: Directory containing React components for the dashboard
 - `public/`: Directory containing public assets for the dashboard
 
+### Front end file structure
+
+```
+src/
+├── components/
+│   ├── Dashboard.js
+│   ├── SortDropdown.js
+│   ├── AdvancedSearchCondition.js
+│   ├── AdvancedSearch.js
+│   ├── ArXivBadge.js
+│   └── ExpandedRepoView.js
+├── hooks/
+│   └── useRepositories.js
+└── utils/
+    ├── arxivUtils.js
+    └── sortUtils.js
+```
+
 ## Dashboard
 The dashboard is built using React and Tailwind CSS. It provides the following features:
 - Search functionality to find repositories by name or description
