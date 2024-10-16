@@ -33,13 +33,15 @@ const AdvancedSearch = ({ conditions, setConditions, fieldOptions, allLists, all
                 <option value="OR">OR</option>
               </select>
             )}
-            <AdvancedSearchCondition
-              condition={condition}
-              updateCondition={(newCondition) => updateCondition(index, newCondition)}
-              fieldOptions={fieldOptions}
-              allLists={allLists}
-              allCategories={allCategories}
-            />
+            <div className="flex-grow">
+              <AdvancedSearchCondition
+                condition={condition}
+                updateCondition={(newCondition) => updateCondition(index, newCondition)}
+                fieldOptions={fieldOptions}
+                allLists={allLists}
+                allCategories={allCategories}
+              />
+            </div>
             <button
               onClick={() => removeCondition(index)}
               className="ml-2 p-2 text-red-600 hover:text-red-800 focus:outline-none"
@@ -50,13 +52,15 @@ const AdvancedSearch = ({ conditions, setConditions, fieldOptions, allLists, all
           </div>
         </div>
       ))}
-      <button
-        onClick={addCondition}
-        className="flex items-center justify-center w-full px-4 py-2 mt-4 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-      >
-        <Plus size={20} className="mr-2" />
-        Add condition
-      </button>
+      <div className="flex justify-center">
+        <button
+          onClick={addCondition}
+          className="flex items-center justify-center px-4 py-2 mt-4 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          <Plus size={20} className="mr-2" />
+          Add condition
+        </button>
+      </div>
     </div>
   );
 };
