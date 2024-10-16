@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, SlidersHorizontal, ArrowDown, ArrowUp, ChevronDown, ChevronUp, GitHub } from 'lucide-react';
+import { Search, SlidersHorizontal, ArrowDown, ArrowUp, ChevronDown, ChevronUp, Github as GithubIcon } from 'lucide-react';
 import SortDropdown from './SortDropdown';
 import AdvancedSearch from './AdvancedSearch';
 import ArXivBadge from './ArXivBadge';
@@ -66,7 +66,7 @@ const Dashboard = () => {
                       className="text-blue-600 hover:underline flex items-center"
                       onClick={(e) => e.stopPropagation()} // Prevent toggling when clicking the link
                     >
-                      <GitHub size={20} className="mr-1" />
+                      <GithubIcon size={20} className="mr-1" />
                       {name}
                     </a>
                     <span className="text-sm font-medium text-gray-600">{repo.metadata.stars} ★</span>
