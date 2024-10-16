@@ -4,6 +4,8 @@ import { getOperators, getInputType } from '../utils/sortUtils';
 const AdvancedSearchCondition = ({ condition, updateCondition, fieldOptions, allLists, allCategories }) => {
   const renderInput = () => {
     const inputType = getInputType(condition.field);
+    const inputClass = "w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+    
     switch (inputType) {
       case 'number':
         return (
@@ -11,7 +13,7 @@ const AdvancedSearchCondition = ({ condition, updateCondition, fieldOptions, all
             type="number"
             value={condition.value}
             onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={inputClass}
           />
         );
       case 'date':
@@ -20,7 +22,7 @@ const AdvancedSearchCondition = ({ condition, updateCondition, fieldOptions, all
             type="date"
             value={condition.value}
             onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={inputClass}
           />
         );
       case 'list':
@@ -30,7 +32,7 @@ const AdvancedSearchCondition = ({ condition, updateCondition, fieldOptions, all
             multiple
             value={condition.value.split(',')}
             onChange={(e) => updateCondition({ ...condition, value: Array.from(e.target.selectedOptions, option => option.value).join(',') })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={inputClass}
           >
             {options.map(option => (
               <option key={option} value={option}>{option}</option>
@@ -43,7 +45,7 @@ const AdvancedSearchCondition = ({ condition, updateCondition, fieldOptions, all
             type="text"
             value={condition.value}
             onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={inputClass}
           />
         );
     }
