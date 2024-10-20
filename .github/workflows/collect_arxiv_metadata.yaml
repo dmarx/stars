@@ -10,6 +10,7 @@ on:
     paths:
       - arxiv_metadata_collector.py
       - .github/workflows/collect_arxiv_metadata.yaml
+      - arxiv_metadata.json
 
 jobs:
   collect-arxiv-metadata:
