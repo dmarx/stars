@@ -5,16 +5,28 @@ from loguru import logger
 
 def commit_and_push(file_to_commit):
     try:
+        # Configure Git for GitHub Actions
         subprocess.run(["git", "config", "--global", "user.name", "GitHub Action"], check=True)
         subprocess.run(["git", "config", "--global", "user.email", "action@github.com"], check=True)
+        
+        # Check if there are any changes to commit
+        status = subprocess.run(["git", "status", "--porcelain", file_to_commit], capture_output=True, text=True, check=True)
+        if not status.stdout.strip():
+            logger.info(f"No changes to commit for {file_to_commit}.")
+            return
+
         subprocess.run(["git", "add", file_to_commit], check=True)
         subprocess.run(["git", "commit", "-m", f"Update {file_to_commit}"], check=True)
         subprocess.run(["git", "push"], check=True)
+        
         logger.info(f"Changes to {file_to_commit} committed and pushed successfully.")
     except subprocess.CalledProcessError as e:
         logger.error(f"Error during git operations: {e}")
-        logger.warning("Exiting early due to potential conflict.")
-        raise
+        if "nothing to commit" in str(e):
+            logger.info("No changes to commit. Continuing execution.")
+        else:
+            logger.warning("Exiting early due to Git error.")
+            raise
 
 def handle_rate_limit(response, threshold):
     remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
