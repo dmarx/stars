@@ -1,9 +1,15 @@
 name: Collect arXiv Metadata
 
 on:
+  workflow_dispatch:  # Allow manual triggering
   schedule:
     - cron: '0 0 * * 0'  # Run weekly on Sunday at 00:00 UTC
-  workflow_dispatch:  # Allow manual triggering
+  push:
+    branches:
+      - main
+    paths:
+      - arxiv_metadata_collector.py
+      - .github/workflows/collect_arxiv_metadata.yaml
 
 jobs:
   collect-arxiv-metadata:
