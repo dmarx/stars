@@ -89,44 +89,49 @@ def deduplicate_papers(papers):
 
     return unique_papers
 
-def fetch_arxiv_metadata(arxiv_id):
+def fetch_arxiv_metadata_batch(arxiv_ids):
     base_url = "http://export.arxiv.org/api/query"
     params = {
-        "id_list": arxiv_id,
-        "max_results": 1
+        "id_list": ",".join(arxiv_ids),
+        "max_results": len(arxiv_ids)
     }
     response = controlled_request(base_url, params=params)
     if response and response.status_code == 200:
         data = xmltodict.parse(response.content)
-        entry = data['feed']['entry']
+        entries = data['feed'].get('entry', [])
+        if not isinstance(entries, list):
+            entries = [entries]
         
-        # Handle potential variations in author structure
-        if isinstance(entry.get('author'), list):
-            authors = [author['name'] for author in entry['author']]
-        elif isinstance(entry.get('author'), dict):
-            authors = [entry['author']['name']]
-        else:
-            authors = []
+        results = []
+        for entry in entries:
+            # Handle potential variations in author structure
+            if isinstance(entry.get('author'), list):
+                authors = [author['name'] for author in entry['author']]
+            elif isinstance(entry.get('author'), dict):
+                authors = [entry['author']['name']]
+            else:
+                authors = []
 
-        # Handle potential variations in category structure
-        if isinstance(entry.get('category'), list):
-            categories = [cat['@term'] for cat in entry['category']]
-        elif isinstance(entry.get('category'), dict):
-            categories = [entry['category']['@term']]
-        else:
-            categories = []
+            # Handle potential variations in category structure
+            if isinstance(entry.get('category'), list):
+                categories = [cat['@term'] for cat in entry['category']]
+            elif isinstance(entry.get('category'), dict):
+                categories = [entry['category']['@term']]
+            else:
+                categories = []
 
-        return {
-            'source': 'arXiv',
-            'id': entry['id'],
-            'title': entry['title'],
-            'authors': authors,
-            'abstract': entry['summary'],
-            'categories': categories,
-            'published': entry['published'],
-            'updated': entry['updated']
-        }
-    return None
+            results.append({
+                'source': 'arXiv',
+                'id': entry['id'],
+                'title': entry['title'],
+                'authors': authors,
+                'abstract': entry['summary'],
+                'categories': categories,
+                'published': entry['published'],
+                'updated': entry['updated']
+            })
+        return results
+    return []
 
 def fetch_semantic_scholar_data(identifier, id_type='arxiv'):
     base_url = "https://api.semanticscholar.org/v1/paper/"
