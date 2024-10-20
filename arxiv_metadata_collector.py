@@ -26,48 +26,29 @@ def extract_arxiv_id(url_or_id):
         return url_or_id.replace('arXiv:', '').split('v')[0]
 
 def fetch_arxiv_metadata_batch(arxiv_ids):
-    base_url = "http://export.arxiv.org/api/query"
-    params = {
-        "id_list": ",".join(arxiv_ids),
-        "max_results": len(arxiv_ids)
-    }
-    response = controlled_request(base_url, params=params)
-    if response and response.status_code == 200:
-        data = xmltodict.parse(response.content)
-        entries = data['feed'].get('entry', [])
-        if not isinstance(entries, list):
-            entries = [entries]
-        
-        results = []
-        for entry in entries:
-            # Handle potential variations in author structure
-            if isinstance(entry.get('author'), list):
-                authors = [author['name'] for author in entry['author']]
-            elif isinstance(entry.get('author'), dict):
-                authors = [entry['author']['name']]
-            else:
-                authors = []
-
-            # Handle potential variations in category structure
-            if isinstance(entry.get('category'), list):
-                categories = [cat['@term'] for cat in entry['category']]
-            elif isinstance(entry.get('category'), dict):
-                categories = [entry['category']['@term']]
-            else:
-                categories = []
-
-            results.append({
-                'source': 'arXiv',
-                'id': entry['id'],
-                'title': entry['title'],
-                'authors': authors,
-                'abstract': entry['summary'],
-                'categories': categories,
-                'published': entry['published'],
-                'updated': entry['updated']
-            })
-        return results
-    return []
+    client = arxiv.Client()
+    search = arxiv.Search(
+        id_list=arxiv_ids,
+        max_results=len(arxiv_ids)
+    )
+    
+    results = {}
+    for result in client.results(search):
+        arxiv_id = result.get_short_id()
+        results[arxiv_id] = {
+            'id': result.entry_id,
+            'title': result.title,
+            'authors': [author.name for author in result.authors],
+            'abstract': result.summary,
+            'categories': result.categories,
+            'published': result.published.isoformat(),
+            'updated': result.updated.isoformat(),
+            'doi': result.doi,
+            'comment': result.comment,
+            'journal_ref': result.journal_ref,
+            'primary_category': result.primary_category
+        }
+    return results
 
 def load_existing_data():
     if os.path.exists(ARXIV_METADATA_FILE):
