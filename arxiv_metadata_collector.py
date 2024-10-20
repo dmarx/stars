@@ -17,13 +17,23 @@ ARXIV_API_BATCH_SIZE = 100  # arxiv package default is 100 results per query
 # Configure logger
 logger.add("arxiv_metadata_collector.log", rotation="10 MB")
 
+def clean_arxiv_id(arxiv_id):
+    # Remove any 'arXiv:' prefix
+    arxiv_id = arxiv_id.replace('arXiv:', '')
+    
+    # Remove version suffix (e.g., 'v1', 'v2')
+    arxiv_id = re.sub(r'v\d+$', '', arxiv_id)
+    
+    return arxiv_id.strip()
+
 def extract_arxiv_id(url_or_id):
     if url_or_id.startswith('http'):
         # Extract ID from URL
-        return url_or_id.split('/')[-1].split('v')[0]
+        arxiv_id = url_or_id.split('/')[-1]
     else:
-        # Remove 'arXiv:' prefix if present and version number
-        return url_or_id.replace('arXiv:', '').split('v')[0]
+        arxiv_id = url_or_id
+    
+    return clean_arxiv_id(arxiv_id)
 
 def fetch_arxiv_metadata_batch(arxiv_ids):
     client = arxiv.Client()
@@ -35,6 +45,7 @@ def fetch_arxiv_metadata_batch(arxiv_ids):
     results = {}
     for result in client.results(search):
         arxiv_id = result.get_short_id()
+        arxiv_id = clean_arxiv_id(arxiv_id)
         results[arxiv_id] = {
             'id': result.entry_id,
             'title': result.title,
@@ -62,7 +73,7 @@ def save_data(data):
 
 def process_arxiv_ids(arxiv_ids, existing_data):
     changes_made = False
-    new_arxiv_ids = [id for id in arxiv_ids if id not in existing_data]
+    new_arxiv_ids = list(set([clean_arxiv_id(id) for id in arxiv_ids if clean_arxiv_id(id) not in existing_data]))
 
     for i in range(0, len(new_arxiv_ids), ARXIV_API_BATCH_SIZE):
         batch = new_arxiv_ids[i:i+ARXIV_API_BATCH_SIZE]
