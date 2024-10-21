@@ -43,11 +43,51 @@ const useRepositories = () => {
                              repo.metadata[condition.field];
           
           if (fieldValue === null || fieldValue === undefined) return false;
-
-          // ... (rest of the matching logic)
-          return true; // Placeholder, implement actual matching logic here
+          let matches;
+          switch (condition.operator) {
+            case 'contains':
+              matches = Array.isArray(fieldValue) 
+                ? fieldValue.some(value => String(value).toLowerCase().includes(condition.value.toLowerCase()))
+                : String(fieldValue).toLowerCase().includes(condition.value.toLowerCase());
+              break;
+            case 'equals':
+              matches = Array.isArray(fieldValue)
+                ? fieldValue.some(value => String(value).toLowerCase() === condition.value.toLowerCase())
+                : String(fieldValue).toLowerCase() === condition.value.toLowerCase();
+              break;
+            case 'starts_with':
+              matches = Array.isArray(fieldValue)
+                ? fieldValue.some(value => String(value).toLowerCase().startsWith(condition.value.toLowerCase()))
+                : String(fieldValue).toLowerCase().startsWith(condition.value.toLowerCase());
+              break;
+            case 'ends_with':
+              matches = Array.isArray(fieldValue)
+                ? fieldValue.some(value => String(value).toLowerCase().endsWith(condition.value.toLowerCase()))
+                : String(fieldValue).toLowerCase().endsWith(condition.value.toLowerCase());
+              break;
+            case 'greater_than':
+            case 'after':
+              matches = new Date(fieldValue) > new Date(condition.value);
+              break;
+            case 'less_than':
+            case 'before':
+              matches = new Date(fieldValue) < new Date(condition.value);
+              break;
+            case 'includes':
+              matches = Array.isArray(fieldValue) && condition.value.split(',').some(val => 
+                fieldValue.some(category => category.toLowerCase().includes(val.toLowerCase()))
+              );
+              break;
+            case 'excludes':
+              matches = Array.isArray(fieldValue) && !condition.value.split(',').some(val => 
+                fieldValue.some(category => category.toLowerCase().includes(val.toLowerCase()))
+              );
+              break;
+            default:
+              matches = true;
+          }
+          return matches;
         });
-
         return matchesTextSearch && matchesAdvancedSearch;
       });
 
