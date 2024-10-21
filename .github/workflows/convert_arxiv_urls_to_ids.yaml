@@ -19,6 +19,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_USERNAME: ${{ github.repository_owner }}
       run: |
+        pip install loguru
         python scripts/convert_arxiv_urls_to_ids.py
 
         # commit and push if changes
