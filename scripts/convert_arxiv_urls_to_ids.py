@@ -1,6 +1,8 @@
 import json
 import re
 import sys
+import subprocess
+from loguru import logger
 
 class ArXivURLParsingError(Exception):
     """Custom exception for arXiv URL parsing errors."""
