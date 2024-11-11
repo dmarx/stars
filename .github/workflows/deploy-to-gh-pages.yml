@@ -1,12 +1,12 @@
 name: Deploy to GitHub Pages
 on:
   push:
-    branches:
-      - main
-    paths:
-      - 'src/**'
-      - '*.json'
-      - '.github/workflows/deploy.yml'
+    # branches:
+    #   - main
+    # paths:
+    #   - 'src/**'
+    #   - '*.json'
+    #   - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
 jobs:
