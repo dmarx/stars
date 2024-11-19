@@ -32,4 +32,3 @@ jobs:
       - name: Generate README
         run: |
           llamero readme
-          llamero build_template docs/readme_llm
