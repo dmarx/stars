@@ -23,8 +23,9 @@ ignore_patterns = [
 ]
 
 [tool.readme.sections.order]
-"introduction.md.j2" = 0
-"features.md.j2" = 1
+"main.md.j2" = 0
+"introduction.md.j2" = 1.1
+"features.md.j2" = 1.2
 "prerequisites.md.j2" = 2
 "setup.md.j2" = 2.1
 "installation.md.j2" = 2.2
