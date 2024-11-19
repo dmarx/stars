@@ -36,4 +36,4 @@ ignore_patterns = [
 "todo.md.j2" = 999
 
 [tool.summary]
-max_file_size_kb = 1000  # Skip files larger than 1MB
+max_file_size_kb = 500  # Skip files larger than 0.5MB
