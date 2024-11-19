@@ -6,8 +6,8 @@ const useRepositories = () => {
   const [filteredRepos, setFilteredRepos] = useState([]);
   const [allLists, setAllLists] = useState([]);
   const [arxivMetadata, setArxivMetadata] = useState({});
-  const [sortOption, setSortOption] = useState('stars');
-  const [sortDirection, setSortDirection] = useState('desc');
+  const [sortOption, setSortOption] = useState('starred_at'); // default sort field
+  const [sortDirection, setSortDirection] = useState('desc'); // default sort direction
   const [textSearch, setTextSearch] = useState('');
   const [searchConditions, setSearchConditions] = useState([]);
 
