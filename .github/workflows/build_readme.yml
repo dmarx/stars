@@ -30,4 +30,6 @@ jobs:
         run: pip install llamero
 
       - name: Generate README
-        run: llamero readme
+        run: |
+          llamero readme
+          llamero build_template docs/readme_llm
