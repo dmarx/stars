@@ -6,8 +6,8 @@ const useRepositories = () => {
   const [filteredRepos, setFilteredRepos] = useState([]);
   const [allLists, setAllLists] = useState([]);
   const [arxivMetadata, setArxivMetadata] = useState({});
-  const [sortOption, setSortOption] = useState('starred_at'); // default sort field
-  const [sortDirection, setSortDirection] = useState('desc'); // default sort direction
+  const [sortOption, setSortOption] = useState('starred_at');
+  const [sortDirection, setSortDirection] = useState('desc');
   const [textSearch, setTextSearch] = useState('');
   const [searchConditions, setSearchConditions] = useState([]);
 
@@ -105,12 +105,12 @@ const useRepositories = () => {
           case 'created_at':
           case 'pushed_at':
           case 'starred_at':
-            return (new Date(repoB.metadata[sortOption]) - new Date(repoA.metadata[sortOption])) * direction;
+            return (new Date(repoA.metadata[sortOption]) - new Date(repoB.metadata[sortOption])) * direction; // Fixed order
           case 'arxiv_published':
           case 'arxiv_updated':
             const dateA = new Date(getArxivFieldValue(repoA, sortOption, arxivMetadata) || 0);
             const dateB = new Date(getArxivFieldValue(repoB, sortOption, arxivMetadata) || 0);
-            return (dateB - dateA) * direction;
+            return (dateA - dateB) * direction; // Fixed order
           default:
             return 0;
         }
