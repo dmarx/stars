@@ -1,0 +1,33 @@
+name: Build README
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  # test:
+  #   uses: ./.github/workflows/test.yml
+
+  build-readme:
+    # needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+      
+      - name: Install package
+        run: pip install llamero
+
+      - name: Generate README
+        run: llamero readme
