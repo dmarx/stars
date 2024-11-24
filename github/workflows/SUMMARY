@@ -1,0 +1,481 @@
+================================================================================
+File: .github/workflows/build_readme.yml
+================================================================================
+name: Build README
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  # test:
+  #   uses: ./.github/workflows/test.yml
+
+  build-readme:
+    # needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+      
+      - name: Install package
+        run: pip install llamero
+
+      - name: Generate README
+        run: |
+          llamero readme
+
+
+
+================================================================================
+File: .github/workflows/collect_article_metadata.yaml
+================================================================================
+name: Collect Comprehensive Article Metadata
+
+on:
+  # schedule:
+  #   - cron: '0 0 * * 0'  # Run weekly on Sunday at 00:00 UTC
+  workflow_dispatch:  # Allow manual triggering
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests xmltodict pyyaml loguru pytest
+
+    - name: Run tests
+      run: pytest tests/
+
+  collect-metadata:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests xmltodict pyyaml loguru
+
+    - name: Run metadata collector
+      run: python arxiv_metadata_collector.py
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Commit and push if changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add comprehensive_metadata.json
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update comprehensive paper metadata" && git push)
+
+
+
+================================================================================
+File: .github/workflows/collect_arxiv_metadata.yaml
+================================================================================
+name: Collect arXiv Metadata
+
+on:
+  workflow_dispatch:  # Allow manual triggering
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly on Sunday at 00:00 UTC
+  push:
+    branches:
+      - main
+    paths:
+      - arxiv_metadata_collector.py
+      - .github/workflows/collect_arxiv_metadata.yaml
+      - arxiv_metadata.json
+
+jobs:
+  collect-arxiv-metadata:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyyaml loguru arxiv
+
+    - name: Run arXiv metadata collector
+      run: python arxiv_metadata_collector.py
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Commit and push if changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add arxiv_metadata.json
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update arXiv metadata" && git push)
+
+
+
+================================================================================
+File: .github/workflows/convert_arxiv_urls_to_ids.yaml
+================================================================================
+name: Convert Arxiv URLs to IDs
+
+on:
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  convert-urls-to-ids:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Convert IDs to URLs
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_USERNAME: ${{ github.repository_owner }}
+      run: |
+        pip install loguru
+        python scripts/convert_arxiv_urls_to_ids.py
+
+        # commit and push if changes
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add github_stars.json
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update star lists data" && git push)
+
+
+
+================================================================================
+File: .github/workflows/deploy-to-gh-pages.yml
+================================================================================
+name: Deploy to GitHub Pages
+on:
+  push:
+    # branches:
+    #   - main
+    # paths:
+    #   - 'src/**'
+    #   - '*.json'
+    #   - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+  workflow_run:
+    types: completed
+    workflows: 
+      - Scrape Github Stars
+      - Update Star Lists
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-node-
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Copy data files to public directory
+      run: |
+        cp github_stars.json public/
+        cp arxiv_metadata.json public/
+
+    - name: Build
+      run: npm run build
+      env:
+        CI: false
+
+    - name: Debug - List directory contents
+      run: |
+        echo "Contents of the public directory:"
+        ls -R public
+        echo "Contents of the build directory:"
+        ls -R build
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./build
+        force_orphan: true
+
+    - name: Output deployment URL
+      run: echo "Deployed to https://dmarx.github.io/stars"
+
+
+
+================================================================================
+File: .github/workflows/fix_arxiv_categories.yaml
+================================================================================
+name: Transform arXiv Categories
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - scripts/transform_categories.py
+      - .github/workflows/fix_arxiv_categories.yaml
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  transform-categories:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install loguru
+    
+    - name: Run transformation script
+      run: python scripts/transform_categories.py
+
+
+
+================================================================================
+File: .github/workflows/generate-package-lock.yml
+================================================================================
+name: Generate package-lock.json
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate-package-lock:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Generate package-lock.json
+      run: node scripts/generate-package-lock.js
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+
+================================================================================
+File: .github/workflows/generate_summaries.yml
+================================================================================
+name: Generate Directory Summaries
+
+on:
+#  push:
+    # branches:
+    #   - main
+    # paths:
+    #   - '.github/workflows/generate-summaries.yml'
+    #   - 'src/summary_generator/**'
+    #   - 'pyproject.toml'
+  workflow_dispatch:
+
+jobs:
+  generate-summaries:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install project
+      run: pip install "llamero>=0.1.2"
+
+    - name: Generate summaries
+      run: llamero summarize all
+
+
+
+================================================================================
+File: .github/workflows/main.yml
+================================================================================
+name: Scrape GitHub Stars
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight UTC
+  workflow_dispatch:  # Allow manual triggering
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests loguru pytest
+
+    - name: Run tests
+      run: pytest tests/test_scrape.py
+
+  scrape-stars:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests loguru
+
+    - name: Debug information
+      run: |
+        echo "Current directory: $(pwd)"
+        echo "Repository: ${{ github.repository }}"
+        echo "Repository owner: ${{ github.repository_owner }}"
+        git remote -v
+        git config --get remote.origin.url
+
+    - name: Check GitHub token
+      run: |
+        if [ -z "${{ secrets.GITHUB_TOKEN }}" ]; then
+          echo "GITHUB_TOKEN is not set in the repository secrets."
+          exit 1
+        fi
+
+    - name: Run star scraper
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_USERNAME: ${{ github.repository_owner }}
+      run: python scrape_stars.py
+
+    - name: Commit and push if changes
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add github_stars.json
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update GitHub stars data" && git push)
+
+
+
+================================================================================
+File: .github/workflows/update_star_lists.yml
+================================================================================
+name: Update Star Lists
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # Run daily at 1 AM UTC
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  update-star-lists:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests beautifulsoup4 loguru
+
+    - name: Run star lists update script
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_USERNAME: ${{ github.repository_owner }}
+      run: |
+        echo "GITHUB_USERNAME: $GITHUB_USERNAME"
+        echo "GITHUB_TOKEN is set: ${{ secrets.GITHUB_TOKEN != '' }}"
+        python update_star_lists.py
+
+    - name: Commit and push if changes
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add github_stars.json
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update star lists data" && git push)
+
+

@@ -1,0 +1,870 @@
+================================================================================
+File: src/App.js
+================================================================================
+import React from 'react';
+import Dashboard from './components/Dashboard';
+
+function App() {
+  return (
+    <div className="App">
+      <Dashboard />
+    </div>
+  );
+}
+
+export default App;
+
+
+
+================================================================================
+File: src/README.md
+================================================================================
+# GitHub Stars Dashboard - Source Code Structure
+
+This document provides an overview of the source code structure for the GitHub Stars Dashboard project. The project is built using React and organized into components, hooks, and utility functions for better maintainability and reusability.
+
+## File Structure
+
+```
+src/
+├── components/
+│   ├── Dashboard.js
+│   ├── SortDropdown.js
+│   ├── AdvancedSearchCondition.js
+│   ├── AdvancedSearch.js
+│   ├── ArXivBadge.js
+│   └── ExpandedRepoView.js
+├── hooks/
+│   └── useRepositories.js
+├── utils/
+│   ├── arxivUtils.js
+│   └── sortUtils.js
+├── App.js
+├── index.js
+└── index.css
+```
+
+## Main Application Files
+
+### App.js
+The root component of the application. It typically renders the main `Dashboard` component and may include any global providers or context.
+
+### index.js
+The entry point of the React application. It renders the `App` component and attaches it to the DOM.
+
+### index.css
+Contains global styles for the application. This may include reset styles, global typography rules, or other app-wide CSS.
+
+## Components
+
+### Dashboard.js
+The main component that renders the entire dashboard. It orchestrates the other components and manages the overall state of the application.
+
+### SortDropdown.js
+A reusable dropdown component for sorting repositories. It allows users to select sorting criteria and direction.
+
+### AdvancedSearchCondition.js
+Renders a single condition in the advanced search feature. It includes fields for selecting the search attribute, operator, and value.
+
+### AdvancedSearch.js
+Manages the advanced search feature, allowing users to add, remove, and modify search conditions.
+
+### ArXivBadge.js
+A small component that displays an arXiv badge for repositories linked to arXiv papers.
+
+### ExpandedRepoView.js
+Renders detailed information about a repository when it's expanded in the list view.
+
+## Hooks
+
+### useRepositories.js
+A custom hook that manages the fetching, filtering, and sorting of repository data. It encapsulates the complex logic for data manipulation, making it easier to test and maintain.
+
+## Utilities
+
+### arxivUtils.js
+Contains utility functions for working with arXiv-related data, such as extracting arXiv IDs and retrieving specific fields from arXiv metadata.
+
+### sortUtils.js
+Provides utility functions and constants related to sorting and field operations, including field options, operator lists, and input type determination.
+
+## Usage
+
+To use these components and utilities in your React application:
+
+1. The `index.js` file serves as the entry point and renders the `App` component.
+
+2. The `App.js` file renders the main `Dashboard` component.
+
+3. The `Dashboard` component will handle the rendering of all sub-components and manage the application state.
+
+4. Global styles are defined in `index.css` and applied to the entire application.
+
+## Development
+
+When developing new features or modifying existing ones:
+
+- Keep components focused on a single responsibility.
+- Use the `useRepositories` hook for data fetching and manipulation logic.
+- Place any new utility functions in the appropriate utility file or create a new one if necessary.
+- Update this README when adding new components or significantly changing the project structure.
+- Add any global styles to `index.css`, but prefer component-specific styles when possible.
+
+## Testing
+
+- Each component and utility function should have corresponding unit tests.
+- Use React Testing Library for component tests.
+- Place test files adjacent to the components or utilities they're testing, with a `.test.js` suffix.
+
+## Styling
+
+- The project uses Tailwind CSS for styling. Refer to the Tailwind documentation for available classes.
+- Global styles are in `index.css`. Use this for app-wide styling needs.
+- Component-specific styles should be added using Tailwind classes directly in the component files.
+- If custom styles are needed beyond Tailwind, consider creating a separate CSS module for the component.
+
+## Data Flow
+
+1. The `useRepositories` hook fetches data from the JSON files.
+2. The main `Dashboard` component receives the data and filtering/sorting functions from the hook.
+3. User interactions (sorting, searching, expanding repos) trigger state updates in the `Dashboard` component.
+4. These state changes cause the `useRepositories` hook to re-filter and re-sort the data.
+5. The updated data flows down to the child components for rendering.
+
+Remember to keep this README updated as the project evolves. Good documentation is key to maintaining a healthy, collaborative project!
+
+
+
+================================================================================
+File: src/components/AdvancedSearch.js
+================================================================================
+import React from 'react';
+import { Plus, Trash2 } from 'lucide-react';
+import AdvancedSearchCondition from './AdvancedSearchCondition';
+
+const AdvancedSearch = ({ conditions, setConditions, fieldOptions, allLists, allCategories }) => {
+  const addCondition = () => {
+    setConditions([...conditions, { field: 'name', operator: 'contains', value: '', conjunction: 'AND' }]);
+  };
+
+  const updateCondition = (index, newCondition) => {
+    const newConditions = [...conditions];
+    newConditions[index] = newCondition;
+    setConditions(newConditions);
+  };
+
+  const removeCondition = (index) => {
+    setConditions(conditions.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+      <h3 className="text-xl font-semibold mb-4 text-gray-800">Advanced Search</h3>
+      <div className="space-y-4">
+        {conditions.map((condition, index) => (
+          <div key={index} className="flex items-start">
+            <div className="w-20 pt-2">
+              {index > 0 && (
+                <select
+                  value={condition.conjunction}
+                  onChange={(e) => updateCondition(index, { ...condition, conjunction: e.target.value })}
+                  className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="AND">AND</option>
+                  <option value="OR">OR</option>
+                </select>
+              )}
+            </div>
+            <div className="flex-grow">
+              <AdvancedSearchCondition
+                condition={condition}
+                updateCondition={(newCondition) => updateCondition(index, newCondition)}
+                fieldOptions={fieldOptions}
+                allLists={allLists}
+                allCategories={allCategories}
+              />
+            </div>
+            <button
+              onClick={() => removeCondition(index)}
+              className="ml-2 p-2 text-red-600 hover:text-red-800 focus:outline-none"
+              aria-label="Remove condition"
+            >
+              <Trash2 size={20} />
+            </button>
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={addCondition}
+          className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          <Plus size={20} className="mr-2" />
+          Add condition
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default AdvancedSearch;
+
+
+
+================================================================================
+File: src/components/AdvancedSearchCondition.js
+================================================================================
+import React from 'react';
+import { getOperators, getInputType } from '../utils/sortUtils';
+
+const AdvancedSearchCondition = ({ condition, updateCondition, fieldOptions, allLists, allCategories }) => {
+  const renderInput = () => {
+    const inputType = getInputType(condition.field);
+    const inputClass = "w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+    
+    switch (inputType) {
+      case 'number':
+        return (
+          <input
+            type="number"
+            value={condition.value}
+            onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
+            className={inputClass}
+          />
+        );
+      case 'date':
+        return (
+          <input
+            type="date"
+            value={condition.value}
+            onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
+            className={inputClass}
+          />
+        );
+      case 'list':
+        const options = condition.field === 'lists' ? allLists : allCategories;
+        return (
+          <select
+            multiple
+            value={condition.value.split(',')}
+            onChange={(e) => updateCondition({ ...condition, value: Array.from(e.target.selectedOptions, option => option.value).join(',') })}
+            className={inputClass}
+          >
+            {options.map(option => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
+        );
+      default:
+        return (
+          <input
+            type="text"
+            value={condition.value}
+            onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
+            className={inputClass}
+          />
+        );
+    }
+  };
+
+  const fieldType = getInputType(condition.field);
+  const operators = getOperators(fieldType);
+
+  return (
+    <div className="flex items-center space-x-2">
+      <select
+        value={condition.field}
+        onChange={(e) => updateCondition({ ...condition, field: e.target.value, operator: getOperators(getInputType(e.target.value))[0].value })}
+        className="w-1/3 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        {fieldOptions.map(option => (
+          <option key={option.value} value={option.value}>{option.label}</option>
+        ))}
+      </select>
+      <select
+        value={condition.operator}
+        onChange={(e) => updateCondition({ ...condition, operator: e.target.value })}
+        className="w-1/3 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        {operators.map(op => (
+          <option key={op.value} value={op.value}>{op.label}</option>
+        ))}
+      </select>
+      <div className="w-1/3">
+        {renderInput()}
+      </div>
+    </div>
+  );
+};
+
+export default AdvancedSearchCondition;
+
+
+
+================================================================================
+File: src/components/ArXivBadge.js
+================================================================================
+import React from 'react';
+import { FileText } from 'lucide-react';
+import { extractArXivId } from '../utils/arxivUtils';
+
+const ArXivBadge = ({ arxivInfo, arxivMetadata }) => {
+  const arxivId = extractArXivId(arxivInfo.primary_id || arxivInfo.primary_url);
+  const paperMetadata = arxivMetadata[arxivId];
+
+  return (
+    <div className="flex items-center space-x-2">
+      <a
+        href={`https://arxiv.org/abs/${arxivId}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <FileText size={14} className="mr-1" />
+        arXiv
+      </a>
+      {paperMetadata && paperMetadata.categories && paperMetadata.categories.length > 0 && (
+        <span className="text-xs text-gray-500">{paperMetadata.categories[0]['@term']}</span>
+      )}
+    </div>
+  );
+};
+
+export default ArXivBadge;
+
+
+
+================================================================================
+File: src/components/Dashboard.js
+================================================================================
+import React, { useState } from 'react';
+import { Search, SlidersHorizontal, ArrowDown, ArrowUp, ChevronDown, ChevronUp, Github as GithubIcon } from 'lucide-react';
+import SortDropdown from './SortDropdown';
+import AdvancedSearch from './AdvancedSearch';
+import ArXivBadge from './ArXivBadge';
+import ExpandedRepoView from './ExpandedRepoView';
+import useRepositories from '../hooks/useRepositories';
+import { fieldOptions } from '../utils/sortUtils';
+
+const Dashboard = () => {
+  const [expandedRepo, setExpandedRepo] = useState(null);
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+
+  const {
+    data,
+    filteredRepos,
+    allLists,
+    allCategories,
+    handleSortChange,
+    toggleSortDirection,
+    arxivMetadata,
+    sortOption,
+    sortDirection,
+    textSearch,
+    setTextSearch,
+    searchConditions,
+    setSearchConditions
+  } = useRepositories();
+
+  const toggleRepoExpansion = (name, event) => {
+    // Prevent toggling if the click was on the GitHub link
+    if (event.target.closest('a')) return;
+    setExpandedRepo(expandedRepo === name ? null : name);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    console.log("Search submitted:", textSearch);
+  };
+
+  if (!data) {
+    return <div className="flex items-center justify-center h-screen text-2xl">Loading...</div>;
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <header className="mb-8">
+        {/* Header content */}
+        <form onSubmit={handleSearchSubmit} className="flex items-center mb-4">
+          <input
+            type="text"
+            placeholder="Search repositories..."
+            value={textSearch}
+            onChange={(e) => setTextSearch(e.target.value)}
+            className="flex-grow px-4 py-2 rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label="Search"
+          >
+            <Search size={20} />
+          </button>
+        </form>
+        <div className="flex justify-between items-center mb-4">
+          <button
+            onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
+            className="flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <SlidersHorizontal size={20} className="mr-2" />
+            {showAdvancedSearch ? 'Hide' : 'Show'} Advanced Search
+          </button>
+          <div className="flex items-center space-x-2">
+            <SortDropdown 
+              sortOption={sortOption}
+              sortDirection={sortDirection}
+              handleSortChange={handleSortChange}
+            />
+            <button
+              onClick={toggleSortDirection}
+              className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label={`Sort ${sortDirection === 'desc' ? 'descending' : 'ascending'}`}
+            >
+              {sortDirection === 'desc' ? <ArrowDown size={20} /> : <ArrowUp size={20} />}
+            </button>
+          </div>
+        </div>
+        {showAdvancedSearch && (
+          <AdvancedSearch 
+            conditions={searchConditions}
+            setConditions={setSearchConditions}
+            fieldOptions={fieldOptions}
+            allLists={allLists}
+            allCategories={allCategories}
+          />
+        )}
+      </header>
+      
+      <main>
+        <h2 className="text-2xl font-semibold mb-4">Repositories ({filteredRepos.length})</h2>
+        <ul className="space-y-4">
+          {filteredRepos.map(([name, repo]) => (
+            <li key={name} className="bg-white shadow rounded-lg overflow-hidden">
+              <div 
+                className="px-6 py-4 cursor-pointer hover:bg-gray-50"
+                onClick={(e) => toggleRepoExpansion(name, e)}
+              >
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-4">
+                    <a
+                      href={`https://github.com/${name}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline flex items-center"
+                      onClick={(e) => e.stopPropagation()} // Prevent toggling when clicking the link
+                    >
+                      <GithubIcon size={20} className="mr-1" />
+                      {name}
+                    </a>
+                    <span className="text-sm font-medium text-gray-600">{repo.metadata.stars} ★</span>
+                    {repo.arxiv && (repo.arxiv.primary_id || repo.arxiv.primary_url) && (
+                      <ArXivBadge arxivInfo={repo.arxiv} arxivMetadata={arxivMetadata} />
+                    )}
+                  </div>
+                  {expandedRepo === name ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                </div>
+                <p className="text-sm text-gray-600 mt-2">{repo.metadata.description}</p>
+              </div>
+              {expandedRepo === name && (
+                <ExpandedRepoView repo={repo} name={name} arxivMetadata={arxivMetadata} />
+              )}
+            </li>
+          ))}
+        </ul>
+      </main>
+    </div>
+  );
+};
+
+export default Dashboard;
+
+
+
+================================================================================
+File: src/components/ExpandedRepoView.js
+================================================================================
+import React from 'react';
+import { extractArXivId } from '../utils/arxivUtils';
+
+const ExpandedRepoView = ({ repo, name, arxivMetadata }) => {
+  const arxivId = extractArXivId(repo.arxiv?.primary_id || repo.arxiv?.primary_url);
+  const paperMetadata = arxivMetadata[arxivId];
+
+  return (
+    <div className="px-6 py-4 border-t border-gray-100">
+      <p className="text-gray-700 mb-2">{repo.metadata.description}</p>
+      <p className="text-sm text-gray-600 mb-2">Language: {repo.metadata.language}</p>
+      <p className="text-sm text-gray-600 mb-2">Created: {new Date(repo.metadata.created_at).toLocaleDateString()}</p>
+      <p className="text-sm text-gray-600 mb-2">Last updated: {new Date(repo.metadata.updated_at).toLocaleDateString()}</p>
+      <p className="text-sm text-gray-600 mb-2">Last pushed: {new Date(repo.metadata.pushed_at).toLocaleDateString()}</p>
+      <p className="text-sm text-gray-600 mb-2">Starred at: {new Date(repo.metadata.starred_at).toLocaleDateString()}</p>
+      {repo.lists && repo.lists.length > 0 && (
+        <p className="text-sm text-gray-600 mb-2">Lists: {repo.lists.join(', ')}</p>
+      )}
+      {paperMetadata && (
+        <div className="mt-4">
+          <h4 className="text-lg font-semibold mb-2">arXiv Paper Details</h4>
+          <p className="text-sm text-gray-700 mb-1">Title: {paperMetadata.title}</p>
+          <p className="text-sm text-gray-700 mb-1">Authors: {paperMetadata.authors.join(', ')}</p>
+          <p className="text-sm text-gray-700 mb-1">Published: {new Date(paperMetadata.published).toLocaleDateString()}</p>
+          <p className="text-sm text-gray-700 mb-1">Last Updated: {new Date(paperMetadata.updated).toLocaleDateString()}</p>
+          <p className="text-sm text-gray-700 mb-1">Categories: {paperMetadata.categories.map(cat => cat['@term']).join(', ')}</p>
+          <details className="mt-2">
+            <summary className="text-sm text-blue-600 cursor-pointer">Abstract</summary>
+            <p className="text-sm text-gray-700 mt-1">{paperMetadata.abstract}</p>
+          </details>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ExpandedRepoView;
+
+
+
+================================================================================
+File: src/components/SortDropdown.js
+================================================================================
+import React, { useState } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+
+const SortDropdown = ({ sortOption, sortDirection, handleSortChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const options = [
+    { value: 'stars', label: 'Stars' },
+    { value: 'name', label: 'Name' },
+    { value: 'updated_at', label: 'Last Updated' },
+    { value: 'created_at', label: 'Created' },
+    { value: 'pushed_at', label: 'Last Pushed' },
+    { value: 'starred_at', label: 'Starred At' },
+    { value: 'arxiv_published', label: 'arXiv Published Date' },
+    { value: 'arxiv_updated', label: 'arXiv Updated Date' },
+  ];
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between w-48 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
+      >
+        {options.find(opt => opt.value === sortOption).label}
+        {isOpen ? <ChevronUp className="w-5 h-5 ml-2" /> : <ChevronDown className="w-5 h-5 ml-2" />}
+      </button>
+      {isOpen && (
+        <div className="absolute right-0 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+          <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+            {options.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => {
+                  handleSortChange(option.value);
+                  setIsOpen(false);
+                }}
+                className="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                role="menuitem"
+              >
+                {option.label}
+                {sortOption === option.value && (
+                  <span>{sortDirection === 'desc' ? '▼' : '▲'}</span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default SortDropdown;
+
+
+
+================================================================================
+File: src/hooks/useRepositories.js
+================================================================================
+import { useState, useEffect } from 'react';
+import { getArxivFieldValue } from '../utils/arxivUtils';
+
+const useRepositories = () => {
+  const [data, setData] = useState(null);
+  const [filteredRepos, setFilteredRepos] = useState([]);
+  const [allLists, setAllLists] = useState([]);
+  const [arxivMetadata, setArxivMetadata] = useState({});
+  const [sortOption, setSortOption] = useState('starred_at');
+  const [sortDirection, setSortDirection] = useState('desc');
+  const [textSearch, setTextSearch] = useState('');
+  const [searchConditions, setSearchConditions] = useState([]);
+
+  useEffect(() => {
+    Promise.all([
+      fetch(`${process.env.PUBLIC_URL}/github_stars.json`).then(response => response.json()),
+      fetch(`${process.env.PUBLIC_URL}/arxiv_metadata.json`).then(response => response.json())
+    ])
+    .then(([jsonData, metadata]) => {
+      setData(jsonData);
+      setArxivMetadata(metadata);
+      const lists = new Set();
+      Object.values(jsonData.repositories).forEach(repo => {
+        (repo.lists || []).forEach(list => lists.add(list));
+      });
+      setAllLists(Array.from(lists).sort());
+    })
+    .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
+  useEffect(() => {
+    if (data && data.repositories) {
+      let filtered = Object.entries(data.repositories).filter(([name, repo]) => {
+        const matchesTextSearch = 
+          textSearch === '' ||
+          name.toLowerCase().includes(textSearch.toLowerCase()) ||
+          (repo.metadata.description && repo.metadata.description.toLowerCase().includes(textSearch.toLowerCase()));
+
+        const matchesAdvancedSearch = searchConditions.every((condition) => {
+          const fieldValue = condition.field === 'name' ? name : 
+                             condition.field === 'lists' ? repo.lists || [] :
+                             condition.field.startsWith('arxiv_') ? getArxivFieldValue(repo, condition.field, arxivMetadata) :
+                             repo.metadata[condition.field];
+          
+          if (fieldValue === null || fieldValue === undefined) return false;
+          let matches;
+          switch (condition.operator) {
+            case 'contains':
+              matches = Array.isArray(fieldValue) 
+                ? fieldValue.some(value => String(value).toLowerCase().includes(condition.value.toLowerCase()))
+                : String(fieldValue).toLowerCase().includes(condition.value.toLowerCase());
+              break;
+            case 'equals':
+              matches = Array.isArray(fieldValue)
+                ? fieldValue.some(value => String(value).toLowerCase() === condition.value.toLowerCase())
+                : String(fieldValue).toLowerCase() === condition.value.toLowerCase();
+              break;
+            case 'starts_with':
+              matches = Array.isArray(fieldValue)
+                ? fieldValue.some(value => String(value).toLowerCase().startsWith(condition.value.toLowerCase()))
+                : String(fieldValue).toLowerCase().startsWith(condition.value.toLowerCase());
+              break;
+            case 'ends_with':
+              matches = Array.isArray(fieldValue)
+                ? fieldValue.some(value => String(value).toLowerCase().endsWith(condition.value.toLowerCase()))
+                : String(fieldValue).toLowerCase().endsWith(condition.value.toLowerCase());
+              break;
+            case 'greater_than':
+            case 'after':
+              matches = new Date(fieldValue) > new Date(condition.value);
+              break;
+            case 'less_than':
+            case 'before':
+              matches = new Date(fieldValue) < new Date(condition.value);
+              break;
+            case 'includes':
+              matches = Array.isArray(fieldValue) && condition.value.split(',').some(val => 
+                fieldValue.some(category => category.toLowerCase().includes(val.toLowerCase()))
+              );
+              break;
+            case 'excludes':
+              matches = Array.isArray(fieldValue) && !condition.value.split(',').some(val => 
+                fieldValue.some(category => category.toLowerCase().includes(val.toLowerCase()))
+              );
+              break;
+            default:
+              matches = true;
+          }
+          return matches;
+        });
+        return matchesTextSearch && matchesAdvancedSearch;
+      });
+
+      filtered.sort((a, b) => {
+        const [, repoA] = a;
+        const [, repoB] = b;
+        const direction = sortDirection === 'desc' ? -1 : 1;
+
+        switch (sortOption) {
+          case 'stars':
+            return (repoB.metadata.stars - repoA.metadata.stars) * direction;
+          case 'name':
+            return a[0].localeCompare(b[0]) * direction;
+          case 'updated_at':
+          case 'created_at':
+          case 'pushed_at':
+          case 'starred_at':
+            return (new Date(repoA.metadata[sortOption]) - new Date(repoB.metadata[sortOption])) * direction; // Fixed order
+          case 'arxiv_published':
+          case 'arxiv_updated':
+            const dateA = new Date(getArxivFieldValue(repoA, sortOption, arxivMetadata) || 0);
+            const dateB = new Date(getArxivFieldValue(repoB, sortOption, arxivMetadata) || 0);
+            return (dateA - dateB) * direction; // Fixed order
+          default:
+            return 0;
+        }
+      });
+
+      setFilteredRepos(filtered);
+    }
+  }, [data, sortOption, sortDirection, textSearch, searchConditions, arxivMetadata]);
+
+  const handleSortChange = (option) => {
+    if (option === sortOption) {
+      setSortDirection(prev => prev === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortOption(option);
+      setSortDirection('desc');
+    }
+  };
+
+  const toggleSortDirection = () => {
+    setSortDirection(prev => prev === 'desc' ? 'asc' : 'desc');
+  };
+
+  return {
+    data,
+    filteredRepos,
+    allLists,
+    allCategories: [...new Set(Object.values(arxivMetadata).flatMap(paper => paper.categories))],
+    handleSortChange,
+    toggleSortDirection,
+    arxivMetadata,
+    sortOption,
+    sortDirection,
+    textSearch,
+    setTextSearch,
+    searchConditions,
+    setSearchConditions
+  };
+};
+
+export default useRepositories;
+
+
+
+================================================================================
+File: src/index.css
+================================================================================
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+================================================================================
+File: src/index.js
+================================================================================
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+
+
+================================================================================
+File: src/utils/arxivUtils.js
+================================================================================
+export const extractArXivId = (idOrUrl) => {
+  if (!idOrUrl) return null;
+  if (!idOrUrl.includes('/')) return idOrUrl;
+  const match = idOrUrl.match(/\/(\d+\.\d+)/);
+  return match ? match[1] : null;
+};
+
+export const getArxivFieldValue = (repo, field, arxivMetadata) => {
+  const arxivId = extractArXivId(repo.arxiv?.primary_id || repo.arxiv?.primary_url);
+  const paperMetadata = arxivMetadata[arxivId];
+  if (!paperMetadata) return null;
+
+  switch (field) {
+    case 'arxiv_category':
+      return paperMetadata.categories || [];
+    case 'arxiv_published':
+      return paperMetadata.published || null;
+    case 'arxiv_updated':
+      return paperMetadata.updated || null;
+    case 'arxiv_primary':
+      return arxivId ? 'yes' : 'no';
+    default:
+      return null;
+  }
+};
+
+
+
+================================================================================
+File: src/utils/sortUtils.js
+================================================================================
+export const fieldOptions = [
+  { value: 'name', label: 'Name' },
+  { value: 'description', label: 'Description' },
+  { value: 'language', label: 'Language' },
+  { value: 'stars', label: 'Stars' },
+  { value: 'created_at', label: 'Created At' },
+  { value: 'updated_at', label: 'Updated At' },
+  { value: 'pushed_at', label: 'Pushed At' },
+  { value: 'starred_at', label: 'Starred At' },
+  { value: 'lists', label: 'Lists' },
+  { value: 'arxiv_category', label: 'arXiv Category' },
+  { value: 'arxiv_published', label: 'arXiv Published Date' },
+  { value: 'arxiv_updated', label: 'arXiv Updated Date' },
+  { value: 'arxiv_primary', label: 'Has Primary arXiv Article' },
+];
+
+export const getOperators = (fieldType) => {
+  switch (fieldType) {
+    case 'string':
+      return [
+        { value: 'contains', label: 'contains' },
+        { value: 'equals', label: 'equals' },
+        { value: 'starts_with', label: 'starts with' },
+        { value: 'ends_with', label: 'ends with' },
+      ];
+    case 'number':
+      return [
+        { value: 'equals', label: 'equals' },
+        { value: 'greater_than', label: 'greater than' },
+        { value: 'less_than', label: 'less than' },
+      ];
+    case 'date':
+      return [
+        { value: 'equals', label: 'equals' },
+        { value: 'after', label: 'after' },
+        { value: 'before', label: 'before' },
+      ];
+    case 'list':
+      return [
+        { value: 'includes', label: 'includes' },
+        { value: 'excludes', label: 'excludes' },
+      ];
+    default:
+      return [{ value: 'equals', label: 'equals' }];
+  }
+};
+
+export const getInputType = (field) => {
+  switch (field) {
+    case 'stars':
+      return 'number';
+    case 'created_at':
+    case 'updated_at':
+    case 'pushed_at':
+    case 'starred_at':
+    case 'arxiv_published':
+    case 'arxiv_updated':
+      return 'date';
+    case 'lists':
+    case 'arxiv_category':
+      return 'list';
+    default:
+      return 'text';
+  }
+};
+
+

@@ -1,0 +1,3554 @@
+================================================================================
+File: .github/workflows/build_readme.yml
+================================================================================
+name: Build README
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  # test:
+  #   uses: ./.github/workflows/test.yml
+
+  build-readme:
+    # needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+      
+      - name: Install package
+        run: pip install llamero
+
+      - name: Generate README
+        run: |
+          llamero readme
+
+
+
+================================================================================
+File: .github/workflows/collect_article_metadata.yaml
+================================================================================
+name: Collect Comprehensive Article Metadata
+
+on:
+  # schedule:
+  #   - cron: '0 0 * * 0'  # Run weekly on Sunday at 00:00 UTC
+  workflow_dispatch:  # Allow manual triggering
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests xmltodict pyyaml loguru pytest
+
+    - name: Run tests
+      run: pytest tests/
+
+  collect-metadata:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests xmltodict pyyaml loguru
+
+    - name: Run metadata collector
+      run: python arxiv_metadata_collector.py
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Commit and push if changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add comprehensive_metadata.json
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update comprehensive paper metadata" && git push)
+
+
+
+================================================================================
+File: .github/workflows/collect_arxiv_metadata.yaml
+================================================================================
+name: Collect arXiv Metadata
+
+on:
+  workflow_dispatch:  # Allow manual triggering
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly on Sunday at 00:00 UTC
+  push:
+    branches:
+      - main
+    paths:
+      - arxiv_metadata_collector.py
+      - .github/workflows/collect_arxiv_metadata.yaml
+      - arxiv_metadata.json
+
+jobs:
+  collect-arxiv-metadata:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyyaml loguru arxiv
+
+    - name: Run arXiv metadata collector
+      run: python arxiv_metadata_collector.py
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Commit and push if changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add arxiv_metadata.json
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update arXiv metadata" && git push)
+
+
+
+================================================================================
+File: .github/workflows/convert_arxiv_urls_to_ids.yaml
+================================================================================
+name: Convert Arxiv URLs to IDs
+
+on:
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  convert-urls-to-ids:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Convert IDs to URLs
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_USERNAME: ${{ github.repository_owner }}
+      run: |
+        pip install loguru
+        python scripts/convert_arxiv_urls_to_ids.py
+
+        # commit and push if changes
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add github_stars.json
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update star lists data" && git push)
+
+
+
+================================================================================
+File: .github/workflows/deploy-to-gh-pages.yml
+================================================================================
+name: Deploy to GitHub Pages
+on:
+  push:
+    # branches:
+    #   - main
+    # paths:
+    #   - 'src/**'
+    #   - '*.json'
+    #   - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+  workflow_run:
+    types: completed
+    workflows: 
+      - Scrape Github Stars
+      - Update Star Lists
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-node-
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Copy data files to public directory
+      run: |
+        cp github_stars.json public/
+        cp arxiv_metadata.json public/
+
+    - name: Build
+      run: npm run build
+      env:
+        CI: false
+
+    - name: Debug - List directory contents
+      run: |
+        echo "Contents of the public directory:"
+        ls -R public
+        echo "Contents of the build directory:"
+        ls -R build
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./build
+        force_orphan: true
+
+    - name: Output deployment URL
+      run: echo "Deployed to https://dmarx.github.io/stars"
+
+
+
+================================================================================
+File: .github/workflows/fix_arxiv_categories.yaml
+================================================================================
+name: Transform arXiv Categories
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - scripts/transform_categories.py
+      - .github/workflows/fix_arxiv_categories.yaml
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  transform-categories:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install loguru
+    
+    - name: Run transformation script
+      run: python scripts/transform_categories.py
+
+
+
+================================================================================
+File: .github/workflows/generate-package-lock.yml
+================================================================================
+name: Generate package-lock.json
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate-package-lock:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Generate package-lock.json
+      run: node scripts/generate-package-lock.js
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+
+================================================================================
+File: .github/workflows/generate_summaries.yml
+================================================================================
+name: Generate Directory Summaries
+
+on:
+#  push:
+    # branches:
+    #   - main
+    # paths:
+    #   - '.github/workflows/generate-summaries.yml'
+    #   - 'src/summary_generator/**'
+    #   - 'pyproject.toml'
+  workflow_dispatch:
+
+jobs:
+  generate-summaries:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install project
+      run: pip install "llamero>=0.1.2"
+
+    - name: Generate summaries
+      run: llamero summarize all
+
+
+
+================================================================================
+File: .github/workflows/main.yml
+================================================================================
+name: Scrape GitHub Stars
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight UTC
+  workflow_dispatch:  # Allow manual triggering
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests loguru pytest
+
+    - name: Run tests
+      run: pytest tests/test_scrape.py
+
+  scrape-stars:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests loguru
+
+    - name: Debug information
+      run: |
+        echo "Current directory: $(pwd)"
+        echo "Repository: ${{ github.repository }}"
+        echo "Repository owner: ${{ github.repository_owner }}"
+        git remote -v
+        git config --get remote.origin.url
+
+    - name: Check GitHub token
+      run: |
+        if [ -z "${{ secrets.GITHUB_TOKEN }}" ]; then
+          echo "GITHUB_TOKEN is not set in the repository secrets."
+          exit 1
+        fi
+
+    - name: Run star scraper
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_USERNAME: ${{ github.repository_owner }}
+      run: python scrape_stars.py
+
+    - name: Commit and push if changes
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add github_stars.json
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update GitHub stars data" && git push)
+
+
+
+================================================================================
+File: .github/workflows/update_star_lists.yml
+================================================================================
+name: Update Star Lists
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # Run daily at 1 AM UTC
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  update-star-lists:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests beautifulsoup4 loguru
+
+    - name: Run star lists update script
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_USERNAME: ${{ github.repository_owner }}
+      run: |
+        echo "GITHUB_USERNAME: $GITHUB_USERNAME"
+        echo "GITHUB_TOKEN is set: ${{ secrets.GITHUB_TOKEN != '' }}"
+        python update_star_lists.py
+
+    - name: Commit and push if changes
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add github_stars.json
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update star lists data" && git push)
+
+
+
+================================================================================
+File: README.md
+================================================================================
+# GitHub Stars Scraper, Organizer, and Dashboard
+This project automatically scrapes and organizes your GitHub stars, including star lists (tags), using GitHub Actions. It also provides a web-based dashboard to explore and search through your starred repositories.
+
+## Features
+- Scrapes all starred repositories for a GitHub user
+- Retrieves and organizes star lists (tags) for each repository
+- Handles large collections (3000+ stars) gracefully
+- Implements intelligent rate limiting to avoid API throttling
+- Provides detailed logging for transparency and debugging
+- Commits and pushes updates only when changes are detected
+- Runs daily via GitHub Actions, with option for manual triggers
+- Offers a web-based dashboard to explore and search starred repositories
+
+## How it works
+1. The GitHub Action runs daily at midnight UTC (or can be manually triggered).
+2. It executes two main scripts:
+   - `scrape_stars.py`: Fetches all starred repositories and their metadata.
+   - `update_star_lists.py`: Retrieves star lists for each repository.
+3. The scripts:
+   - Fetch all starred repositories and their metadata
+   - Retrieve all star lists (tags) for the user
+   - Associate each repository with its corresponding lists
+   - Extract arXiv URLs and BibTeX citations from README files (when available)
+   - Handle rate limiting using both preemptive and reactive strategies
+4. Results are saved in `github_stars.json`
+5. If there are changes, the action commits and pushes the updated file to the repository
+6. A React-based dashboard is built and deployed to GitHub Pages, allowing users to explore their starred repositories
+
+## Setup
+1. Fork this repository
+2. Go to your forked repository's settings
+3. Navigate to "Secrets and variables" > "Actions"
+4. Add the following repository secret:
+   - `GITHUB_TOKEN`: A GitHub personal access token with `repo` scope
+5. The action will now run automatically every day, or you can trigger it manually from the "Actions" tab
+6. Enable GitHub Pages in your repository settings, setting the source to the `gh-pages` branch
+
+## File Structure
+- `scrape_stars.py`: Main script for fetching starred repositories and metadata
+- `update_star_lists.py`: Script for retrieving and organizing star lists
+- `.github/workflows/update_stars.yml`: GitHub Actions workflow file for data scraping
+- `.github/workflows/deploy-to-gh-pages.yml`: GitHub Actions workflow file for deploying the dashboard
+- `github_stars.json`: Output file containing all starred repository data
+- `src/`: Directory containing React components for the dashboard
+- `public/`: Directory containing public assets for the dashboard
+
+### Front end file structure
+
+```
+src/
+├── components/
+│   ├── Dashboard.js
+│   ├── SortDropdown.js
+│   ├── AdvancedSearchCondition.js
+│   ├── AdvancedSearch.js
+│   ├── ArXivBadge.js
+│   └── ExpandedRepoView.js
+├── hooks/
+│   └── useRepositories.js
+└── utils/
+    ├── arxivUtils.js
+    └── sortUtils.js
+```
+
+## Dashboard
+The dashboard is built using React and Tailwind CSS. It provides the following features:
+- Search functionality to find repositories by name or description
+- Filtering by star lists (tags)
+- Expandable repository cards showing detailed information
+- Links to GitHub repositories and associated arXiv papers (when available)
+
+To view the dashboard, visit `https://<your-github-username>.github.io/stars/` after the GitHub Actions workflow has completed.
+
+## Customization
+You can customize the behavior of the scripts by modifying the following constants in the Python files:
+- `STARS_FILE`: Name of the output JSON file
+- `BACKFILL_CHUNK_SIZE`: Number of repositories to process in each backfill chunk
+- `COMMIT_INTERVAL`: Number of lists to process before committing changes
+- `RATE_LIMIT_THRESHOLD`: Number of API requests to keep in reserve
+- `DEFAULT_RATE_LIMIT` and `DEFAULT_RATE_LIMIT_WINDOW`: Default rate limiting for web scraping
+
+You can also customize the dashboard by modifying the React components in the `src/` directory.
+
+## Manual Trigger
+You can manually trigger the workflows from the "Actions" tab in your GitHub repository.
+
+## Viewing Results
+After the action runs successfully, you can view the updated `github_stars.json` file in the repository. This file contains a JSON object with:
+- `last_updated`: Timestamp of when the data was last scraped
+- `repositories`: An object where each key is a repository name, and the value is another object containing:
+  - `lists`: An array of lists (tags) associated with that repository
+  - `metadata`: An object containing the collected metadata for the repository
+  - `arxiv`: An object containing arXiv-related information (if available)
+
+You can also explore your starred repositories interactively using the deployed dashboard.
+
+## Limitations
+- The script can only retrieve up to 3000 repositories per list due to GitHub's pagination limits.
+- Web scraping is used for retrieving star lists, which may break if GitHub significantly changes their HTML structure.
+
+## Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+This project is open source and available under the [MIT License](LICENSE).## Project Structure
+
+```
+
+├── .github
+│   └── workflows
+│       ├── build_readme.yml
+│       ├── collect_article_metadata.yaml
+│       ├── collect_arxiv_metadata.yaml
+│       ├── convert_arxiv_urls_to_ids.yaml
+│       ├── deploy-to-gh-pages.yml
+│       ├── fix_arxiv_categories.yaml
+│       ├── generate-package-lock.yml
+│       ├── generate_summaries.yml
+│       ├── main.yml
+│       └── update_star_lists.yml
+├── .gitignore
+├── LICENSE
+├── README.md
+├── article_metadata_collector.py
+├── arxiv_metadata.json
+├── arxiv_metadata_collector.py
+├── config.yaml
+├── docs
+│   └── readme
+│       ├── base.md.j2
+│       └── sections
+│           ├── main.md.j2
+│           └── structure.md.j2
+├── github_stars.json
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── public
+│   ├── github_stars.json
+│   └── index.html
+├── pyproject.toml
+├── scrape_stars.py
+├── scripts
+│   ├── convert_arxiv_urls_to_ids.py
+│   ├── generate-package-lock.js
+│   └── transform_categories.py
+├── src
+│   ├── App.js
+│   ├── README.md
+│   ├── components
+│   │   ├── AdvancedSearch.js
+│   │   ├── AdvancedSearchCondition.js
+│   │   ├── ArXivBadge.js
+│   │   ├── Dashboard.js
+│   │   ├── ExpandedRepoView.js
+│   │   └── SortDropdown.js
+│   ├── hooks
+│   │   └── useRepositories.js
+│   ├── index.css
+│   ├── index.js
+│   └── utils
+│       ├── arxivUtils.js
+│       └── sortUtils.js
+├── tailwind.config.js
+├── tests
+│   ├── __init__.py
+│   ├── test_article_metadata_collector.py
+│   └── test_scrape.py
+├── update_star_lists.py
+└── utils.py
+
+```
+
+
+================================================================================
+File: article_metadata_collector.py
+================================================================================
+import json
+import requests
+import xmltodict
+from urllib.parse import urlparse, parse_qs
+import time
+import re
+import os
+from typing import List, Dict
+import yaml
+from loguru import logger
+from utils import commit_and_push, controlled_request
+
+# Load configuration
+with open('config.yaml', 'r') as config_file:
+    config = yaml.safe_load(config_file)
+
+SEMANTIC_SCHOLAR_BATCH_URL = "https://api.semanticscholar.org/graph/v1/paper/batch"
+SEMANTIC_SCHOLAR_FIELDS = "title,authors,abstract,year,venue,url,doi,arxivId,paperId,citationCount,influentialCitationCount,referenceCount"
+BATCH_SIZE = 500  # Maximum allowed by the API
+COMMIT_INTERVAL = config['COMMIT_INTERVAL']
+CHUNK_SIZE = config['CHUNK_SIZE']
+#RATE_LIMIT_THRESHOLD = config['RATE_LIMIT_THRESHOLD']
+ARXIV_METADATA_FILE = config['ARXIV_METADATA_FILE']
+
+# Configure logger
+logger.add("arxiv_metadata_collector.log", rotation="10 MB")
+
+def extract_arxiv_id(url_or_id):
+    # Check if it's a URL
+    if url_or_id.startswith('http'):
+        parsed_url = urlparse(url_or_id)
+        if parsed_url.netloc == 'arxiv.org':
+            path_parts = parsed_url.path.split('/')
+            if 'abs' in path_parts or 'pdf' in path_parts:
+                return path_parts[-1].replace('.pdf', '').split('v')[0]  # Remove version number
+    else:
+        # Check if it's already an arXiv ID
+        arxiv_pattern = r'(\d{4}\.\d{4,5})(v\d+)?'
+        match = re.search(arxiv_pattern, url_or_id)
+        if match:
+            return match.group(1)  # Return only the base ID without version
+    return None
+
+def parse_bibtex(bibtex_str):
+    fields = {}
+    # Remove any surrounding whitespace and curly braces
+    bibtex_str = bibtex_str.strip().strip('{').strip('}')
+    
+    # Use regex to find all key-value pairs
+    pattern = r'(\w+)\s*=\s*[{"]?((?:[^{"}]|{[^}]*})*)["}]?'
+    matches = re.findall(pattern, bibtex_str, re.DOTALL)
+    
+    for key, value in matches:
+        key = key.lower()
+        value = value.strip().strip(',').strip('{').strip('}').strip()
+        if key == 'doi':
+            # Remove any surrounding quotes or braces from the DOI
+            value = value.strip('"').strip("'").strip('{').strip('}')
+        fields[key] = value
+    
+    return fields
+
+def extract_identifier(paper):
+    if 'url' in paper:
+        arxiv_id = extract_arxiv_id(paper['url'])
+        if arxiv_id:
+            return f"arxiv:{arxiv_id}"
+    elif 'bibtex' in paper:
+        bibtex_data = parse_bibtex(paper['bibtex'])
+        if 'doi' in bibtex_data:
+            return f"doi:{bibtex_data['doi']}"
+        elif 'arxiv' in bibtex_data:
+            arxiv_id = extract_arxiv_id(bibtex_data['arxiv'])
+            if arxiv_id:
+                return f"arxiv:{arxiv_id}"
+        elif 'title' in bibtex_data:
+            return f"title:{bibtex_data['title']}"
+    return None
+
+def deduplicate_papers(papers):
+    unique_papers = []
+    seen_identifiers = set()
+
+    for paper in papers:
+        identifier = extract_identifier(paper)
+        if identifier and identifier not in seen_identifiers:
+            unique_papers.append(paper)
+            seen_identifiers.add(identifier)
+
+    return unique_papers
+
+def fetch_arxiv_metadata_batch(arxiv_ids):
+    base_url = "http://export.arxiv.org/api/query"
+    params = {
+        "id_list": ",".join(arxiv_ids),
+        "max_results": len(arxiv_ids)
+    }
+    response = controlled_request(base_url, params=params)
+    if response and response.status_code == 200:
+        data = xmltodict.parse(response.content)
+        entries = data['feed'].get('entry', [])
+        if not isinstance(entries, list):
+            entries = [entries]
+        
+        results = []
+        for entry in entries:
+            # Handle potential variations in author structure
+            if isinstance(entry.get('author'), list):
+                authors = [author['name'] for author in entry['author']]
+            elif isinstance(entry.get('author'), dict):
+                authors = [entry['author']['name']]
+            else:
+                authors = []
+
+            # Handle potential variations in category structure
+            if isinstance(entry.get('category'), list):
+                categories = [cat['@term'] for cat in entry['category']]
+            elif isinstance(entry.get('category'), dict):
+                categories = [entry['category']['@term']]
+            else:
+                categories = []
+
+            results.append({
+                'source': 'arXiv',
+                'id': entry['id'],
+                'title': entry['title'],
+                'authors': authors,
+                'abstract': entry['summary'],
+                'categories': categories,
+                'published': entry['published'],
+                'updated': entry['updated']
+            })
+        return results
+    return []
+
+def fetch_semantic_scholar_data(identifier, id_type='arxiv'):
+    base_url = "https://api.semanticscholar.org/v1/paper/"
+    if id_type == 'arxiv':
+        url = f"{base_url}arXiv:{identifier}"
+    elif id_type == 'doi':
+        url = f"{base_url}{identifier}"
+    else:  # Search by title and authors
+        search_url = "https://api.semanticscholar.org/graph/v1/paper/search"
+        params = {
+            "query": identifier,
+            "limit": 1
+        }
+        search_response = controlled_request(search_url, params=params)
+        if search_response and search_response.status_code == 200:
+            search_data = search_response.json()
+            if search_data['data']:
+                url = f"{base_url}{search_data['data'][0]['paperId']}"
+            else:
+                return None
+        else:
+            return None
+
+    response = controlled_request(url)
+    if response and response.status_code == 200:
+        data = response.json()
+        return {
+            'source': 'Semantic Scholar',
+            'title': data.get('title'),
+            'authors': [author['name'] for author in data.get('authors', [])],
+            'abstract': data.get('abstract'),
+            'year': data.get('year'),
+            'venue': data.get('venue'),
+            'url': data.get('url'),
+            'doi': data.get('doi'),
+            'arxivId': data.get('arxivId'),
+            'paperId': data.get('paperId'),
+            'citation_count': data.get('citationCount'),
+            'influential_citation_count': data.get('influentialCitationCount'),
+            'reference_count': data.get('referenceCount')
+        }
+    return None
+
+def fetch_semantic_scholar_data_batch(identifiers: List[Dict[str, str]]) -> Dict[str, Dict]:
+    """
+    Fetch data for multiple papers from Semantic Scholar using the batch API.
+    
+    :param identifiers: List of dictionaries with 'id' and 'id_type' keys
+    :return: Dictionary of paper data, keyed by the original identifier
+    """
+    results = {}
+    for i in range(0, len(identifiers), BATCH_SIZE):
+        batch = identifiers[i:i+BATCH_SIZE]
+        ids = [f"{id_info['id_type']}:{id_info['id']}" for id_info in batch]
+        
+        response = controlled_request(
+            SEMANTIC_SCHOLAR_BATCH_URL,
+            method='post',
+            params={'fields': SEMANTIC_SCHOLAR_FIELDS},
+            json={"ids": ids}
+        )
+        
+        if response and response.status_code == 200:
+            batch_results = response.json()
+            for paper, id_info in zip(batch_results, batch):
+                if paper:  # Check if paper data is not None
+                    original_id = f"{id_info['id_type']}:{id_info['id']}"
+                    results[original_id] = {
+                        'source': 'Semantic Scholar',
+                        'title': paper.get('title'),
+                        'authors': [author['name'] for author in paper.get('authors', [])],
+                        'abstract': paper.get('abstract'),
+                        'year': paper.get('year'),
+                        'venue': paper.get('venue'),
+                        'url': paper.get('url'),
+                        'doi': paper.get('doi'),
+                        'arxivId': paper.get('arxivId'),
+                        'paperId': paper.get('paperId'),
+                        'citation_count': paper.get('citationCount'),
+                        'influential_citation_count': paper.get('influentialCitationCount'),
+                        'reference_count': paper.get('referenceCount')
+                    }
+    
+    return results
+
+def load_existing_data():
+    if os.path.exists(ARXIV_METADATA_FILE):
+        with open(ARXIV_METADATA_FILE, 'r') as f:
+            return json.load(f)
+    return {"last_updated": None, "papers": {}}
+
+def save_data(data):
+    with open(ARXIV_METADATA_FILE, 'w') as f:
+        json.dump(data, f, indent=2)
+
+def process_papers(papers, existing_data):
+    changes_made = False
+    paper_ids = set()
+    semantic_scholar_batch = []
+
+    for paper in papers:
+        identifier = extract_identifier(paper)
+        if identifier and identifier not in paper_ids:
+            paper_ids.add(identifier)
+            if identifier not in existing_data['papers']:
+                id_type, id_value = identifier.split(':', 1)
+                semantic_scholar_batch.append({'id': id_value, 'id_type': id_type})
+
+    if semantic_scholar_batch:
+        semantic_scholar_data = fetch_semantic_scholar_data_batch(semantic_scholar_batch)
+        for identifier, data in semantic_scholar_data.items():
+            if data:
+                existing_data['papers'][identifier] = data
+                changes_made = True
+
+    if changes_made:
+        save_data(existing_data)
+        commit_and_push(ARXIV_METADATA_FILE)
+
+    return existing_data
+
+def main():
+    existing_data = load_existing_data()
+
+    with open('github_stars.json', 'r') as f:
+        github_stars_data = json.load(f)
+
+    papers = []
+    for repo_data in github_stars_data['repositories'].values():
+        if 'arxiv' in repo_data:
+            for url in repo_data['arxiv'].get('urls', []):
+                papers.append({'url': url})
+            for bibtex in repo_data['arxiv'].get('bibtex_citations', []):
+                papers.append({'bibtex': bibtex})
+
+    logger.info(f"Found {len(papers)} papers before deduplication")
+    
+    deduplicated_papers = deduplicate_papers(papers)
+    logger.info(f"Deduplicated to {len(deduplicated_papers)} unique papers")
+
+    process_papers(deduplicated_papers, existing_data)
+    logger.info("arXiv metadata collection completed")
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================================================
+File: arxiv_metadata_collector.py
+================================================================================
+import json
+import os
+import re
+import yaml
+
+from loguru import logger
+import arxiv
+
+from utils import commit_and_push
+
+# Load configuration
+with open('config.yaml', 'r') as config_file:
+    config = yaml.safe_load(config_file)
+
+COMMIT_INTERVAL = config['COMMIT_INTERVAL']
+CHUNK_SIZE = config['CHUNK_SIZE']
+ARXIV_METADATA_FILE = 'arxiv_metadata.json'
+ARXIV_API_BATCH_SIZE = 100  # arxiv package default is 100 results per query
+
+# Configure logger
+logger.add("arxiv_metadata_collector.log", rotation="10 MB")
+
+def clean_arxiv_id(arxiv_id):
+    # Remove any 'arXiv:' prefix
+    arxiv_id = arxiv_id.replace('arXiv:', '')
+    
+    # Remove version suffix (e.g., 'v1', 'v2')
+    arxiv_id = re.sub(r'v\d+$', '', arxiv_id)
+    
+    return arxiv_id.strip()
+
+def extract_arxiv_id(url_or_id):
+    if url_or_id.startswith('http'):
+        # Extract ID from URL
+        arxiv_id = url_or_id.split('/')[-1]
+    else:
+        arxiv_id = url_or_id
+    
+    return clean_arxiv_id(arxiv_id)
+
+def fetch_arxiv_metadata_batch(arxiv_ids):
+    client = arxiv.Client()
+    search = arxiv.Search(
+        id_list=arxiv_ids,
+        max_results=len(arxiv_ids)
+    )
+    
+    results = {}
+    for result in client.results(search):
+        arxiv_id = result.get_short_id()
+        arxiv_id = clean_arxiv_id(arxiv_id)
+        results[arxiv_id] = {
+            'id': result.entry_id,
+            'title': result.title,
+            'authors': [author.name for author in result.authors],
+            'abstract': result.summary,
+            'categories': result.categories,
+            'published': result.published.isoformat(),
+            'updated': result.updated.isoformat(),
+            'doi': result.doi,
+            'comment': result.comment,
+            'journal_ref': result.journal_ref,
+            'primary_category': result.primary_category
+        }
+    return results
+
+def load_existing_data():
+    if os.path.exists(ARXIV_METADATA_FILE):
+        with open(ARXIV_METADATA_FILE, 'r') as f:
+            return json.load(f)
+    return {}
+
+def save_data(data):
+    with open(ARXIV_METADATA_FILE, 'w') as f:
+        json.dump(data, f, indent=2)
+
+def process_arxiv_ids(arxiv_ids, existing_data):
+    changes_made = False
+    new_arxiv_ids = list(set([clean_arxiv_id(id) for id in arxiv_ids if clean_arxiv_id(id) not in existing_data]))
+
+    for i in range(0, len(new_arxiv_ids), ARXIV_API_BATCH_SIZE):
+        batch = new_arxiv_ids[i:i+ARXIV_API_BATCH_SIZE]
+        metadata_batch = fetch_arxiv_metadata_batch(batch)
+        
+        if metadata_batch:
+            existing_data.update(metadata_batch)
+            changes_made = True
+
+        if i > 0 and i % CHUNK_SIZE == 0:
+            logger.info(f"Processed {i} arXiv IDs")
+            if changes_made:
+                save_data(existing_data)
+                if i % (CHUNK_SIZE * COMMIT_INTERVAL) == 0:
+                    commit_and_push(ARXIV_METADATA_FILE)
+                changes_made = False
+
+    if changes_made:
+        save_data(existing_data)
+        commit_and_push(ARXIV_METADATA_FILE)
+
+    return existing_data
+
+def main():
+    existing_data = load_existing_data()
+
+    with open('github_stars.json', 'r') as f:
+        github_stars_data = json.load(f)
+
+    arxiv_ids = set()
+    for repo_data in github_stars_data['repositories'].values():
+        if 'arxiv' in repo_data:
+            for url in repo_data['arxiv'].get('urls', []):
+                arxiv_id = extract_arxiv_id(url)
+                if arxiv_id:
+                    arxiv_ids.add(arxiv_id)
+
+    logger.info(f"Found {len(arxiv_ids)} unique arXiv IDs")
+    
+    process_arxiv_ids(list(arxiv_ids), existing_data)
+    logger.info("arXiv metadata collection completed")
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================================================
+File: config.yaml
+================================================================================
+# Shared configuration
+COMMIT_INTERVAL: 5
+CHUNK_SIZE: 100
+RATE_LIMIT_THRESHOLD: 100
+
+# arXiv metadata collector specific
+ARXIV_METADATA_FILE: 'article_metadata.json'
+
+
+
+================================================================================
+File: docs/readme/base.md.j2
+================================================================================
+{% for template in templates %}
+{% include "sections/" ~ template %}
+{% endfor %}
+
+
+
+================================================================================
+File: docs/readme/sections/main.md.j2
+================================================================================
+# GitHub Stars Scraper, Organizer, and Dashboard
+This project automatically scrapes and organizes your GitHub stars, including star lists (tags), using GitHub Actions. It also provides a web-based dashboard to explore and search through your starred repositories.
+
+## Features
+- Scrapes all starred repositories for a GitHub user
+- Retrieves and organizes star lists (tags) for each repository
+- Handles large collections (3000+ stars) gracefully
+- Implements intelligent rate limiting to avoid API throttling
+- Provides detailed logging for transparency and debugging
+- Commits and pushes updates only when changes are detected
+- Runs daily via GitHub Actions, with option for manual triggers
+- Offers a web-based dashboard to explore and search starred repositories
+
+## How it works
+1. The GitHub Action runs daily at midnight UTC (or can be manually triggered).
+2. It executes two main scripts:
+   - `scrape_stars.py`: Fetches all starred repositories and their metadata.
+   - `update_star_lists.py`: Retrieves star lists for each repository.
+3. The scripts:
+   - Fetch all starred repositories and their metadata
+   - Retrieve all star lists (tags) for the user
+   - Associate each repository with its corresponding lists
+   - Extract arXiv URLs and BibTeX citations from README files (when available)
+   - Handle rate limiting using both preemptive and reactive strategies
+4. Results are saved in `github_stars.json`
+5. If there are changes, the action commits and pushes the updated file to the repository
+6. A React-based dashboard is built and deployed to GitHub Pages, allowing users to explore their starred repositories
+
+## Setup
+1. Fork this repository
+2. Go to your forked repository's settings
+3. Navigate to "Secrets and variables" > "Actions"
+4. Add the following repository secret:
+   - `GITHUB_TOKEN`: A GitHub personal access token with `repo` scope
+5. The action will now run automatically every day, or you can trigger it manually from the "Actions" tab
+6. Enable GitHub Pages in your repository settings, setting the source to the `gh-pages` branch
+
+## File Structure
+- `scrape_stars.py`: Main script for fetching starred repositories and metadata
+- `update_star_lists.py`: Script for retrieving and organizing star lists
+- `.github/workflows/update_stars.yml`: GitHub Actions workflow file for data scraping
+- `.github/workflows/deploy-to-gh-pages.yml`: GitHub Actions workflow file for deploying the dashboard
+- `github_stars.json`: Output file containing all starred repository data
+- `src/`: Directory containing React components for the dashboard
+- `public/`: Directory containing public assets for the dashboard
+
+### Front end file structure
+
+```
+src/
+├── components/
+│   ├── Dashboard.js
+│   ├── SortDropdown.js
+│   ├── AdvancedSearchCondition.js
+│   ├── AdvancedSearch.js
+│   ├── ArXivBadge.js
+│   └── ExpandedRepoView.js
+├── hooks/
+│   └── useRepositories.js
+└── utils/
+    ├── arxivUtils.js
+    └── sortUtils.js
+```
+
+## Dashboard
+The dashboard is built using React and Tailwind CSS. It provides the following features:
+- Search functionality to find repositories by name or description
+- Filtering by star lists (tags)
+- Expandable repository cards showing detailed information
+- Links to GitHub repositories and associated arXiv papers (when available)
+
+To view the dashboard, visit `https://<your-github-username>.github.io/stars/` after the GitHub Actions workflow has completed.
+
+## Customization
+You can customize the behavior of the scripts by modifying the following constants in the Python files:
+- `STARS_FILE`: Name of the output JSON file
+- `BACKFILL_CHUNK_SIZE`: Number of repositories to process in each backfill chunk
+- `COMMIT_INTERVAL`: Number of lists to process before committing changes
+- `RATE_LIMIT_THRESHOLD`: Number of API requests to keep in reserve
+- `DEFAULT_RATE_LIMIT` and `DEFAULT_RATE_LIMIT_WINDOW`: Default rate limiting for web scraping
+
+You can also customize the dashboard by modifying the React components in the `src/` directory.
+
+## Manual Trigger
+You can manually trigger the workflows from the "Actions" tab in your GitHub repository.
+
+## Viewing Results
+After the action runs successfully, you can view the updated `github_stars.json` file in the repository. This file contains a JSON object with:
+- `last_updated`: Timestamp of when the data was last scraped
+- `repositories`: An object where each key is a repository name, and the value is another object containing:
+  - `lists`: An array of lists (tags) associated with that repository
+  - `metadata`: An object containing the collected metadata for the repository
+  - `arxiv`: An object containing arXiv-related information (if available)
+
+You can also explore your starred repositories interactively using the deployed dashboard.
+
+## Limitations
+- The script can only retrieve up to 3000 repositories per list due to GitHub's pagination limits.
+- Web scraping is used for retrieving star lists, which may break if GitHub significantly changes their HTML structure.
+
+## Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+This project is open source and available under the [MIT License](LICENSE).
+
+
+
+================================================================================
+File: docs/readme/sections/structure.md.j2
+================================================================================
+## Project Structure
+
+```
+
+├── .github
+│   └── workflows
+│       ├── build_readme.yml
+│       ├── collect_article_metadata.yaml
+│       ├── collect_arxiv_metadata.yaml
+│       ├── convert_arxiv_urls_to_ids.yaml
+│       ├── deploy-to-gh-pages.yml
+│       ├── fix_arxiv_categories.yaml
+│       ├── generate-package-lock.yml
+│       ├── generate_summaries.yml
+│       ├── main.yml
+│       └── update_star_lists.yml
+├── .gitignore
+├── LICENSE
+├── README.md
+├── article_metadata_collector.py
+├── arxiv_metadata.json
+├── arxiv_metadata_collector.py
+├── config.yaml
+├── docs
+│   └── readme
+│       ├── base.md.j2
+│       └── sections
+│           ├── main.md.j2
+│           └── structure.md.j2
+├── github_stars.json
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── public
+│   ├── github_stars.json
+│   └── index.html
+├── pyproject.toml
+├── scrape_stars.py
+├── scripts
+│   ├── convert_arxiv_urls_to_ids.py
+│   ├── generate-package-lock.js
+│   └── transform_categories.py
+├── src
+│   ├── App.js
+│   ├── README.md
+│   ├── components
+│   │   ├── AdvancedSearch.js
+│   │   ├── AdvancedSearchCondition.js
+│   │   ├── ArXivBadge.js
+│   │   ├── Dashboard.js
+│   │   ├── ExpandedRepoView.js
+│   │   └── SortDropdown.js
+│   ├── hooks
+│   │   └── useRepositories.js
+│   ├── index.css
+│   ├── index.js
+│   └── utils
+│       ├── arxivUtils.js
+│       └── sortUtils.js
+├── tailwind.config.js
+├── tests
+│   ├── __init__.py
+│   ├── test_article_metadata_collector.py
+│   └── test_scrape.py
+├── update_star_lists.py
+└── utils.py
+
+```
+
+
+
+================================================================================
+File: package.json
+================================================================================
+{
+  "name": "stars",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://dmarx.github.io/stars",
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "lucide-react": "^0.263.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.16.0",
+    "autoprefixer": "^10.4.14",
+    "gh-pages": "^4.0.0",
+    "postcss": "^8.4.23",
+    "tailwindcss": "^3.3.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
+
+
+
+================================================================================
+File: postcss.config.js
+================================================================================
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+
+
+
+================================================================================
+File: public/index.html
+================================================================================
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="GitHub Stars Dashboard"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>GitHub Stars Dashboard</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
+
+
+
+================================================================================
+File: pyproject.toml
+================================================================================
+[project]
+name = "dmarx_stars"
+description = "Tools to facilitate collaborating with LLMs"
+requires-python = ">=3.11"
+
+[tool.readme.tree]
+ignore_patterns = [
+    "__pycache__",
+    "*.pyc",
+    ".git",
+    ".venv",
+    ".pytest_cache",
+    ".vscode",
+    ".idea",
+    "*.egg-info",
+    "*.pyc",
+    "*.pyo",
+    "*.pyd",
+    ".Python",
+    "*.so",
+    ".gitkeep",
+    "_version.py"
+]
+
+[tool.readme.sections.order]
+"main.md.j2" = 0
+"introduction.md.j2" = 1.1
+"features.md.j2" = 1.2
+"prerequisites.md.j2" = 2
+"setup.md.j2" = 2.1
+"installation.md.j2" = 2.2
+"usage.md.j2" = 3
+"development.md.j2" = 4
+"summaries.md.j2" = 5
+"site.md.j2" = 6
+"structure.md.j2" = 7
+"todo.md.j2" = 999
+
+[tool.summary]
+max_file_size_kb = 500  # Skip files larger than 0.5MB
+
+
+
+================================================================================
+File: scrape_stars.py
+================================================================================
+import requests
+import json
+import os
+import re
+import sys
+import base64
+from collections import defaultdict, OrderedDict
+from datetime import datetime, timedelta, UTC
+import random
+import time
+from loguru import logger
+import subprocess
+
+GITHUB_API = "https://api.github.com"
+STARS_FILE = 'github_stars.json'
+CHUNK_SIZE = 100
+UPDATE_INTERVAL = 7
+COMMIT_INTERVAL = 5
+RATE_LIMIT_THRESHOLD = 100 
+CORE_RATE_LIMIT_THRESHOLD = 100
+SEARCH_RATE_LIMIT_THRESHOLD = 5
+
+# Configure logger
+logger.add("scraper.log", rotation="10 MB")
+
+def check_initial_rate_limit(token):
+    url = f"{GITHUB_API}/rate_limit"
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    data = response.json()
+    
+    remaining = data['resources']['core']['remaining']
+    reset_time = data['resources']['core']['reset']
+    
+    if remaining <= RATE_LIMIT_THRESHOLD:
+        current_time = time.time()
+        wait_time = max(reset_time - current_time, 0)
+        logger.warning(f"Rate limit is already low ({remaining} remaining). Another process might be running.")
+        logger.warning(f"Rate limit will reset in {wait_time:.2f} seconds.")
+        logger.warning("Exiting to avoid conflicts.")
+        return False
+    
+    logger.info(f"Initial rate limit check passed. {remaining} requests remaining.")
+    return True
+
+def handle_rate_limit(response):
+    remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
+    reset_time = int(response.headers.get('X-RateLimit-Reset', 0))
+    
+    if remaining <= CORE_RATE_LIMIT_THRESHOLD:
+        current_time = time.time()
+        sleep_time = max(reset_time - current_time, 0) + 1
+        
+        if sleep_time > 0:
+            logger.warning(f"Rate limit low. {remaining} requests remaining. Sleeping for {sleep_time:.2f} seconds until reset.")
+            time.sleep(sleep_time)
+        else:
+            logger.info(f"Rate limit low but reset time has passed. Proceeding cautiously.")
+
+def get_starred_repos(username, token, since=None):
+    url = f"{GITHUB_API}/users/{username}/starred"
+    params = {"per_page": 100}
+    if since:
+        params["since"] = since.isoformat()
+    
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3.star+json"
+    }
+    starred_repos = []
+    
+    while url:
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
+        handle_rate_limit(response)
+        
+        starred_repos.extend(response.json())
+        url = response.links.get('next', {}).get('url')
+        if url:
+            params = {}  # Clear params for pagination
+    
+    return starred_repos
+
+def get_repo_metadata(repo, token):
+    url = f"{GITHUB_API}/repos/{repo['full_name']}"
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        handle_rate_limit(response)
+        return response.json()
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code in [403, 404]:
+            logger.warning(f"{e.response.status_code} error for repo {repo['full_name']}. The repo may be private, deleted, or inaccessible.")
+            return None
+        raise
+
+def load_existing_data():
+    if os.path.exists(STARS_FILE):
+        with open(STARS_FILE, 'r') as f:
+            return json.load(f)
+    return {"last_updated": None, "repositories": {}, "last_processed_index": 0}
+
+def save_data(data):
+    with open(STARS_FILE, 'w') as f:
+        json.dump(data, f, indent=2)
+
+def extract_metadata(metadata, starred_at):
+    return {
+        'id': metadata['id'],
+        'name': metadata['name'],
+        'full_name': metadata['full_name'],
+        'description': metadata['description'],
+        'url': metadata['html_url'],
+        'homepage': metadata['homepage'],
+        'language': metadata['language'],
+        'stars': metadata['stargazers_count'],
+        'forks': metadata['forks_count'],
+        'open_issues': metadata['open_issues_count'],
+        'created_at': metadata['created_at'],
+        'updated_at': metadata['updated_at'],
+        'pushed_at': metadata['pushed_at'],
+        'starred_at': starred_at
+    }
+
+def get_readme_content(repo_full_name, token):
+    url = f"{GITHUB_API}/repos/{repo_full_name}/readme"
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        content = response.json().get('content', '')
+        if content:
+            return base64.b64decode(content).decode('utf-8')
+    return None
+
+# def extract_arxiv_urls(text):
+#     arxiv_pattern = r'(?:arxiv\.org/(?:abs|pdf)/|arxiv:)(\d{4}\.\d{4,5})'
+#     return list(OrderedDict.fromkeys(re.findall(arxiv_pattern, text)))
+
+def extract_arxiv_id(url):
+    arxiv_pattern = r'(?:arxiv\.org/(?:abs|pdf)/|arxiv:)(\d{4}\.\d{4,5})'
+    match = re.search(arxiv_pattern, url)
+    return match.group(1) if match else None
+
+def extract_arxiv_ids(text):
+    arxiv_pattern = r'(?:arxiv\.org/(?:abs|pdf)/|arxiv:)(\d{4}\.\d{4,5})'
+    return list(OrderedDict.fromkeys(re.findall(arxiv_pattern, text)))
+
+def infer_primary_arxiv_id(description, readme_content, arxiv_ids):
+    if description and arxiv_ids:
+        desc_ids = extract_arxiv_ids(description)
+        if desc_ids:
+            return desc_ids[0]
+    
+    if readme_content:
+        # Check for arXiv badge
+        badge_pattern = r'\[!\[arXiv\].*\]\(https://arxiv\.org/abs/(\d{4}\.\d{4,5})\)'
+        badge_match = re.search(badge_pattern, readme_content)
+        if badge_match:
+            return badge_match.group(1)
+    
+    if len(arxiv_ids) == 1:
+        return arxiv_ids[0]
+    
+    return None
+
+def extract_bibtex(text):
+    bibtex_pattern = r'(@\w+\{[^@]*\})'
+    return re.findall(bibtex_pattern, text, re.DOTALL)
+
+def process_repo(repo_name, repo_data, token):
+    readme_content = get_readme_content(repo_name, token)
+    
+    arxiv_ids = []
+    if readme_content:
+        arxiv_ids = extract_arxiv_ids(readme_content)
+        bibtex_citations = extract_bibtex(readme_content)
+    else:
+        bibtex_citations = []
+    
+    description = repo_data['metadata'].get('description', '')
+    primary_arxiv_id = infer_primary_arxiv_id(description, readme_content, arxiv_ids)
+    
+    repo_data['arxiv'] = {
+        'ids': arxiv_ids,
+        'primary_id': primary_arxiv_id,
+        'bibtex_citations': bibtex_citations
+    }
+    
+    return repo_data
+
+def process_repo_batch(repos, token, existing_data):
+    for item in repos:
+        repo_name = item['repo']['full_name']
+        if repo_name not in existing_data['repositories']:
+            metadata = get_repo_metadata(item['repo'], token)
+            if metadata:
+                existing_data['repositories'][repo_name] = {
+                    'lists': item.get('star_lists', []),
+                    'metadata': extract_metadata(metadata, item['starred_at']),
+                    'last_updated': datetime.now(UTC).isoformat()
+                }
+                existing_data['repositories'][repo_name] = process_repo(
+                    repo_name, 
+                    existing_data['repositories'][repo_name], 
+                    token
+                )
+            else:
+                logger.warning(f"Skipping repo {repo_name} due to metadata retrieval failure.")
+        else:
+            # Update the lists for existing repos
+            existing_data['repositories'][repo_name]['lists'] = item.get('star_lists', [])
+    return existing_data
+
+def commit_and_push():
+    try:
+        subprocess.run(["git", "config", "--global", "user.name", "GitHub Action"], check=True)
+        subprocess.run(["git", "config", "--global", "user.email", "action@github.com"], check=True)
+        subprocess.run(["git", "add", STARS_FILE], check=True)
+        subprocess.run(["git", "commit", "-m", "Update GitHub stars data"], check=True)
+        subprocess.run(["git", "push"], check=True)
+        logger.info("Changes committed and pushed successfully.")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error during git operations: {e}")
+        logger.warning("Exiting early due to potential conflict.")
+        sys.exit(1)
+
+def get_git_remote_username():
+    try:
+        remote_url = subprocess.check_output(["git", "config", "--get", "remote.origin.url"], universal_newlines=True).strip()
+        logger.info(f"Git remote URL: {remote_url}")
+        
+        # Handle different types of URLs:
+        # HTTPS: https://github.com/username/repo.git
+        # SSH: git@github.com:username/repo.git
+        # GitHub Actions: https://github.com/username/repo
+        patterns = [
+            r"https://github\.com/([^/]+)/",
+            r"git@github\.com:([^/]+)/",
+            r"https://x-access-token:[^@]+@github\.com/([^/]+)/"
+        ]
+        
+        for pattern in patterns:
+            match = re.search(pattern, remote_url)
+            if match:
+                username = match.group(1)
+                logger.info(f"Extracted username: {username}")
+                return username
+        
+        logger.warning(f"Could not extract username from remote URL: {remote_url}")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Failed to get git remote URL: {e}")
+    except Exception as e:
+        logger.error(f"Unexpected error in get_git_remote_username: {e}")
+    
+    return None
+
+
+def process_stars(username, token, existing_data):
+    logger.info("Starting star processing...")
+    all_starred = get_starred_repos(username, token)
+    total_repos = len(all_starred)
+    
+    logger.info(f"Found {total_repos} total starred repositories.")
+
+    changes_made = False
+    chunks_processed = 0
+
+    for i in range(0, total_repos, CHUNK_SIZE):
+        chunk = all_starred[i:i+CHUNK_SIZE]
+        logger.info(f"Processing chunk {i//CHUNK_SIZE + 1} of {total_repos//CHUNK_SIZE + 1}")
+        
+        chunk_changes = False
+        
+        for item in chunk:
+            repo_name = item['repo']['full_name']
+            if repo_name not in existing_data['repositories']:
+                metadata = get_repo_metadata(item['repo'], token)
+                if metadata:
+                    existing_data['repositories'][repo_name] = {
+                        'lists': [],  # Initialize as empty, to be populated by a separate process
+                        'metadata': extract_metadata(metadata, item['starred_at']),
+                        'last_updated': datetime.now(UTC).isoformat()
+                    }
+                    existing_data['repositories'][repo_name] = process_repo(
+                        repo_name, 
+                        existing_data['repositories'][repo_name], 
+                        token
+                    )
+                    chunk_changes = True
+                    changes_made = True
+                else:
+                    logger.warning(f"Skipping repo {repo_name} due to metadata retrieval failure.")
+        
+        if chunk_changes:
+            existing_data['last_updated'] = datetime.now(UTC).isoformat()
+            save_data(existing_data)
+            chunks_processed += 1
+        
+        # Commit and push every COMMIT_INTERVAL chunks with changes
+        if chunk_changes and (chunks_processed % COMMIT_INTERVAL == 0):
+            commit_and_push()
+
+    # Final commit if there are any uncommitted changes
+    if changes_made:
+        save_data(existing_data)
+        commit_and_push()
+    
+    logger.info("Star processing completed.")
+    logger.info("Note: Star lists information is not available and needs to be populated separately.")
+
+def main():
+    username = os.environ.get('GITHUB_USERNAME') or get_git_remote_username()
+    token = os.environ.get('GITHUB_TOKEN')
+    
+    logger.info(f"Determined username: {username}")
+    logger.info(f"Token available: {'Yes' if token else 'No'}")
+    
+    if not username:
+        logger.error("Unable to determine GitHub username. Please set GITHUB_USERNAME environment variable or run from a git repository.")
+        raise ValueError("GitHub username must be provided or determinable from git remote.")
+    
+    if not token:
+        logger.error("GITHUB_TOKEN environment variable is not set.")
+        raise ValueError("GitHub token must be provided as an environment variable.")
+    
+    logger.info(f"Using GitHub username: {username}")
+    
+    # Check initial rate limit
+    if not check_initial_rate_limit(token):
+        logger.warning("Rate limits are low. Consider rerunning later.")
+        # We'll continue anyway, but the warning is logged
+    
+    existing_data = load_existing_data()
+    
+    try:
+        process_stars(username, token, existing_data)
+    except Exception as e:
+        logger.error(f"An error occurred during execution: {e}")
+        raise
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================================================
+File: scripts/convert_arxiv_urls_to_ids.py
+================================================================================
+import json
+import re
+import sys
+
+class ArXivURLParsingError(Exception):
+    """Custom exception for arXiv URL parsing errors."""
+    pass
+
+def extract_arxiv_id(url):
+    if url is None:
+        return None
+    # Regular expression to match arXiv IDs
+    pattern = r'arxiv\.org/abs/(\d+\.\d+)'
+    match = re.search(pattern, url)
+    if not match:
+        raise ArXivURLParsingError(f"Unable to extract arXiv ID from URL: {url}")
+    return match.group(1)
+
+def convert_arxiv_urls_to_ids(data):
+    for repo_name, repo in data['repositories'].items():
+        if 'arxiv' in repo:
+            if 'urls' in repo['arxiv']:
+                #print(f"Processing URLs for repository: {repo_name}", file=sys.stderr)
+                arxiv_ids = [extract_arxiv_id(url) for url in repo['arxiv']['urls'] if url is not None]
+                repo['arxiv']['ids'] = [id for id in arxiv_ids if id is not None]
+                del repo['arxiv']['urls']
+
+            if 'primary_url' in repo['arxiv']:
+                #print(f"Processing primary URL for repository: {repo_name}", file=sys.stderr)
+                primary_url = repo['arxiv']['primary_url']
+                if primary_url is not None:
+                    primary_id = extract_arxiv_id(primary_url)
+                    if primary_id is not None:
+                        repo['arxiv']['primary_id'] = primary_id
+                del repo['arxiv']['primary_url']
+
+# Load the JSON file
+with open('github_stars.json', 'r') as file:
+    data = json.load(file)
+
+# Convert URLs to IDs
+convert_arxiv_urls_to_ids(data)
+
+# Save the updated JSON
+with open('github_stars.json', 'w') as file:
+    json.dump(data, file, indent=2)
+
+print("Conversion complete. Updated data saved to 'github_stars_updated.json'.", file=sys.stderr)
+
+
+
+================================================================================
+File: scripts/generate-package-lock.js
+================================================================================
+const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+
+// Function to run shell commands
+function runCommand(command) {
+  try {
+    execSync(command, { stdio: 'inherit' });
+  } catch (error) {
+    console.error(`Failed to execute command: ${command}`);
+    process.exit(1);
+  }
+}
+
+// Main function
+function main() {
+  // Ensure we're in the project root
+  const packageJsonPath = path.join(process.cwd(), 'package.json');
+  if (!fs.existsSync(packageJsonPath)) {
+    console.error('package.json not found in the current directory');
+    process.exit(1);
+  }
+
+  // Update packages and generate package-lock.json
+  console.log('Updating packages and generating package-lock.json...');
+  runCommand('npm update');
+  runCommand('npm install');
+
+  // Stage, commit, and push the changes
+  console.log('Committing and pushing package-lock.json...');
+  runCommand('git config --global user.email "github-actions[bot]@users.noreply.github.com"');
+  runCommand('git config --global user.name "github-actions[bot]"');
+  runCommand('git add package.json package-lock.json');
+  runCommand('git commit -m "Update dependencies and regenerate package-lock.json"');
+  runCommand('git push');
+
+  console.log('Dependencies updated and package-lock.json has been regenerated and pushed to the repository.');
+}
+
+main();
+
+
+
+================================================================================
+File: scripts/transform_categories.py
+================================================================================
+import json
+from pathlib import Path
+import subprocess
+from loguru import logger
+
+def commit_and_push(file_to_commit):
+    try:
+        subprocess.run(["git", "config", "--global", "user.name", "GitHub Action"], check=True)
+        subprocess.run(["git", "config", "--global", "user.email", "action@github.com"], check=True)
+        subprocess.run(["git", "add", file_to_commit], check=True)
+        subprocess.run(["git", "commit", "-m", f"Update {file_to_commit}"], check=True)
+        subprocess.run(["git", "push"], check=True)
+        logger.info(f"Changes to {file_to_commit} committed and pushed successfully.")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error during git operations: {e}")
+        logger.warning("Exiting early due to potential conflict.")
+        raise
+
+def transform_categories(data):
+    for paper_id, paper_info in data.items():
+        if 'categories' in paper_info:
+            try:
+                paper_info['categories'] = [cat['@term'] for cat in paper_info['categories']]
+            except TypeError:
+                continue
+            #except Exception as e:
+                #logger.info(paper_id)
+                #logger.info(paper_info['categories'])
+                #raise e
+    return data
+
+def main():
+    file_path = Path('arxiv_metadata.json')
+    
+    # Read the JSON file
+    with file_path.open('r') as f:
+        data = json.load(f)
+    
+    # Transform the data
+    transformed_data = transform_categories(data)
+    
+    # Write the transformed data back to the file
+    with file_path.open('w') as f:
+        json.dump(transformed_data, f, indent=2)
+    
+    # Commit and push changes
+    commit_and_push(file_path)
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================================================
+File: src/App.js
+================================================================================
+import React from 'react';
+import Dashboard from './components/Dashboard';
+
+function App() {
+  return (
+    <div className="App">
+      <Dashboard />
+    </div>
+  );
+}
+
+export default App;
+
+
+
+================================================================================
+File: src/README.md
+================================================================================
+# GitHub Stars Dashboard - Source Code Structure
+
+This document provides an overview of the source code structure for the GitHub Stars Dashboard project. The project is built using React and organized into components, hooks, and utility functions for better maintainability and reusability.
+
+## File Structure
+
+```
+src/
+├── components/
+│   ├── Dashboard.js
+│   ├── SortDropdown.js
+│   ├── AdvancedSearchCondition.js
+│   ├── AdvancedSearch.js
+│   ├── ArXivBadge.js
+│   └── ExpandedRepoView.js
+├── hooks/
+│   └── useRepositories.js
+├── utils/
+│   ├── arxivUtils.js
+│   └── sortUtils.js
+├── App.js
+├── index.js
+└── index.css
+```
+
+## Main Application Files
+
+### App.js
+The root component of the application. It typically renders the main `Dashboard` component and may include any global providers or context.
+
+### index.js
+The entry point of the React application. It renders the `App` component and attaches it to the DOM.
+
+### index.css
+Contains global styles for the application. This may include reset styles, global typography rules, or other app-wide CSS.
+
+## Components
+
+### Dashboard.js
+The main component that renders the entire dashboard. It orchestrates the other components and manages the overall state of the application.
+
+### SortDropdown.js
+A reusable dropdown component for sorting repositories. It allows users to select sorting criteria and direction.
+
+### AdvancedSearchCondition.js
+Renders a single condition in the advanced search feature. It includes fields for selecting the search attribute, operator, and value.
+
+### AdvancedSearch.js
+Manages the advanced search feature, allowing users to add, remove, and modify search conditions.
+
+### ArXivBadge.js
+A small component that displays an arXiv badge for repositories linked to arXiv papers.
+
+### ExpandedRepoView.js
+Renders detailed information about a repository when it's expanded in the list view.
+
+## Hooks
+
+### useRepositories.js
+A custom hook that manages the fetching, filtering, and sorting of repository data. It encapsulates the complex logic for data manipulation, making it easier to test and maintain.
+
+## Utilities
+
+### arxivUtils.js
+Contains utility functions for working with arXiv-related data, such as extracting arXiv IDs and retrieving specific fields from arXiv metadata.
+
+### sortUtils.js
+Provides utility functions and constants related to sorting and field operations, including field options, operator lists, and input type determination.
+
+## Usage
+
+To use these components and utilities in your React application:
+
+1. The `index.js` file serves as the entry point and renders the `App` component.
+
+2. The `App.js` file renders the main `Dashboard` component.
+
+3. The `Dashboard` component will handle the rendering of all sub-components and manage the application state.
+
+4. Global styles are defined in `index.css` and applied to the entire application.
+
+## Development
+
+When developing new features or modifying existing ones:
+
+- Keep components focused on a single responsibility.
+- Use the `useRepositories` hook for data fetching and manipulation logic.
+- Place any new utility functions in the appropriate utility file or create a new one if necessary.
+- Update this README when adding new components or significantly changing the project structure.
+- Add any global styles to `index.css`, but prefer component-specific styles when possible.
+
+## Testing
+
+- Each component and utility function should have corresponding unit tests.
+- Use React Testing Library for component tests.
+- Place test files adjacent to the components or utilities they're testing, with a `.test.js` suffix.
+
+## Styling
+
+- The project uses Tailwind CSS for styling. Refer to the Tailwind documentation for available classes.
+- Global styles are in `index.css`. Use this for app-wide styling needs.
+- Component-specific styles should be added using Tailwind classes directly in the component files.
+- If custom styles are needed beyond Tailwind, consider creating a separate CSS module for the component.
+
+## Data Flow
+
+1. The `useRepositories` hook fetches data from the JSON files.
+2. The main `Dashboard` component receives the data and filtering/sorting functions from the hook.
+3. User interactions (sorting, searching, expanding repos) trigger state updates in the `Dashboard` component.
+4. These state changes cause the `useRepositories` hook to re-filter and re-sort the data.
+5. The updated data flows down to the child components for rendering.
+
+Remember to keep this README updated as the project evolves. Good documentation is key to maintaining a healthy, collaborative project!
+
+
+
+================================================================================
+File: src/components/AdvancedSearch.js
+================================================================================
+import React from 'react';
+import { Plus, Trash2 } from 'lucide-react';
+import AdvancedSearchCondition from './AdvancedSearchCondition';
+
+const AdvancedSearch = ({ conditions, setConditions, fieldOptions, allLists, allCategories }) => {
+  const addCondition = () => {
+    setConditions([...conditions, { field: 'name', operator: 'contains', value: '', conjunction: 'AND' }]);
+  };
+
+  const updateCondition = (index, newCondition) => {
+    const newConditions = [...conditions];
+    newConditions[index] = newCondition;
+    setConditions(newConditions);
+  };
+
+  const removeCondition = (index) => {
+    setConditions(conditions.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+      <h3 className="text-xl font-semibold mb-4 text-gray-800">Advanced Search</h3>
+      <div className="space-y-4">
+        {conditions.map((condition, index) => (
+          <div key={index} className="flex items-start">
+            <div className="w-20 pt-2">
+              {index > 0 && (
+                <select
+                  value={condition.conjunction}
+                  onChange={(e) => updateCondition(index, { ...condition, conjunction: e.target.value })}
+                  className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="AND">AND</option>
+                  <option value="OR">OR</option>
+                </select>
+              )}
+            </div>
+            <div className="flex-grow">
+              <AdvancedSearchCondition
+                condition={condition}
+                updateCondition={(newCondition) => updateCondition(index, newCondition)}
+                fieldOptions={fieldOptions}
+                allLists={allLists}
+                allCategories={allCategories}
+              />
+            </div>
+            <button
+              onClick={() => removeCondition(index)}
+              className="ml-2 p-2 text-red-600 hover:text-red-800 focus:outline-none"
+              aria-label="Remove condition"
+            >
+              <Trash2 size={20} />
+            </button>
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={addCondition}
+          className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          <Plus size={20} className="mr-2" />
+          Add condition
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default AdvancedSearch;
+
+
+
+================================================================================
+File: src/components/AdvancedSearchCondition.js
+================================================================================
+import React from 'react';
+import { getOperators, getInputType } from '../utils/sortUtils';
+
+const AdvancedSearchCondition = ({ condition, updateCondition, fieldOptions, allLists, allCategories }) => {
+  const renderInput = () => {
+    const inputType = getInputType(condition.field);
+    const inputClass = "w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+    
+    switch (inputType) {
+      case 'number':
+        return (
+          <input
+            type="number"
+            value={condition.value}
+            onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
+            className={inputClass}
+          />
+        );
+      case 'date':
+        return (
+          <input
+            type="date"
+            value={condition.value}
+            onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
+            className={inputClass}
+          />
+        );
+      case 'list':
+        const options = condition.field === 'lists' ? allLists : allCategories;
+        return (
+          <select
+            multiple
+            value={condition.value.split(',')}
+            onChange={(e) => updateCondition({ ...condition, value: Array.from(e.target.selectedOptions, option => option.value).join(',') })}
+            className={inputClass}
+          >
+            {options.map(option => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
+        );
+      default:
+        return (
+          <input
+            type="text"
+            value={condition.value}
+            onChange={(e) => updateCondition({ ...condition, value: e.target.value })}
+            className={inputClass}
+          />
+        );
+    }
+  };
+
+  const fieldType = getInputType(condition.field);
+  const operators = getOperators(fieldType);
+
+  return (
+    <div className="flex items-center space-x-2">
+      <select
+        value={condition.field}
+        onChange={(e) => updateCondition({ ...condition, field: e.target.value, operator: getOperators(getInputType(e.target.value))[0].value })}
+        className="w-1/3 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        {fieldOptions.map(option => (
+          <option key={option.value} value={option.value}>{option.label}</option>
+        ))}
+      </select>
+      <select
+        value={condition.operator}
+        onChange={(e) => updateCondition({ ...condition, operator: e.target.value })}
+        className="w-1/3 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        {operators.map(op => (
+          <option key={op.value} value={op.value}>{op.label}</option>
+        ))}
+      </select>
+      <div className="w-1/3">
+        {renderInput()}
+      </div>
+    </div>
+  );
+};
+
+export default AdvancedSearchCondition;
+
+
+
+================================================================================
+File: src/components/ArXivBadge.js
+================================================================================
+import React from 'react';
+import { FileText } from 'lucide-react';
+import { extractArXivId } from '../utils/arxivUtils';
+
+const ArXivBadge = ({ arxivInfo, arxivMetadata }) => {
+  const arxivId = extractArXivId(arxivInfo.primary_id || arxivInfo.primary_url);
+  const paperMetadata = arxivMetadata[arxivId];
+
+  return (
+    <div className="flex items-center space-x-2">
+      <a
+        href={`https://arxiv.org/abs/${arxivId}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <FileText size={14} className="mr-1" />
+        arXiv
+      </a>
+      {paperMetadata && paperMetadata.categories && paperMetadata.categories.length > 0 && (
+        <span className="text-xs text-gray-500">{paperMetadata.categories[0]['@term']}</span>
+      )}
+    </div>
+  );
+};
+
+export default ArXivBadge;
+
+
+
+================================================================================
+File: src/components/Dashboard.js
+================================================================================
+import React, { useState } from 'react';
+import { Search, SlidersHorizontal, ArrowDown, ArrowUp, ChevronDown, ChevronUp, Github as GithubIcon } from 'lucide-react';
+import SortDropdown from './SortDropdown';
+import AdvancedSearch from './AdvancedSearch';
+import ArXivBadge from './ArXivBadge';
+import ExpandedRepoView from './ExpandedRepoView';
+import useRepositories from '../hooks/useRepositories';
+import { fieldOptions } from '../utils/sortUtils';
+
+const Dashboard = () => {
+  const [expandedRepo, setExpandedRepo] = useState(null);
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+
+  const {
+    data,
+    filteredRepos,
+    allLists,
+    allCategories,
+    handleSortChange,
+    toggleSortDirection,
+    arxivMetadata,
+    sortOption,
+    sortDirection,
+    textSearch,
+    setTextSearch,
+    searchConditions,
+    setSearchConditions
+  } = useRepositories();
+
+  const toggleRepoExpansion = (name, event) => {
+    // Prevent toggling if the click was on the GitHub link
+    if (event.target.closest('a')) return;
+    setExpandedRepo(expandedRepo === name ? null : name);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    console.log("Search submitted:", textSearch);
+  };
+
+  if (!data) {
+    return <div className="flex items-center justify-center h-screen text-2xl">Loading...</div>;
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <header className="mb-8">
+        {/* Header content */}
+        <form onSubmit={handleSearchSubmit} className="flex items-center mb-4">
+          <input
+            type="text"
+            placeholder="Search repositories..."
+            value={textSearch}
+            onChange={(e) => setTextSearch(e.target.value)}
+            className="flex-grow px-4 py-2 rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label="Search"
+          >
+            <Search size={20} />
+          </button>
+        </form>
+        <div className="flex justify-between items-center mb-4">
+          <button
+            onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
+            className="flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <SlidersHorizontal size={20} className="mr-2" />
+            {showAdvancedSearch ? 'Hide' : 'Show'} Advanced Search
+          </button>
+          <div className="flex items-center space-x-2">
+            <SortDropdown 
+              sortOption={sortOption}
+              sortDirection={sortDirection}
+              handleSortChange={handleSortChange}
+            />
+            <button
+              onClick={toggleSortDirection}
+              className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label={`Sort ${sortDirection === 'desc' ? 'descending' : 'ascending'}`}
+            >
+              {sortDirection === 'desc' ? <ArrowDown size={20} /> : <ArrowUp size={20} />}
+            </button>
+          </div>
+        </div>
+        {showAdvancedSearch && (
+          <AdvancedSearch 
+            conditions={searchConditions}
+            setConditions={setSearchConditions}
+            fieldOptions={fieldOptions}
+            allLists={allLists}
+            allCategories={allCategories}
+          />
+        )}
+      </header>
+      
+      <main>
+        <h2 className="text-2xl font-semibold mb-4">Repositories ({filteredRepos.length})</h2>
+        <ul className="space-y-4">
+          {filteredRepos.map(([name, repo]) => (
+            <li key={name} className="bg-white shadow rounded-lg overflow-hidden">
+              <div 
+                className="px-6 py-4 cursor-pointer hover:bg-gray-50"
+                onClick={(e) => toggleRepoExpansion(name, e)}
+              >
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-4">
+                    <a
+                      href={`https://github.com/${name}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline flex items-center"
+                      onClick={(e) => e.stopPropagation()} // Prevent toggling when clicking the link
+                    >
+                      <GithubIcon size={20} className="mr-1" />
+                      {name}
+                    </a>
+                    <span className="text-sm font-medium text-gray-600">{repo.metadata.stars} ★</span>
+                    {repo.arxiv && (repo.arxiv.primary_id || repo.arxiv.primary_url) && (
+                      <ArXivBadge arxivInfo={repo.arxiv} arxivMetadata={arxivMetadata} />
+                    )}
+                  </div>
+                  {expandedRepo === name ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                </div>
+                <p className="text-sm text-gray-600 mt-2">{repo.metadata.description}</p>
+              </div>
+              {expandedRepo === name && (
+                <ExpandedRepoView repo={repo} name={name} arxivMetadata={arxivMetadata} />
+              )}
+            </li>
+          ))}
+        </ul>
+      </main>
+    </div>
+  );
+};
+
+export default Dashboard;
+
+
+
+================================================================================
+File: src/components/ExpandedRepoView.js
+================================================================================
+import React from 'react';
+import { extractArXivId } from '../utils/arxivUtils';
+
+const ExpandedRepoView = ({ repo, name, arxivMetadata }) => {
+  const arxivId = extractArXivId(repo.arxiv?.primary_id || repo.arxiv?.primary_url);
+  const paperMetadata = arxivMetadata[arxivId];
+
+  return (
+    <div className="px-6 py-4 border-t border-gray-100">
+      <p className="text-gray-700 mb-2">{repo.metadata.description}</p>
+      <p className="text-sm text-gray-600 mb-2">Language: {repo.metadata.language}</p>
+      <p className="text-sm text-gray-600 mb-2">Created: {new Date(repo.metadata.created_at).toLocaleDateString()}</p>
+      <p className="text-sm text-gray-600 mb-2">Last updated: {new Date(repo.metadata.updated_at).toLocaleDateString()}</p>
+      <p className="text-sm text-gray-600 mb-2">Last pushed: {new Date(repo.metadata.pushed_at).toLocaleDateString()}</p>
+      <p className="text-sm text-gray-600 mb-2">Starred at: {new Date(repo.metadata.starred_at).toLocaleDateString()}</p>
+      {repo.lists && repo.lists.length > 0 && (
+        <p className="text-sm text-gray-600 mb-2">Lists: {repo.lists.join(', ')}</p>
+      )}
+      {paperMetadata && (
+        <div className="mt-4">
+          <h4 className="text-lg font-semibold mb-2">arXiv Paper Details</h4>
+          <p className="text-sm text-gray-700 mb-1">Title: {paperMetadata.title}</p>
+          <p className="text-sm text-gray-700 mb-1">Authors: {paperMetadata.authors.join(', ')}</p>
+          <p className="text-sm text-gray-700 mb-1">Published: {new Date(paperMetadata.published).toLocaleDateString()}</p>
+          <p className="text-sm text-gray-700 mb-1">Last Updated: {new Date(paperMetadata.updated).toLocaleDateString()}</p>
+          <p className="text-sm text-gray-700 mb-1">Categories: {paperMetadata.categories.map(cat => cat['@term']).join(', ')}</p>
+          <details className="mt-2">
+            <summary className="text-sm text-blue-600 cursor-pointer">Abstract</summary>
+            <p className="text-sm text-gray-700 mt-1">{paperMetadata.abstract}</p>
+          </details>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ExpandedRepoView;
+
+
+
+================================================================================
+File: src/components/SortDropdown.js
+================================================================================
+import React, { useState } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+
+const SortDropdown = ({ sortOption, sortDirection, handleSortChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const options = [
+    { value: 'stars', label: 'Stars' },
+    { value: 'name', label: 'Name' },
+    { value: 'updated_at', label: 'Last Updated' },
+    { value: 'created_at', label: 'Created' },
+    { value: 'pushed_at', label: 'Last Pushed' },
+    { value: 'starred_at', label: 'Starred At' },
+    { value: 'arxiv_published', label: 'arXiv Published Date' },
+    { value: 'arxiv_updated', label: 'arXiv Updated Date' },
+  ];
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between w-48 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
+      >
+        {options.find(opt => opt.value === sortOption).label}
+        {isOpen ? <ChevronUp className="w-5 h-5 ml-2" /> : <ChevronDown className="w-5 h-5 ml-2" />}
+      </button>
+      {isOpen && (
+        <div className="absolute right-0 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+          <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+            {options.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => {
+                  handleSortChange(option.value);
+                  setIsOpen(false);
+                }}
+                className="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                role="menuitem"
+              >
+                {option.label}
+                {sortOption === option.value && (
+                  <span>{sortDirection === 'desc' ? '▼' : '▲'}</span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default SortDropdown;
+
+
+
+================================================================================
+File: src/hooks/useRepositories.js
+================================================================================
+import { useState, useEffect } from 'react';
+import { getArxivFieldValue } from '../utils/arxivUtils';
+
+const useRepositories = () => {
+  const [data, setData] = useState(null);
+  const [filteredRepos, setFilteredRepos] = useState([]);
+  const [allLists, setAllLists] = useState([]);
+  const [arxivMetadata, setArxivMetadata] = useState({});
+  const [sortOption, setSortOption] = useState('starred_at');
+  const [sortDirection, setSortDirection] = useState('desc');
+  const [textSearch, setTextSearch] = useState('');
+  const [searchConditions, setSearchConditions] = useState([]);
+
+  useEffect(() => {
+    Promise.all([
+      fetch(`${process.env.PUBLIC_URL}/github_stars.json`).then(response => response.json()),
+      fetch(`${process.env.PUBLIC_URL}/arxiv_metadata.json`).then(response => response.json())
+    ])
+    .then(([jsonData, metadata]) => {
+      setData(jsonData);
+      setArxivMetadata(metadata);
+      const lists = new Set();
+      Object.values(jsonData.repositories).forEach(repo => {
+        (repo.lists || []).forEach(list => lists.add(list));
+      });
+      setAllLists(Array.from(lists).sort());
+    })
+    .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
+  useEffect(() => {
+    if (data && data.repositories) {
+      let filtered = Object.entries(data.repositories).filter(([name, repo]) => {
+        const matchesTextSearch = 
+          textSearch === '' ||
+          name.toLowerCase().includes(textSearch.toLowerCase()) ||
+          (repo.metadata.description && repo.metadata.description.toLowerCase().includes(textSearch.toLowerCase()));
+
+        const matchesAdvancedSearch = searchConditions.every((condition) => {
+          const fieldValue = condition.field === 'name' ? name : 
+                             condition.field === 'lists' ? repo.lists || [] :
+                             condition.field.startsWith('arxiv_') ? getArxivFieldValue(repo, condition.field, arxivMetadata) :
+                             repo.metadata[condition.field];
+          
+          if (fieldValue === null || fieldValue === undefined) return false;
+          let matches;
+          switch (condition.operator) {
+            case 'contains':
+              matches = Array.isArray(fieldValue) 
+                ? fieldValue.some(value => String(value).toLowerCase().includes(condition.value.toLowerCase()))
+                : String(fieldValue).toLowerCase().includes(condition.value.toLowerCase());
+              break;
+            case 'equals':
+              matches = Array.isArray(fieldValue)
+                ? fieldValue.some(value => String(value).toLowerCase() === condition.value.toLowerCase())
+                : String(fieldValue).toLowerCase() === condition.value.toLowerCase();
+              break;
+            case 'starts_with':
+              matches = Array.isArray(fieldValue)
+                ? fieldValue.some(value => String(value).toLowerCase().startsWith(condition.value.toLowerCase()))
+                : String(fieldValue).toLowerCase().startsWith(condition.value.toLowerCase());
+              break;
+            case 'ends_with':
+              matches = Array.isArray(fieldValue)
+                ? fieldValue.some(value => String(value).toLowerCase().endsWith(condition.value.toLowerCase()))
+                : String(fieldValue).toLowerCase().endsWith(condition.value.toLowerCase());
+              break;
+            case 'greater_than':
+            case 'after':
+              matches = new Date(fieldValue) > new Date(condition.value);
+              break;
+            case 'less_than':
+            case 'before':
+              matches = new Date(fieldValue) < new Date(condition.value);
+              break;
+            case 'includes':
+              matches = Array.isArray(fieldValue) && condition.value.split(',').some(val => 
+                fieldValue.some(category => category.toLowerCase().includes(val.toLowerCase()))
+              );
+              break;
+            case 'excludes':
+              matches = Array.isArray(fieldValue) && !condition.value.split(',').some(val => 
+                fieldValue.some(category => category.toLowerCase().includes(val.toLowerCase()))
+              );
+              break;
+            default:
+              matches = true;
+          }
+          return matches;
+        });
+        return matchesTextSearch && matchesAdvancedSearch;
+      });
+
+      filtered.sort((a, b) => {
+        const [, repoA] = a;
+        const [, repoB] = b;
+        const direction = sortDirection === 'desc' ? -1 : 1;
+
+        switch (sortOption) {
+          case 'stars':
+            return (repoB.metadata.stars - repoA.metadata.stars) * direction;
+          case 'name':
+            return a[0].localeCompare(b[0]) * direction;
+          case 'updated_at':
+          case 'created_at':
+          case 'pushed_at':
+          case 'starred_at':
+            return (new Date(repoA.metadata[sortOption]) - new Date(repoB.metadata[sortOption])) * direction; // Fixed order
+          case 'arxiv_published':
+          case 'arxiv_updated':
+            const dateA = new Date(getArxivFieldValue(repoA, sortOption, arxivMetadata) || 0);
+            const dateB = new Date(getArxivFieldValue(repoB, sortOption, arxivMetadata) || 0);
+            return (dateA - dateB) * direction; // Fixed order
+          default:
+            return 0;
+        }
+      });
+
+      setFilteredRepos(filtered);
+    }
+  }, [data, sortOption, sortDirection, textSearch, searchConditions, arxivMetadata]);
+
+  const handleSortChange = (option) => {
+    if (option === sortOption) {
+      setSortDirection(prev => prev === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortOption(option);
+      setSortDirection('desc');
+    }
+  };
+
+  const toggleSortDirection = () => {
+    setSortDirection(prev => prev === 'desc' ? 'asc' : 'desc');
+  };
+
+  return {
+    data,
+    filteredRepos,
+    allLists,
+    allCategories: [...new Set(Object.values(arxivMetadata).flatMap(paper => paper.categories))],
+    handleSortChange,
+    toggleSortDirection,
+    arxivMetadata,
+    sortOption,
+    sortDirection,
+    textSearch,
+    setTextSearch,
+    searchConditions,
+    setSearchConditions
+  };
+};
+
+export default useRepositories;
+
+
+
+================================================================================
+File: src/index.css
+================================================================================
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+================================================================================
+File: src/index.js
+================================================================================
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+
+
+================================================================================
+File: src/utils/arxivUtils.js
+================================================================================
+export const extractArXivId = (idOrUrl) => {
+  if (!idOrUrl) return null;
+  if (!idOrUrl.includes('/')) return idOrUrl;
+  const match = idOrUrl.match(/\/(\d+\.\d+)/);
+  return match ? match[1] : null;
+};
+
+export const getArxivFieldValue = (repo, field, arxivMetadata) => {
+  const arxivId = extractArXivId(repo.arxiv?.primary_id || repo.arxiv?.primary_url);
+  const paperMetadata = arxivMetadata[arxivId];
+  if (!paperMetadata) return null;
+
+  switch (field) {
+    case 'arxiv_category':
+      return paperMetadata.categories || [];
+    case 'arxiv_published':
+      return paperMetadata.published || null;
+    case 'arxiv_updated':
+      return paperMetadata.updated || null;
+    case 'arxiv_primary':
+      return arxivId ? 'yes' : 'no';
+    default:
+      return null;
+  }
+};
+
+
+
+================================================================================
+File: src/utils/sortUtils.js
+================================================================================
+export const fieldOptions = [
+  { value: 'name', label: 'Name' },
+  { value: 'description', label: 'Description' },
+  { value: 'language', label: 'Language' },
+  { value: 'stars', label: 'Stars' },
+  { value: 'created_at', label: 'Created At' },
+  { value: 'updated_at', label: 'Updated At' },
+  { value: 'pushed_at', label: 'Pushed At' },
+  { value: 'starred_at', label: 'Starred At' },
+  { value: 'lists', label: 'Lists' },
+  { value: 'arxiv_category', label: 'arXiv Category' },
+  { value: 'arxiv_published', label: 'arXiv Published Date' },
+  { value: 'arxiv_updated', label: 'arXiv Updated Date' },
+  { value: 'arxiv_primary', label: 'Has Primary arXiv Article' },
+];
+
+export const getOperators = (fieldType) => {
+  switch (fieldType) {
+    case 'string':
+      return [
+        { value: 'contains', label: 'contains' },
+        { value: 'equals', label: 'equals' },
+        { value: 'starts_with', label: 'starts with' },
+        { value: 'ends_with', label: 'ends with' },
+      ];
+    case 'number':
+      return [
+        { value: 'equals', label: 'equals' },
+        { value: 'greater_than', label: 'greater than' },
+        { value: 'less_than', label: 'less than' },
+      ];
+    case 'date':
+      return [
+        { value: 'equals', label: 'equals' },
+        { value: 'after', label: 'after' },
+        { value: 'before', label: 'before' },
+      ];
+    case 'list':
+      return [
+        { value: 'includes', label: 'includes' },
+        { value: 'excludes', label: 'excludes' },
+      ];
+    default:
+      return [{ value: 'equals', label: 'equals' }];
+  }
+};
+
+export const getInputType = (field) => {
+  switch (field) {
+    case 'stars':
+      return 'number';
+    case 'created_at':
+    case 'updated_at':
+    case 'pushed_at':
+    case 'starred_at':
+    case 'arxiv_published':
+    case 'arxiv_updated':
+      return 'date';
+    case 'lists':
+    case 'arxiv_category':
+      return 'list';
+    default:
+      return 'text';
+  }
+};
+
+
+
+================================================================================
+File: tailwind.config.js
+================================================================================
+module.exports = {
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+
+
+
+================================================================================
+File: tests/__init__.py
+================================================================================
+
+
+
+
+================================================================================
+File: tests/test_article_metadata_collector.py
+================================================================================
+import pytest
+from unittest.mock import patch, MagicMock
+import json
+import sys
+import os
+
+# Add the parent directory to the Python path to import the main script
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from arxiv_metadata_collector import (
+    extract_arxiv_id, 
+    parse_bibtex,
+    extract_identifier,
+    deduplicate_papers,
+    process_papers,
+    fetch_arxiv_metadata,
+    fetch_semantic_scholar_data,
+    fetch_semantic_scholar_data_batch,
+    load_existing_data,
+    save_data,
+)
+from utils import controlled_request
+
+def test_extract_identifier():
+    assert extract_identifier({'url': 'https://arxiv.org/abs/1234.56789'}) == 'arxiv:1234.56789'
+    assert extract_identifier({'bibtex': '@article{example, doi={10.1234/example}}'}) == 'doi:10.1234/example'
+    assert extract_identifier({'bibtex': '@article{example, arxiv={1234.56789}}'}) == 'arxiv:1234.56789'
+    assert extract_identifier({'bibtex': '@article{example, title={Unique Title}}'}) == 'title:Unique Title'
+    assert extract_identifier({'other': 'data'}) is None
+
+def test_extract_arxiv_id():
+    assert extract_arxiv_id("https://arxiv.org/abs/1234.56789") == "1234.56789"
+    assert extract_arxiv_id("https://arxiv.org/pdf/1234.56789.pdf") == "1234.56789"
+    assert extract_arxiv_id("1234.56789") == "1234.56789"
+    assert extract_arxiv_id("arXiv:1234.56789v2") == "1234.56789"
+    assert extract_arxiv_id("https://example.com") is None
+
+def test_parse_bibtex():
+    # Test single-line BibTeX
+    single_line_bibtex = "@article{example, title={Example Title}, author={Doe, John}, doi={10.1234/example}}"
+    parsed = parse_bibtex(single_line_bibtex)
+    assert parsed['title'] == 'Example Title'
+    assert parsed['author'] == 'Doe, John'
+    assert parsed['doi'] == '10.1234/example'
+
+    # Test multi-line BibTeX
+    multi_line_bibtex = """@article{example,
+        title={Example Title},
+        author={Doe, John and Smith, Jane},
+        journal={Example Journal},
+        year={2023},
+        doi={10.1234/example}
+    }"""
+    parsed = parse_bibtex(multi_line_bibtex)
+    assert parsed['title'] == 'Example Title'
+    assert parsed['author'] == 'Doe, John and Smith, Jane'
+    assert parsed['journal'] == 'Example Journal'
+    assert parsed['year'] == '2023'
+    assert parsed['doi'] == '10.1234/example'
+
+@pytest.fixture
+def mock_json_file(tmp_path):
+    data = {
+        "last_updated": "2023-01-01T00:00:00Z",
+        "papers": {
+            "1234.56789": {
+                "title": "Example Paper",
+                "authors": ["John Doe"]
+            }
+        }
+    }
+    file = tmp_path / "test_metadata.json"
+    file.write_text(json.dumps(data))
+    return file
+
+def test_load_existing_data(mock_json_file):
+    with patch('arxiv_metadata_collector.ARXIV_METADATA_FILE', str(mock_json_file)):
+        data = load_existing_data()
+        assert data['last_updated'] == "2023-01-01T00:00:00Z"
+        assert '1234.56789' in data['papers']
+        assert data['papers']['1234.56789']['title'] == "Example Paper"
+
+def test_save_data(tmp_path):
+    test_data = {
+        "last_updated": "2023-01-01T00:00:00Z",
+        "papers": {
+            "1234.56789": {
+                "title": "New Paper",
+                "authors": ["Jane Smith"]
+            }
+        }
+    }
+    file = tmp_path / "test_save.json"
+    with patch('arxiv_metadata_collector.ARXIV_METADATA_FILE', str(file)):
+        save_data(test_data)
+        assert file.exists()
+        saved_data = json.loads(file.read_text())
+        assert saved_data == test_data
+
+@patch('arxiv_metadata_collector.controlled_request')
+def test_fetch_arxiv_metadata(mock_controlled_request):
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.content = """
+    <feed>
+        <entry>
+            <id>http://arxiv.org/abs/1234.56789v1</id>
+            <title>Example Title</title>
+            <author>
+                <name>John Doe</name>
+            </author>
+            <summary>Example abstract</summary>
+            <category term="cs.AI"/>
+            <published>2023-01-01T00:00:00Z</published>
+            <updated>2023-01-02T00:00:00Z</updated>
+        </entry>
+    </feed>
+    """
+    mock_controlled_request.return_value = mock_response
+
+    result = fetch_arxiv_metadata('1234.56789')
+
+    assert result['title'] == 'Example Title'
+    assert result['authors'] == ['John Doe']
+    assert result['abstract'] == 'Example abstract'
+    assert result['categories'] == ['cs.AI']
+    assert result['published'] == '2023-01-01T00:00:00Z'
+    assert result['updated'] == '2023-01-02T00:00:00Z'
+
+@patch('arxiv_metadata_collector.controlled_request')
+def test_fetch_arxiv_metadata_multiple_categories(mock_controlled_request):
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.content = """
+    <feed>
+        <entry>
+            <id>http://arxiv.org/abs/1234.56789v1</id>
+            <title>Example Title</title>
+            <author>
+                <name>John Doe</name>
+            </author>
+            <summary>Example abstract</summary>
+            <category term="cs.AI"/>
+            <category term="cs.LG"/>
+            <published>2023-01-01T00:00:00Z</published>
+            <updated>2023-01-02T00:00:00Z</updated>
+        </entry>
+    </feed>
+    """
+    mock_controlled_request.return_value = mock_response
+
+    result = fetch_arxiv_metadata('1234.56789')
+
+    assert result['title'] == 'Example Title'
+    assert result['authors'] == ['John Doe']
+    assert result['abstract'] == 'Example abstract'
+    assert result['categories'] == ['cs.AI', 'cs.LG']
+    assert result['published'] == '2023-01-01T00:00:00Z'
+    assert result['updated'] == '2023-01-02T00:00:00Z'
+
+@patch('arxiv_metadata_collector.controlled_request')
+def test_fetch_semantic_scholar_data(mock_controlled_request):
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {
+        'title': 'Example Title',
+        'authors': [{'name': 'John Doe'}],
+        'abstract': 'Example abstract',
+        'year': 2023,
+        'venue': 'Example Conference',
+        'url': 'https://example.com/paper',
+        'doi': '10.1234/example',
+        'arxivId': '1234.56789',
+        'paperId': 'abcdef123456',
+        'citationCount': 10,
+        'influentialCitationCount': 5,
+        'referenceCount': 20
+    }
+    mock_controlled_request.return_value = mock_response
+
+    result = fetch_semantic_scholar_data('1234.56789', 'arxiv')
+
+    assert result['title'] == 'Example Title'
+    assert result['authors'] == ['John Doe']
+    assert result['abstract'] == 'Example abstract'
+    assert result['year'] == 2023
+    assert result['venue'] == 'Example Conference'
+    assert result['url'] == 'https://example.com/paper'
+    assert result['doi'] == '10.1234/example'
+    assert result['arxivId'] == '1234.56789'
+    assert result['paperId'] == 'abcdef123456'
+    assert result['citation_count'] == 10
+    assert result['influential_citation_count'] == 5
+    assert result['reference_count'] == 20
+    
+@patch('arxiv_metadata_collector.fetch_semantic_scholar_data_batch')
+@patch('arxiv_metadata_collector.save_data')
+@patch('arxiv_metadata_collector.commit_and_push')
+def test_process_papers(mock_commit_and_push, mock_save_data, mock_fetch_semantic_scholar_batch):
+    papers = [
+        {'url': 'https://arxiv.org/abs/1234.56789'},
+        {'bibtex': '@article{example, doi={10.1234/example}, title={Example Title}}'}
+    ]
+    existing_data = {'papers': {}}
+
+    mock_fetch_semantic_scholar_batch.return_value = {
+        'arxiv:1234.56789': {
+            'title': 'Semantic Scholar ArXiv Paper',
+            'authors': ['John Doe'],
+            'abstract': 'Semantic Scholar ArXiv abstract',
+            'paperId': 'arxiv1234'
+        },
+        'doi:10.1234/example': {
+            'title': 'Semantic Scholar DOI Paper',
+            'authors': ['Jane Smith'],
+            'abstract': 'Semantic Scholar DOI abstract',
+            'paperId': 'doi1234'
+        }
+    }
+
+    result = process_papers(papers, existing_data)
+
+    print("Result:", result)  # Add this line to print the result
+
+    assert 'arxiv:1234.56789' in result['papers'], "ArXiv ID not found in result"
+    assert 'doi:10.1234/example' in result['papers'], "DOI not found in result"
+    assert result['papers']['arxiv:1234.56789']['title'] == 'Semantic Scholar ArXiv Paper', "Incorrect title for ArXiv paper"
+    assert result['papers']['doi:10.1234/example']['title'] == 'Semantic Scholar DOI Paper', "Incorrect title for DOI paper"
+    assert mock_save_data.call_count > 0, "save_data not called"
+    assert mock_commit_and_push.call_count > 0, "commit_and_push not called"
+
+    # Check that fetch_semantic_scholar_data_batch was called with correct arguments
+    expected_batch = [
+        {'id': '1234.56789', 'id_type': 'arxiv'},
+        {'id': '10.1234/example', 'id_type': 'doi'}
+    ]
+    mock_fetch_semantic_scholar_batch.assert_called_once_with(expected_batch)
+
+def test_deduplicate_papers():
+    papers = [
+        {'url': 'https://arxiv.org/abs/1234.56789'},
+        {'url': 'https://arxiv.org/pdf/1234.56789v2.pdf'},  # Duplicate arXiv URL in different format with version
+        {'bibtex': '@article{example1, doi={10.1234/example}, title={Example Title 1}}'},
+        {'bibtex': '@article{example2, doi={10.1234/example}, title={Example Title 2}}'},  # Duplicate DOI
+        {'bibtex': '@article{example3, title={Unique Title}}'},
+        {'bibtex': '@article{example4, title={Unique Title}}'},  # Duplicate title
+        {'bibtex': '@article{example5, arxiv={5678.91011}}'},
+        {'bibtex': '@article{example6, arxiv={arXiv:5678.91011v1}}'},  # Duplicate arXiv in BibTeX with version
+    ]
+
+    deduplicated = deduplicate_papers(papers)
+    
+    print("Deduplicated papers:", deduplicated)  # Add this line for debugging
+    
+    assert len(deduplicated) == 4, f"Expected 4 unique papers, but got {len(deduplicated)}"
+    
+    # Check for specific papers in the deduplicated list
+    assert any(p for p in deduplicated if extract_identifier(p) == 'arxiv:1234.56789'), "arXiv paper missing"
+    assert any(p for p in deduplicated if extract_identifier(p) == 'doi:10.1234/example'), "DOI paper missing"
+    assert any(p for p in deduplicated if extract_identifier(p) == 'title:Unique Title'), "Unique title paper missing"
+    assert any(p for p in deduplicated if extract_identifier(p) == 'arxiv:5678.91011'), "arXiv in BibTeX paper missing"
+    
+    # Check that we don't have any duplicates
+    identifiers = [extract_identifier(p) for p in deduplicated]
+    assert len(identifiers) == len(set(identifiers)), "Duplicate identifiers found in deduplicated papers"
+
+
+
+================================================================================
+File: tests/test_scrape.py
+================================================================================
+import pytest
+from unittest.mock import patch, MagicMock
+import json
+import base64
+from datetime import datetime, UTC
+import sys
+from pathlib import Path
+import requests
+
+# Add the parent directory to the Python path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from scrape_stars import (
+    get_starred_repos, get_repo_metadata, extract_metadata,
+    get_readme_content, extract_arxiv_id, extract_arxiv_ids,
+    extract_bibtex, infer_primary_arxiv_id, process_repo,
+    process_stars, handle_rate_limit, check_initial_rate_limit
+)
+
+@pytest.fixture
+def mock_response():
+    mock = MagicMock()
+    mock.json.return_value = [{"repo": {"full_name": "test/repo"}}]
+    mock.headers = {'X-RateLimit-Remaining': '4000', 'X-RateLimit-Reset': '1600000000'}
+    mock.links = {}
+    return mock
+
+@pytest.fixture
+def mock_repo_metadata():
+    return {
+        "id": 1,
+        "name": "test-repo",
+        "full_name": "test/repo",
+        "description": "A test repository",
+        "html_url": "https://github.com/test/repo",
+        "homepage": "https://test.com",
+        "language": "Python",
+        "stargazers_count": 100,
+        "forks_count": 10,
+        "open_issues_count": 5,
+        "created_at": "2020-01-01T00:00:00Z",
+        "updated_at": "2021-01-01T00:00:00Z",
+        "pushed_at": "2021-01-01T00:00:00Z",
+    }
+
+def test_get_starred_repos(mock_response):
+    with patch('scrape_stars.requests.get', return_value=mock_response), \
+         patch('scrape_stars.handle_rate_limit'):
+        repos = get_starred_repos('testuser', 'testtoken')
+    assert repos == [{"repo": {"full_name": "test/repo"}}]
+
+def test_get_repo_metadata(mock_response, mock_repo_metadata):
+    mock_response.json.return_value = mock_repo_metadata
+    with patch('scrape_stars.requests.get', return_value=mock_response), \
+         patch('scrape_stars.handle_rate_limit'):
+        metadata = get_repo_metadata({"full_name": "test/repo"}, 'testtoken')
+    assert metadata == mock_repo_metadata
+
+def test_get_repo_metadata_404_error(mock_response):
+    mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(response=mock_response)
+    mock_response.status_code = 404
+    with patch('scrape_stars.requests.get', return_value=mock_response), \
+         patch('scrape_stars.handle_rate_limit'):
+        metadata = get_repo_metadata({"full_name": "test/repo"}, 'testtoken')
+    assert metadata is None
+
+def test_extract_metadata(mock_repo_metadata):
+    starred_at = "2022-01-01T00:00:00Z"
+    extracted = extract_metadata(mock_repo_metadata, starred_at)
+    assert extracted['id'] == 1
+    assert extracted['name'] == "test-repo"
+    assert extracted['starred_at'] == starred_at
+
+def test_get_readme_content(mock_response):
+    mock_response.status_code = 200
+    mock_response.json.return_value = {"content": base64.b64encode(b"Test README").decode('utf-8')}
+    with patch('scrape_stars.requests.get', return_value=mock_response):
+        content = get_readme_content("test/repo", 'testtoken')
+    assert content == "Test README"
+
+def test_extract_arxiv_id():
+    assert extract_arxiv_id("https://arxiv.org/abs/2104.08653") == "2104.08653"
+    assert extract_arxiv_id("arxiv:2105.14075") == "2105.14075"
+    assert extract_arxiv_id("No arXiv ID here") is None
+
+def test_extract_arxiv_ids():
+    text = "Check out arxiv.org/abs/2104.08653 and arxiv:2105.14075"
+    ids = extract_arxiv_ids(text)
+    assert ids == ['2104.08653', '2105.14075']
+
+def test_extract_bibtex():
+    text = "@article{test2021, title={Test}, author={Tester}, year={2021}}"
+    bibtex = extract_bibtex(text)
+    assert bibtex == [text]
+
+def test_infer_primary_arxiv_id():
+    description = "Implementation of arxiv:2104.08653"
+    readme = "Check out our paper: [arXiv:2105.14075](https://arxiv.org/abs/2105.14075)"
+    ids = ['2104.08653', '2105.14075']
+    primary = infer_primary_arxiv_id(description, readme, ids)
+    assert primary == "2104.08653"
+
+@pytest.mark.parametrize("repo_data,expected_ids,expected_primary", [
+    (
+        {"metadata": {"description": "arxiv:2104.08653"}},
+        ["2104.08653"],
+        "2104.08653"
+    ),
+    (
+        {"metadata": {"description": "No arXiv"}},
+        [],
+        None
+    )
+])
+def test_process_repo(repo_data, expected_ids, expected_primary):
+    with patch('scrape_stars.get_readme_content', return_value="arxiv:2104.08653" if expected_ids else ""):
+        processed = process_repo("test/repo", repo_data, 'testtoken')
+    assert processed['arxiv']['ids'] == expected_ids
+    assert processed['arxiv']['primary_id'] == expected_primary
+
+def test_handle_rate_limit():
+    mock_response = MagicMock()
+    mock_response.headers = {'X-RateLimit-Remaining': '10', 'X-RateLimit-Reset': str(int(datetime.now(UTC).timestamp()) + 3600)}
+    with patch('scrape_stars.time.sleep') as mock_sleep:
+        handle_rate_limit(mock_response)
+        mock_sleep.assert_called()
+
+def test_check_initial_rate_limit():
+    mock_response = MagicMock()
+    mock_response.json.return_value = {
+        'resources': {
+            'core': {'remaining': 4000, 'reset': int(datetime.now(UTC).timestamp()) + 3600}
+        }
+    }
+    with patch('scrape_stars.requests.get', return_value=mock_response):
+        assert check_initial_rate_limit('testtoken') == True
+
+if __name__ == "__main__":
+    pytest.main()
+
+
+
+================================================================================
+File: update_star_lists.py
+================================================================================
+import requests
+from bs4 import BeautifulSoup
+import json
+import time
+from datetime import datetime, UTC
+import os
+from loguru import logger
+import sys
+import re
+import random
+
+GITHUB_API = "https://api.github.com"
+GITHUB_URL = "https://github.com"
+STARS_FILE = 'github_stars.json'
+MAX_RETRIES = 5
+INITIAL_BACKOFF = 60  # Initial backoff time in seconds
+RATE_LIMIT_THRESHOLD = 10  # Number of requests to keep in reserve
+DEFAULT_RATE_LIMIT = 60  # Default to 60 requests per minute
+DEFAULT_RATE_LIMIT_WINDOW = 60  # 1 minute in seconds
+
+logger.add("star_lists_update.log", rotation="10 MB")
+
+def load_existing_data():
+    if os.path.exists(STARS_FILE):
+        with open(STARS_FILE, 'r') as f:
+            return json.load(f)
+    return {"last_updated": None, "repositories": {}}
+
+def save_data(data):
+    with open(STARS_FILE, 'w') as f:
+        json.dump(data, f, indent=2)
+
+class RateLimiter:
+    def __init__(self, limit=DEFAULT_RATE_LIMIT, window=DEFAULT_RATE_LIMIT_WINDOW):
+        self.limit = limit
+        self.window = window
+        self.tokens = limit
+        self.last_updated = time.time()
+
+    def update_rate_limit(self, headers):
+        new_limit = int(headers.get('X-RateLimit-Limit', self.limit))
+        new_remaining = int(headers.get('X-RateLimit-Remaining', self.tokens))
+        new_reset = int(headers.get('X-RateLimit-Reset', time.time() + self.window))
+        
+        # Only update if we're dealing with API rate limits (which are typically higher)
+        if new_limit > DEFAULT_RATE_LIMIT:
+            self.limit = new_limit
+            self.tokens = new_remaining
+            self.window = max(new_reset - time.time(), 1)
+        else:
+            # For web scraping, stick to the default limits
+            self.tokens = min(new_remaining, self.tokens)
+        
+        self.last_updated = time.time()
+
+    def wait_if_needed(self):
+        now = time.time()
+        time_passed = now - self.last_updated
+        self.tokens = min(self.limit, self.tokens + time_passed * (self.limit / self.window))
+
+        if self.tokens < RATE_LIMIT_THRESHOLD:
+            sleep_time = (RATE_LIMIT_THRESHOLD - self.tokens) * (self.window / self.limit)
+            logger.info(f"Approaching rate limit. Sleeping for {sleep_time:.2f} seconds.")
+            time.sleep(sleep_time)
+            self.tokens = RATE_LIMIT_THRESHOLD
+            self.last_updated = time.time()
+        else:
+            self.tokens -= 1
+            self.last_updated = now
+
+def exponential_backoff(attempt):
+    return INITIAL_BACKOFF * (2 ** attempt) + random.uniform(0, 1)
+
+rate_limiter = RateLimiter()
+
+def make_request(session, url, max_retries=MAX_RETRIES):
+    for attempt in range(max_retries):
+        rate_limiter.wait_if_needed()
+        try:
+            response = session.get(url)
+            response.raise_for_status()
+            rate_limiter.update_rate_limit(response.headers)
+            return response
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 429:
+                if attempt < max_retries - 1:
+                    backoff_time = exponential_backoff(attempt)
+                    logger.warning(f"Rate limited (429). Backing off for {backoff_time:.2f} seconds.")
+                    time.sleep(backoff_time)
+                    continue
+            raise
+
+def get_star_lists(username, session):
+    url = f"{GITHUB_URL}/{username}?tab=stars"
+    response = make_request(session, url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    lists = []
+    list_container = soup.select_one('#profile-lists-container .Box')
+    
+    if list_container:
+        list_items = list_container.select('a.Box-row')
+        for item in list_items:
+            list_name = item.select_one('h3.f4').text.strip()
+            list_url = item['href']
+            repo_count_text = item.select_one('div.color-fg-muted').text.strip()
+            repo_count = int(re.search(r'\d+', repo_count_text).group())
+            lists.append((list_name, list_url, repo_count))
+    
+    logger.info(f"Found {len(lists)} star lists")
+    for name, url, count in lists:
+        logger.info(f"List: {name}, URL: {url}, Repositories: {count}")
+    
+    return lists
+
+def clean_repo_name(repo_name):
+    parts = repo_name.split('/')
+    if len(parts) == 2:
+        owner, name = parts
+        return f"{owner.strip()}/{name.strip()}"
+    return repo_name.strip()
+
+def get_repos_in_list(list_url, session):
+    repos = []
+    page = 1
+    while True:
+        full_url = f"{GITHUB_URL}{list_url}?page={page}"
+        try:
+            response = make_request(session, full_url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            repo_elements = soup.select('#user-list-repositories .col-12.d-block')
+            if not repo_elements:
+                break
+            
+            for element in repo_elements:
+                repo_link = element.select_one('h3 a')
+                if repo_link:
+                    repo_name = repo_link.text.strip()
+                    clean_name = clean_repo_name(repo_name)
+                    repos.append(clean_name)
+            
+            page += 1
+            if page > 100:
+                logger.warning(f"Reached page limit (100) for list {list_url}. Some repositories may be missing.")
+                break
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 404:
+                logger.warning(f"Reached end of list or encountered 404 error for {list_url} on page {page}. Some repositories may be missing.")
+                break
+            else:
+                raise
+    
+    return repos
+
+def commit_and_push():
+    try:
+        os.system('git config --global user.name "GitHub Action"')
+        os.system('git config --global user.email "action@github.com"')
+        os.system(f'git add {STARS_FILE}')
+        os.system('git commit -m "Update GitHub stars data"')
+        os.system('git push')
+        logger.info("Changes committed and pushed successfully.")
+    except Exception as e:
+        logger.error(f"Error during git operations: {e}")
+
+def update_star_lists(username, token):
+    logger.info(f"Starting star lists update for user: {username}")
+    existing_data = load_existing_data()
+    
+    session = requests.Session()
+    session.headers.update({'Authorization': f'token {token}'})
+    
+    try:
+        api_response = make_request(session, f"{GITHUB_API}/rate_limit")
+        rate_limit_data = api_response.json()['resources']['core']
+        logger.info(f"Initial rate limit: {rate_limit_data['remaining']}/{rate_limit_data['limit']}")
+        
+        star_lists = get_star_lists(username, session)
+        changes_made = False
+        
+        for list_name, list_url, repo_count in star_lists:
+            logger.info(f"Processing list: {list_name} (Expected repos: {repo_count})")
+            repos_in_list = get_repos_in_list(list_url, session)
+            
+            logger.info(f"Found {len(repos_in_list)} repositories in list {list_name}")
+            if len(repos_in_list) < repo_count:
+                logger.warning(f"Found fewer repositories ({len(repos_in_list)}) than expected ({repo_count}) for list {list_name}")
+            
+            list_changes = False
+            for repo_name in repos_in_list:
+                if repo_name in existing_data['repositories']:
+                    if list_name not in existing_data['repositories'][repo_name]['lists']:
+                        existing_data['repositories'][repo_name]['lists'].append(list_name)
+                        list_changes = True
+                        changes_made = True
+                else:
+                    logger.warning(f"Repository {repo_name} found in list but not in existing data")
+                    # Optionally, add the repository to existing_data here
+                    # If you do, set list_changes and changes_made to True
+            
+            if list_changes:
+                existing_data['last_updated'] = datetime.now(UTC).isoformat()
+                save_data(existing_data)
+                if commit_and_push():
+                    logger.info(f"Changes for list {list_name} committed and pushed.")
+                else:
+                    logger.info(f"No changes to commit for list {list_name}.")
+            else:
+                logger.info(f"No changes made for list {list_name}.")
+            
+            logger.info(f"Completed processing list: {list_name}")
+        
+        if changes_made:
+            logger.info("Star lists update completed with changes.")
+        else:
+            logger.info("Star lists update completed. No changes were necessary.")
+    
+    except requests.exceptions.RequestException as e:
+        logger.error(f"An error occurred during the update process: {e}")
+        if changes_made:
+            existing_data['last_updated'] = datetime.now(UTC).isoformat()
+            save_data(existing_data)
+            commit_and_push()
+        sys.exit(1)
+
+if __name__ == "__main__":
+    username = os.environ.get('GITHUB_USERNAME')
+    token = os.environ.get('GITHUB_TOKEN')
+    
+    if not username or not token:
+        logger.error("GITHUB_USERNAME or GITHUB_TOKEN environment variable is not set.")
+        sys.exit(1)
+    
+    update_star_lists(username, token)
+
+
+
+================================================================================
+File: utils.py
+================================================================================
+import requests
+import subprocess
+import time
+from loguru import logger
+
+def commit_and_push(file_to_commit):
+    try:
+        # Configure Git for GitHub Actions
+        subprocess.run(["git", "config", "--global", "user.name", "GitHub Action"], check=True)
+        subprocess.run(["git", "config", "--global", "user.email", "action@github.com"], check=True)
+        
+        # Check if there are any changes to commit
+        status = subprocess.run(["git", "status", "--porcelain", file_to_commit], capture_output=True, text=True, check=True)
+        if not status.stdout.strip():
+            logger.info(f"No changes to commit for {file_to_commit}.")
+            return
+
+        subprocess.run(["git", "add", file_to_commit], check=True)
+        subprocess.run(["git", "commit", "-m", f"Update {file_to_commit}"], check=True)
+        subprocess.run(["git", "push"], check=True)
+        
+        logger.info(f"Changes to {file_to_commit} committed and pushed successfully.")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error during git operations: {e}")
+        if "nothing to commit" in str(e):
+            logger.info("No changes to commit. Continuing execution.")
+        else:
+            logger.warning("Exiting early due to Git error.")
+            raise
+
+def handle_rate_limit(response, threshold):
+    remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
+    reset_time = int(response.headers.get('X-RateLimit-Reset', 0))
+    
+    if remaining <= threshold:
+        current_time = time.time()
+        sleep_time = max(reset_time - current_time, 0) + 1
+        
+        if sleep_time > 0:
+            logger.warning(f"Rate limit low. {remaining} requests remaining. Sleeping for {sleep_time:.2f} seconds until reset.")
+            time.sleep(sleep_time)
+        else:
+            logger.info(f"Rate limit low but reset time has passed. Proceeding cautiously.")
+
+def controlled_request(url, method='get', params=None, json=None, max_retries=3, delay=1):
+    for attempt in range(max_retries):
+        try:
+            if method.lower() == 'get':
+                response = requests.get(url, params=params)
+            elif method.lower() == 'post':
+                response = requests.post(url, params=params, json=json)
+            else:
+                raise ValueError(f"Unsupported HTTP method: {method}")
+            
+            response.raise_for_status()
+            time.sleep(delay)  # Wait for 1 second before the next request
+            return response
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 429:
+                logger.warning(f"Rate limit exceeded. Retrying in {2**attempt} seconds.")
+                time.sleep(2**attempt)  # Exponential backoff
+            else:
+                raise
+    logger.error("Max retries reached. Unable to complete the request.")
+    return None
+
+

@@ -1,0 +1,155 @@
+================================================================================
+File: scripts/convert_arxiv_urls_to_ids.py
+================================================================================
+import json
+import re
+import sys
+
+class ArXivURLParsingError(Exception):
+    """Custom exception for arXiv URL parsing errors."""
+    pass
+
+def extract_arxiv_id(url):
+    if url is None:
+        return None
+    # Regular expression to match arXiv IDs
+    pattern = r'arxiv\.org/abs/(\d+\.\d+)'
+    match = re.search(pattern, url)
+    if not match:
+        raise ArXivURLParsingError(f"Unable to extract arXiv ID from URL: {url}")
+    return match.group(1)
+
+def convert_arxiv_urls_to_ids(data):
+    for repo_name, repo in data['repositories'].items():
+        if 'arxiv' in repo:
+            if 'urls' in repo['arxiv']:
+                #print(f"Processing URLs for repository: {repo_name}", file=sys.stderr)
+                arxiv_ids = [extract_arxiv_id(url) for url in repo['arxiv']['urls'] if url is not None]
+                repo['arxiv']['ids'] = [id for id in arxiv_ids if id is not None]
+                del repo['arxiv']['urls']
+
+            if 'primary_url' in repo['arxiv']:
+                #print(f"Processing primary URL for repository: {repo_name}", file=sys.stderr)
+                primary_url = repo['arxiv']['primary_url']
+                if primary_url is not None:
+                    primary_id = extract_arxiv_id(primary_url)
+                    if primary_id is not None:
+                        repo['arxiv']['primary_id'] = primary_id
+                del repo['arxiv']['primary_url']
+
+# Load the JSON file
+with open('github_stars.json', 'r') as file:
+    data = json.load(file)
+
+# Convert URLs to IDs
+convert_arxiv_urls_to_ids(data)
+
+# Save the updated JSON
+with open('github_stars.json', 'w') as file:
+    json.dump(data, file, indent=2)
+
+print("Conversion complete. Updated data saved to 'github_stars_updated.json'.", file=sys.stderr)
+
+
+
+================================================================================
+File: scripts/generate-package-lock.js
+================================================================================
+const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+
+// Function to run shell commands
+function runCommand(command) {
+  try {
+    execSync(command, { stdio: 'inherit' });
+  } catch (error) {
+    console.error(`Failed to execute command: ${command}`);
+    process.exit(1);
+  }
+}
+
+// Main function
+function main() {
+  // Ensure we're in the project root
+  const packageJsonPath = path.join(process.cwd(), 'package.json');
+  if (!fs.existsSync(packageJsonPath)) {
+    console.error('package.json not found in the current directory');
+    process.exit(1);
+  }
+
+  // Update packages and generate package-lock.json
+  console.log('Updating packages and generating package-lock.json...');
+  runCommand('npm update');
+  runCommand('npm install');
+
+  // Stage, commit, and push the changes
+  console.log('Committing and pushing package-lock.json...');
+  runCommand('git config --global user.email "github-actions[bot]@users.noreply.github.com"');
+  runCommand('git config --global user.name "github-actions[bot]"');
+  runCommand('git add package.json package-lock.json');
+  runCommand('git commit -m "Update dependencies and regenerate package-lock.json"');
+  runCommand('git push');
+
+  console.log('Dependencies updated and package-lock.json has been regenerated and pushed to the repository.');
+}
+
+main();
+
+
+
+================================================================================
+File: scripts/transform_categories.py
+================================================================================
+import json
+from pathlib import Path
+import subprocess
+from loguru import logger
+
+def commit_and_push(file_to_commit):
+    try:
+        subprocess.run(["git", "config", "--global", "user.name", "GitHub Action"], check=True)
+        subprocess.run(["git", "config", "--global", "user.email", "action@github.com"], check=True)
+        subprocess.run(["git", "add", file_to_commit], check=True)
+        subprocess.run(["git", "commit", "-m", f"Update {file_to_commit}"], check=True)
+        subprocess.run(["git", "push"], check=True)
+        logger.info(f"Changes to {file_to_commit} committed and pushed successfully.")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error during git operations: {e}")
+        logger.warning("Exiting early due to potential conflict.")
+        raise
+
+def transform_categories(data):
+    for paper_id, paper_info in data.items():
+        if 'categories' in paper_info:
+            try:
+                paper_info['categories'] = [cat['@term'] for cat in paper_info['categories']]
+            except TypeError:
+                continue
+            #except Exception as e:
+                #logger.info(paper_id)
+                #logger.info(paper_info['categories'])
+                #raise e
+    return data
+
+def main():
+    file_path = Path('arxiv_metadata.json')
+    
+    # Read the JSON file
+    with file_path.open('r') as f:
+        data = json.load(f)
+    
+    # Transform the data
+    transformed_data = transform_categories(data)
+    
+    # Write the transformed data back to the file
+    with file_path.open('w') as f:
+        json.dump(transformed_data, f, indent=2)
+    
+    # Commit and push changes
+    commit_and_push(file_path)
+
+if __name__ == "__main__":
+    main()
+
+
