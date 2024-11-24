@@ -8,6 +8,11 @@ on:
     #   - '*.json'
     #   - '.github/workflows/deploy.yml'
   workflow_dispatch:
+  workflow_run:
+    types: completed
+    workflows: 
+      - Scrape Github Stars
+      - Update Star Lists
 
 jobs:
   build-and-deploy:
