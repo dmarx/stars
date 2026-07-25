@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-07-24T02:33:43.394252+00:00",
+  "last_updated": "2026-07-25T02:31:42.340070+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -284716,6 +284716,66 @@
         "bibtex_citations": [
           "@misc{simdutf,\n  title={The simdutf library: {Unicode} validation and transcoding at billions of characters per second},\n  author={Daniel Lemire and Wojciech Mu{\\l}a and Paul Dreik and others},\n  year={2021},\n  note={\\url{https://github.com/simdutf/simdutf}}\n}"
         ]
+      }
+    },
+    "QwenAudio/CosyVoice": {
+      "lists": [],
+      "metadata": {
+        "id": 823430322,
+        "name": "CosyVoice",
+        "full_name": "QwenAudio/CosyVoice",
+        "description": "Multi-lingual large voice generation model, providing inference, training and deployment full-stack ability.",
+        "url": "https://github.com/QwenAudio/CosyVoice",
+        "homepage": "https://funaudiollm.github.io/cosyvoice3",
+        "language": "Python",
+        "stars": 22385,
+        "forks": 2585,
+        "open_issues": 753,
+        "created_at": "2024-07-03T02:59:22Z",
+        "updated_at": "2026-07-24T21:12:54Z",
+        "pushed_at": "2026-05-25T18:15:40Z",
+        "starred_at": "2025-01-15T22:24:38Z"
+      },
+      "last_updated": "2026-07-25T02:31:41.339968+00:00",
+      "arxiv": {
+        "ids": [
+          "2505.17589",
+          "2412.10117"
+        ],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@article{du2024cosyvoice,\n  title={Cosyvoice: A scalable multilingual zero-shot text-to-speech synthesizer based on supervised semantic tokens},\n  author={Du, Zhihao and Chen, Qian and Zhang, Shiliang and Hu, Kai and Lu, Heng and Yang, Yexin and Hu, Hangrui and Zheng, Siqi and Gu, Yue and Ma, Ziyang and others},\n  journal={arXiv preprint arXiv:2407.05407},\n  year={2024}\n}",
+          "@article{du2024cosyvoice,\n  title={Cosyvoice 2: Scalable streaming speech synthesis with large language models},\n  author={Du, Zhihao and Wang, Yuxuan and Chen, Qian and Shi, Xian and Lv, Xiang and Zhao, Tianyu and Gao, Zhifu and Yang, Yexin and Gao, Changfeng and Wang, Hui and others},\n  journal={arXiv preprint arXiv:2412.10117},\n  year={2024}\n}",
+          "@article{du2025cosyvoice,\n  title={CosyVoice 3: Towards In-the-wild Speech Generation via Scaling-up and Post-training},\n  author={Du, Zhihao and Gao, Changfeng and Wang, Yuxuan and Yu, Fan and Zhao, Tianyu and Wang, Hao and Lv, Xiang and Wang, Hui and Shi, Xian and An, Keyu and others},\n  journal={arXiv preprint arXiv:2505.17589},\n  year={2025}\n}",
+          "@inproceedings{lyu2025build,\n  title={Build LLM-Based Zero-Shot Streaming TTS System with Cosyvoice},\n  author={Lyu, Xiang and Wang, Yuxuan and Zhao, Tianyu and Wang, Hao and Liu, Huadai and Du, Zhihao},\n  booktitle={ICASSP 2025-2025 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},\n  pages={1--2},\n  year={2025},\n  organization={IEEE}\n}"
+        ]
+      }
+    },
+    "QwenAudio/SenseVoice": {
+      "lists": [],
+      "metadata": {
+        "id": 823429665,
+        "name": "SenseVoice",
+        "full_name": "QwenAudio/SenseVoice",
+        "description": "Open-source SenseVoiceSmall model for Mandarin, Cantonese, English, Japanese, and Korean ASR, language ID, emotion recognition, and audio event detection.",
+        "url": "https://github.com/QwenAudio/SenseVoice",
+        "homepage": "https://huggingface.co/spaces/FunAudioLLM/SenseVoice",
+        "language": "C",
+        "stars": 8935,
+        "forks": 796,
+        "open_issues": 0,
+        "created_at": "2024-07-03T02:56:46Z",
+        "updated_at": "2026-07-24T13:52:29Z",
+        "pushed_at": "2026-07-24T13:50:51Z",
+        "starred_at": "2024-07-10T16:57:45Z"
+      },
+      "last_updated": "2026-07-25T02:31:42.066559+00:00",
+      "arxiv": {
+        "ids": [
+          "2407.04051"
+        ],
+        "primary_id": "2407.04051",
+        "bibtex_citations": []
       }
     }
   },
