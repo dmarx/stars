@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-07-25T02:31:42.340070+00:00",
+  "last_updated": "2026-07-26T02:37:52.488680+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -284775,6 +284775,64 @@
           "2407.04051"
         ],
         "primary_id": "2407.04051",
+        "bibtex_citations": []
+      }
+    },
+    "google-deepmind/tracr": {
+      "lists": [],
+      "metadata": {
+        "id": 572915994,
+        "name": "tracr",
+        "full_name": "google-deepmind/tracr",
+        "description": null,
+        "url": "https://github.com/google-deepmind/tracr",
+        "homepage": null,
+        "language": "Python",
+        "stars": 569,
+        "forks": 49,
+        "open_issues": 7,
+        "created_at": "2022-12-01T09:59:18Z",
+        "updated_at": "2026-07-25T02:59:32Z",
+        "pushed_at": "2024-02-05T19:15:16Z",
+        "starred_at": "2026-07-25T02:59:31Z"
+      },
+      "last_updated": "2026-07-26T02:37:51.833029+00:00",
+      "arxiv": {
+        "ids": [
+          "2106.06981",
+          "2301.05062"
+        ],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@article{lindner2023tracr,\n  title = {Tracr: Compiled Transformers as a Laboratory for Interpretability},\n  author = {Lindner, David and Kram\u00e1r, J\u00e1nos and Rahtz, Matthew and McGrath, Thomas and Mikulik, Vladimir},\n  journal={arXiv preprint arXiv:2301.05062},\n  year={2023}\n}"
+        ]
+      }
+    },
+    "physicsrob/torchwright": {
+      "lists": [],
+      "metadata": {
+        "id": 692313611,
+        "name": "torchwright",
+        "full_name": "physicsrob/torchwright",
+        "description": "A compiler that transforms computation graphs into the weights of a transformer",
+        "url": "https://github.com/physicsrob/torchwright",
+        "homepage": "https://pypi.org/project/torchwright/",
+        "language": "Python",
+        "stars": 6,
+        "forks": 0,
+        "open_issues": 0,
+        "created_at": "2023-09-16T05:14:36Z",
+        "updated_at": "2026-07-25T14:11:03Z",
+        "pushed_at": "2026-07-24T15:58:31Z",
+        "starred_at": "2026-07-25T02:56:26Z"
+      },
+      "last_updated": "2026-07-26T02:37:52.305277+00:00",
+      "arxiv": {
+        "ids": [
+          "2106.06981",
+          "2301.05062"
+        ],
+        "primary_id": null,
         "bibtex_citations": []
       }
     }
