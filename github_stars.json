@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-07-26T02:37:52.488680+00:00",
+  "last_updated": "2026-08-01T02:39:27.234179+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -284832,6 +284832,81 @@
           "2106.06981",
           "2301.05062"
         ],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "community-archive/obsidian-pandoc-reference-list": {
+      "lists": [],
+      "metadata": {
+        "id": 486416079,
+        "name": "obsidian-pandoc-reference-list",
+        "full_name": "community-archive/obsidian-pandoc-reference-list",
+        "description": "Display a formatted reference in Obsidian's sidebar for each pandoc citekey in the active document.",
+        "url": "https://github.com/community-archive/obsidian-pandoc-reference-list",
+        "homepage": "",
+        "language": "TypeScript",
+        "stars": 272,
+        "forks": 44,
+        "open_issues": 89,
+        "created_at": "2022-04-28T02:14:49Z",
+        "updated_at": "2026-07-23T17:22:39Z",
+        "pushed_at": "2026-03-06T17:39:52Z",
+        "starred_at": "2024-04-03T15:51:17Z"
+      },
+      "last_updated": "2026-08-01T02:39:25.313923+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "community-archive/obsidian-zotero-integration": {
+      "lists": [],
+      "metadata": {
+        "id": 446166683,
+        "name": "obsidian-zotero-integration",
+        "full_name": "community-archive/obsidian-zotero-integration",
+        "description": "Insert and import citations, bibliographies, notes, and PDF annotations from Zotero into Obsidian.",
+        "url": "https://github.com/community-archive/obsidian-zotero-integration",
+        "homepage": "",
+        "language": "TypeScript",
+        "stars": 1735,
+        "forks": 104,
+        "open_issues": 257,
+        "created_at": "2022-01-09T18:11:07Z",
+        "updated_at": "2026-07-31T12:33:17Z",
+        "pushed_at": "2026-03-06T17:39:40Z",
+        "starred_at": "2024-04-03T15:50:32Z"
+      },
+      "last_updated": "2026-08-01T02:39:26.034432+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "community-archive/obsidian-kanban": {
+      "lists": [],
+      "metadata": {
+        "id": 358435115,
+        "name": "obsidian-kanban",
+        "full_name": "community-archive/obsidian-kanban",
+        "description": "Create markdown-backed Kanban boards in Obsidian.",
+        "url": "https://github.com/community-archive/obsidian-kanban",
+        "homepage": "https://publish.obsidian.md/kanban/",
+        "language": "TypeScript",
+        "stars": 4446,
+        "forks": 434,
+        "open_issues": 592,
+        "created_at": "2021-04-16T01:02:05Z",
+        "updated_at": "2026-08-01T01:17:17Z",
+        "pushed_at": "2026-03-06T17:40:01Z",
+        "starred_at": "2024-03-06T08:43:36Z"
+      },
+      "last_updated": "2026-08-01T02:39:26.948562+00:00",
+      "arxiv": {
+        "ids": [],
         "primary_id": null,
         "bibtex_citations": []
       }
