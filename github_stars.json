@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-01T02:39:27.234179+00:00",
+  "last_updated": "2026-08-02T02:37:59.008713+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -284905,6 +284905,56 @@
         "starred_at": "2024-03-06T08:43:36Z"
       },
       "last_updated": "2026-08-01T02:39:26.948562+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "moby/buildkit": {
+      "lists": [],
+      "metadata": {
+        "id": 92969352,
+        "name": "buildkit",
+        "full_name": "moby/buildkit",
+        "description": "concurrent, cache-efficient, and Dockerfile-agnostic builder toolkit",
+        "url": "https://github.com/moby/buildkit",
+        "homepage": "https://github.com/moby/moby/issues/34227",
+        "language": "Go",
+        "stars": 10158,
+        "forks": 1486,
+        "open_issues": 909,
+        "created_at": "2017-05-31T17:04:10Z",
+        "updated_at": "2026-08-02T01:37:47Z",
+        "pushed_at": "2026-07-31T18:08:35Z",
+        "starred_at": "2026-08-02T01:37:47Z"
+      },
+      "last_updated": "2026-08-02T02:37:58.419275+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "andrewyng/openworker": {
+      "lists": [],
+      "metadata": {
+        "id": 1306128367,
+        "name": "openworker",
+        "full_name": "andrewyng/openworker",
+        "description": null,
+        "url": "https://github.com/andrewyng/openworker",
+        "homepage": null,
+        "language": "Python",
+        "stars": 11613,
+        "forks": 1567,
+        "open_issues": 340,
+        "created_at": "2026-07-20T01:52:32Z",
+        "updated_at": "2026-08-02T02:36:11Z",
+        "pushed_at": "2026-08-01T18:51:09Z",
+        "starred_at": "2026-08-01T17:10:31Z"
+      },
+      "last_updated": "2026-08-02T02:37:58.850526+00:00",
       "arxiv": {
         "ids": [],
         "primary_id": null,
