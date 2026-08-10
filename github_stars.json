@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-07T02:36:05.893598+00:00",
+  "last_updated": "2026-08-10T01:41:20.450105+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -285060,6 +285060,60 @@
         "starred_at": "2022-06-30T20:53:59Z"
       },
       "last_updated": "2026-08-07T02:36:05.541180+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "p-e-w/heretic": {
+      "lists": [],
+      "metadata": {
+        "id": 1061041576,
+        "name": "heretic",
+        "full_name": "p-e-w/heretic",
+        "description": "Fully automatic censorship removal for language models",
+        "url": "https://github.com/p-e-w/heretic",
+        "homepage": "https://heretic-project.org",
+        "language": "Python",
+        "stars": 27242,
+        "forks": 2956,
+        "open_issues": 73,
+        "created_at": "2025-09-21T05:46:16Z",
+        "updated_at": "2026-08-10T01:18:24Z",
+        "pushed_at": "2026-08-07T07:05:14Z",
+        "starred_at": "2026-08-09T17:53:13Z"
+      },
+      "last_updated": "2026-08-10T01:41:19.332411+00:00",
+      "arxiv": {
+        "ids": [
+          "2406.11717"
+        ],
+        "primary_id": "2406.11717",
+        "bibtex_citations": [
+          "@misc{heretic,\n  author = {Weidmann, Philipp Emanuel},\n  title = {Heretic: Fully automatic censorship removal for language models},\n  year = {2025},\n  publisher = {GitHub},\n  journal = {GitHub repository},\n  howpublished = {\\url{https://github.com/p-e-w/heretic}}\n}"
+        ]
+      }
+    },
+    "egraphs-good/egg": {
+      "lists": [],
+      "metadata": {
+        "id": 183477487,
+        "name": "egg",
+        "full_name": "egraphs-good/egg",
+        "description": "egg is a flexible, high-performance e-graph library",
+        "url": "https://github.com/egraphs-good/egg",
+        "homepage": "https://egraphs-good.github.io",
+        "language": "Rust",
+        "stars": 1807,
+        "forks": 200,
+        "open_issues": 26,
+        "created_at": "2019-04-25T17:08:29Z",
+        "updated_at": "2026-08-09T18:28:43Z",
+        "pushed_at": "2026-07-19T16:48:21Z",
+        "starred_at": "2026-08-09T03:43:19Z"
+      },
+      "last_updated": "2026-08-10T01:41:20.086137+00:00",
       "arxiv": {
         "ids": [],
         "primary_id": null,
