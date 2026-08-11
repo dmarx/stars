@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-10T01:41:20.450105+00:00",
+  "last_updated": "2026-08-11T01:30:41.454200+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -285118,6 +285118,35 @@
         "ids": [],
         "primary_id": null,
         "bibtex_citations": []
+      }
+    },
+    "NVIDIA/cuml": {
+      "lists": [],
+      "metadata": {
+        "id": 152616802,
+        "name": "cuml",
+        "full_name": "NVIDIA/cuml",
+        "description": "NVIDIA cuML: GPU-Accelerated Machine Learning",
+        "url": "https://github.com/NVIDIA/cuml",
+        "homepage": "https://docs.nvidia.com/cuml/",
+        "language": "Python",
+        "stars": 5250,
+        "forks": 651,
+        "open_issues": 837,
+        "created_at": "2018-10-11T15:45:35Z",
+        "updated_at": "2026-08-10T23:55:45Z",
+        "pushed_at": "2026-08-11T01:09:02Z",
+        "starred_at": "2019-06-06T18:25:35Z"
+      },
+      "last_updated": "2026-08-11T01:30:41.243207+00:00",
+      "arxiv": {
+        "ids": [
+          "2002.04803"
+        ],
+        "primary_id": "2002.04803",
+        "bibtex_citations": [
+          "@article{raschka2020machine,\n  title={Machine Learning in Python: Main developments and technology trends in data science, machine learning, and artificial intelligence},\n  author={Raschka, Sebastian and Patterson, Joshua and Nolet, Corey},\n  journal={arXiv preprint arXiv:2002.04803},\n  year={2020}\n}"
+        ]
       }
     }
   },
