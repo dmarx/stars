@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-11T01:30:41.454200+00:00",
+  "last_updated": "2026-08-12T01:48:45.032284+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -285147,6 +285147,87 @@
         "bibtex_citations": [
           "@article{raschka2020machine,\n  title={Machine Learning in Python: Main developments and technology trends in data science, machine learning, and artificial intelligence},\n  author={Raschka, Sebastian and Patterson, Joshua and Nolet, Corey},\n  journal={arXiv preprint arXiv:2002.04803},\n  year={2020}\n}"
         ]
+      }
+    },
+    "OWD-AI/AutoAgents": {
+      "lists": [],
+      "metadata": {
+        "id": 681168020,
+        "name": "AutoAgents",
+        "full_name": "OWD-AI/AutoAgents",
+        "description": "[IJCAI 2024] Generate different roles for GPTs to form a collaborative entity for complex tasks.",
+        "url": "https://github.com/OWD-AI/AutoAgents",
+        "homepage": "https://huggingface.co/spaces/LinkSoul/AutoAgents",
+        "language": "Python",
+        "stars": 1490,
+        "forks": 179,
+        "open_issues": 26,
+        "created_at": "2023-08-21T12:19:36Z",
+        "updated_at": "2026-08-10T07:08:55Z",
+        "pushed_at": "2025-09-09T21:06:56Z",
+        "starred_at": "2023-11-14T21:54:45Z"
+      },
+      "last_updated": "2026-08-12T01:48:42.625673+00:00",
+      "arxiv": {
+        "ids": [
+          "2309.17288"
+        ],
+        "primary_id": "2309.17288",
+        "bibtex_citations": [
+          "@inproceedings{ijcai2024p3,\n  title     = {{AutoAgents}: A Framework for Automatic Agent Generation},\n  author    = {Chen, Guangyao and Dong, Siwei and Shu, Yu and Zhang, Ge and Sesay, Jaward and Karlsson, B\u00f6rje F. and Fu, Jie and Shi, Yemin},\n  booktitle = {Proceedings of the Thirty-Third International Joint Conference on\n               Artificial Intelligence, {IJCAI-24}},\n  pages     = {22--30},\n  year      = {2024},\n  month     = {8},\n  note      = {Main Track},\n  doi       = {10.24963/ijcai.2024/3},\n  url       = {https://doi.org/10.24963/ijcai.2024/3},\n}"
+        ]
+      }
+    },
+    "hydra-ecosystem/hydra": {
+      "lists": [],
+      "metadata": {
+        "id": 191632914,
+        "name": "hydra",
+        "full_name": "hydra-ecosystem/hydra",
+        "description": "Hydra is a framework for elegantly configuring complex applications",
+        "url": "https://github.com/hydra-ecosystem/hydra",
+        "homepage": "http://hydra.cc/",
+        "language": "Python",
+        "stars": 10592,
+        "forks": 948,
+        "open_issues": 106,
+        "created_at": "2019-06-12T19:33:15Z",
+        "updated_at": "2026-08-11T23:56:39Z",
+        "pushed_at": "2026-08-12T00:14:57Z",
+        "starred_at": "2021-05-24T22:43:38Z"
+      },
+      "last_updated": "2026-08-12T01:48:43.653679+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@Misc{Yadan2019Hydra,\n  author =       {Omry Yadan},\n  title =        {Hydra - A framework for elegantly configuring complex applications},\n  howpublished = {Github},\n  year =         {2019},\n  url =          {https://github.com/hydra-ecosystem/hydra}\n}"
+        ]
+      }
+    },
+    "NVIDIA/cudf": {
+      "lists": [],
+      "metadata": {
+        "id": 90506918,
+        "name": "cudf",
+        "full_name": "NVIDIA/cudf",
+        "description": "cuDF - GPU DataFrame Library ",
+        "url": "https://github.com/NVIDIA/cudf",
+        "homepage": "https://docs.rapids.ai/api/cudf/stable/",
+        "language": "C++",
+        "stars": 9726,
+        "forks": 1090,
+        "open_issues": 1312,
+        "created_at": "2017-05-07T03:43:37Z",
+        "updated_at": "2026-08-11T19:30:04Z",
+        "pushed_at": "2026-08-11T22:06:42Z",
+        "starred_at": "2019-06-06T18:25:51Z"
+      },
+      "last_updated": "2026-08-12T01:48:44.664037+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
       }
     }
   },
