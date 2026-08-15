@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-14T01:48:32.577635+00:00",
+  "last_updated": "2026-08-15T01:08:27.870603+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -285284,6 +285284,58 @@
         ],
         "primary_id": "1606.04934",
         "bibtex_citations": []
+      }
+    },
+    "OvertureMaps/overturemaps-py": {
+      "lists": [],
+      "metadata": {
+        "id": 782550109,
+        "name": "overturemaps-py",
+        "full_name": "OvertureMaps/overturemaps-py",
+        "description": "Overture's Python CLI",
+        "url": "https://github.com/OvertureMaps/overturemaps-py",
+        "homepage": "https://pypi.org/project/overturemaps/",
+        "language": "Python",
+        "stars": 262,
+        "forks": 47,
+        "open_issues": 3,
+        "created_at": "2024-04-05T14:19:17Z",
+        "updated_at": "2026-08-14T01:54:22Z",
+        "pushed_at": "2026-08-11T13:58:39Z",
+        "starred_at": "2026-08-14T01:54:21Z"
+      },
+      "last_updated": "2026-08-15T01:08:26.653652+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "c2g-dev/city2graph": {
+      "lists": [],
+      "metadata": {
+        "id": 918287261,
+        "name": "city2graph",
+        "full_name": "c2g-dev/city2graph",
+        "description": "Transform geospatial relations into graphs for Graph Neural Networks and spatial network analysis",
+        "url": "https://github.com/c2g-dev/city2graph",
+        "homepage": "https://city2graph.net",
+        "language": "Python",
+        "stars": 1431,
+        "forks": 150,
+        "open_issues": 3,
+        "created_at": "2025-01-17T16:13:41Z",
+        "updated_at": "2026-08-14T20:28:35Z",
+        "pushed_at": "2026-08-11T02:12:17Z",
+        "starred_at": "2026-08-14T01:51:17Z"
+      },
+      "last_updated": "2026-08-15T01:08:27.444321+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@article{sato2026city2graph,\n  title = {City2Graph: A Python library for Heterogeneous Graph Neural Networks and spatial analysis in urban systems},\n  author = {Sato, Yuta and Pietrostefani, Elisabetta and Mahabir, Ron and Arribas-Bel, Daniel},\n  journal = {Computers, Environment and Urban Systems},\n  volume = {130},\n  pages = {102492},\n  year = {2026},\n  issn = {0198-9715},\n  doi = {10.1016/j.compenvurbsys.2026.102492},\n  url = {https://www.sciencedirect.com/science/article/pii/S0198971526000943},\n}"
+        ]
       }
     }
   },
