@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-15T01:08:27.870603+00:00",
+  "last_updated": "2026-08-19T01:09:13.043994+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -285336,6 +285336,65 @@
         "bibtex_citations": [
           "@article{sato2026city2graph,\n  title = {City2Graph: A Python library for Heterogeneous Graph Neural Networks and spatial analysis in urban systems},\n  author = {Sato, Yuta and Pietrostefani, Elisabetta and Mahabir, Ron and Arribas-Bel, Daniel},\n  journal = {Computers, Environment and Urban Systems},\n  volume = {130},\n  pages = {102492},\n  year = {2026},\n  issn = {0198-9715},\n  doi = {10.1016/j.compenvurbsys.2026.102492},\n  url = {https://www.sciencedirect.com/science/article/pii/S0198971526000943},\n}"
         ]
+      }
+    },
+    "guillaumemeyer/watermarks-remover": {
+      "lists": [],
+      "metadata": {
+        "id": 1331135699,
+        "name": "watermarks-remover",
+        "full_name": "guillaumemeyer/watermarks-remover",
+        "description": "Strip multi-vendor AI provenance marks: Unicode text hygiene, statistical rewrite hooks, and C2PA/metadata from PNG/JPEG/SVG/PDF/DOCX/HTML/MD",
+        "url": "https://github.com/guillaumemeyer/watermarks-remover",
+        "homepage": "https://github.com/guillaumemeyer/watermarks-remover",
+        "language": "Python",
+        "stars": 14514,
+        "forks": 1606,
+        "open_issues": 11,
+        "created_at": "2026-08-11T16:32:38Z",
+        "updated_at": "2026-08-19T01:06:22Z",
+        "pushed_at": "2026-08-19T01:04:42Z",
+        "starred_at": "2026-08-18T05:45:46Z"
+      },
+      "last_updated": "2026-08-19T01:09:11.361241+00:00",
+      "arxiv": {
+        "ids": [
+          "2410.05470",
+          "2301.10226",
+          "2509.10569",
+          "2311.04378",
+          "2402.14904",
+          "2502.11598",
+          "2405.08363",
+          "2605.09203"
+        ],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "facebookincubator/MetaPython": {
+      "lists": [],
+      "metadata": {
+        "id": 348501270,
+        "name": "MetaPython",
+        "full_name": "facebookincubator/MetaPython",
+        "description": "This is Meta's fork of the CPython runtime.  The name \"cinder\" here is historical, see https://github.com/facebookincubator/cinderx for the Python extension / JIT compiler.",
+        "url": "https://github.com/facebookincubator/MetaPython",
+        "homepage": "",
+        "language": "Python",
+        "stars": 3789,
+        "forks": 137,
+        "open_issues": 33,
+        "created_at": "2021-03-16T21:50:16Z",
+        "updated_at": "2026-08-18T19:59:53Z",
+        "pushed_at": "2026-08-18T19:58:24Z",
+        "starred_at": "2021-05-05T03:49:34Z"
+      },
+      "last_updated": "2026-08-19T01:09:12.506858+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
       }
     }
   },
