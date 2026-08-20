@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-19T01:09:13.043994+00:00",
+  "last_updated": "2026-08-20T01:08:28.915460+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -285395,6 +285395,35 @@
         "ids": [],
         "primary_id": null,
         "bibtex_citations": []
+      }
+    },
+    "institutional/institutional-books-pipeline": {
+      "lists": [],
+      "metadata": {
+        "id": 938431682,
+        "name": "institutional-books-pipeline",
+        "full_name": "institutional/institutional-books-pipeline",
+        "description": "The Institutional Data Initiative's pipeline for analyzing, refining, and publishing the Institutional Books datasets.",
+        "url": "https://github.com/institutional/institutional-books-pipeline",
+        "homepage": "",
+        "language": "Python",
+        "stars": 56,
+        "forks": 6,
+        "open_issues": 2,
+        "created_at": "2025-02-25T00:16:55Z",
+        "updated_at": "2026-08-19T20:10:51Z",
+        "pushed_at": "2026-08-19T20:10:09Z",
+        "starred_at": "2025-06-13T15:39:37Z"
+      },
+      "last_updated": "2026-08-20T01:08:28.526375+00:00",
+      "arxiv": {
+        "ids": [
+          "2506.08300"
+        ],
+        "primary_id": "2506.08300",
+        "bibtex_citations": [
+          "@misc{cargnelutti2025institutionalbooks10242b,\n      title={Institutional Books 1.0: A 242B token dataset from Harvard Library's collections, refined for accuracy and usability}, \n      author={Matteo Cargnelutti and Catherine Brobston and John Hess and Jack Cushman and Kristi Mukk and Aristana Scourtas and Kyle Courtney and Greg Leppert and Amanda Watson and Martha Whitehead and Jonathan Zittrain},\n      year={2025},\n      eprint={2506.08300},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2506.08300}, \n}"
+        ]
       }
     }
   },
