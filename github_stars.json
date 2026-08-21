@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-20T01:08:28.915460+00:00",
+  "last_updated": "2026-08-21T01:12:10.731543+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -285424,6 +285424,56 @@
         "bibtex_citations": [
           "@misc{cargnelutti2025institutionalbooks10242b,\n      title={Institutional Books 1.0: A 242B token dataset from Harvard Library's collections, refined for accuracy and usability}, \n      author={Matteo Cargnelutti and Catherine Brobston and John Hess and Jack Cushman and Kristi Mukk and Aristana Scourtas and Kyle Courtney and Greg Leppert and Amanda Watson and Martha Whitehead and Jonathan Zittrain},\n      year={2025},\n      eprint={2506.08300},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2506.08300}, \n}"
         ]
+      }
+    },
+    "dequelabs/axe-core": {
+      "lists": [],
+      "metadata": {
+        "id": 37205440,
+        "name": "axe-core",
+        "full_name": "dequelabs/axe-core",
+        "description": "Accessibility engine for automated Web UI testing",
+        "url": "https://github.com/dequelabs/axe-core",
+        "homepage": "https://www.deque.com/axe/",
+        "language": "JavaScript",
+        "stars": 7420,
+        "forks": 916,
+        "open_issues": 438,
+        "created_at": "2015-06-10T15:26:45Z",
+        "updated_at": "2026-08-20T22:31:02Z",
+        "pushed_at": "2026-08-20T22:30:42Z",
+        "starred_at": "2026-08-20T20:43:22Z"
+      },
+      "last_updated": "2026-08-21T01:12:09.520056+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "WebODM/OpenSplat": {
+      "lists": [],
+      "metadata": {
+        "id": 747402960,
+        "name": "OpenSplat",
+        "full_name": "WebODM/OpenSplat",
+        "description": "Production-grade 3D gaussian splatting with CPU/GPU support for Windows, Mac and Linux \ud83d\udca6",
+        "url": "https://github.com/WebODM/OpenSplat",
+        "homepage": "",
+        "language": "C++",
+        "stars": 2157,
+        "forks": 216,
+        "open_issues": 16,
+        "created_at": "2024-01-23T21:21:07Z",
+        "updated_at": "2026-08-20T23:32:13Z",
+        "pushed_at": "2026-08-20T06:45:34Z",
+        "starred_at": "2024-11-23T17:16:14Z"
+      },
+      "last_updated": "2026-08-21T01:12:10.339455+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
       }
     }
   },
