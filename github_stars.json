@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-22T01:07:51.639318+00:00",
+  "last_updated": "2026-08-25T01:10:03.446063+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -285499,6 +285499,35 @@
         "ids": [],
         "primary_id": null,
         "bibtex_citations": []
+      }
+    },
+    "neu-3dvi/SportsSloMo": {
+      "lists": [],
+      "metadata": {
+        "id": 685741308,
+        "name": "SportsSloMo",
+        "full_name": "neu-3dvi/SportsSloMo",
+        "description": "SportsSloMo: A New Benchmark and Baseline Models for Human-centric Video Frame Interpolation, CVPR 2024 (https://arxiv.org/abs/2308.16876)",
+        "url": "https://github.com/neu-3dvi/SportsSloMo",
+        "homepage": "https://neu-vi.github.io/SportsSlomo/",
+        "language": "Python",
+        "stars": 79,
+        "forks": 4,
+        "open_issues": 6,
+        "created_at": "2023-08-31T22:52:38Z",
+        "updated_at": "2026-06-15T09:24:47Z",
+        "pushed_at": "2024-04-04T18:28:39Z",
+        "starred_at": "2023-09-02T21:17:31Z"
+      },
+      "last_updated": "2026-08-25T01:10:03.135240+00:00",
+      "arxiv": {
+        "ids": [
+          "2308.16876"
+        ],
+        "primary_id": "2308.16876",
+        "bibtex_citations": [
+          "@inproceedings{chen2023sportsslomo,\n  title={SportsSloMo: A New Benchmark and Baselines for Human-centric Video Frame Interpolation},\n  author={Chen, Jiaben and Jiang, Huaizu},\n  booktitle={CVPR},\n  year={2024}\n}"
+        ]
       }
     }
   },
