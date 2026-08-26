@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-25T01:10:03.446063+00:00",
+  "last_updated": "2026-08-26T01:12:57.680579+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -285527,6 +285527,33 @@
         "primary_id": "2308.16876",
         "bibtex_citations": [
           "@inproceedings{chen2023sportsslomo,\n  title={SportsSloMo: A New Benchmark and Baselines for Human-centric Video Frame Interpolation},\n  author={Chen, Jiaben and Jiang, Huaizu},\n  booktitle={CVPR},\n  year={2024}\n}"
+        ]
+      }
+    },
+    "dmarx/luria": {
+      "lists": [],
+      "metadata": {
+        "id": 1322195644,
+        "name": "luria",
+        "full_name": "dmarx/luria",
+        "description": "A simple but effective project memory framework based on change management principles. Luria tracks and lints references to decision records to catch justifications which reference evidence that the repository's record no longer endorses.",
+        "url": "https://github.com/dmarx/luria",
+        "homepage": "",
+        "language": "Python",
+        "stars": 4,
+        "forks": 0,
+        "open_issues": 16,
+        "created_at": "2026-08-03T20:07:24Z",
+        "updated_at": "2026-08-25T20:05:35Z",
+        "pushed_at": "2026-08-25T16:33:46Z",
+        "starred_at": "2026-08-25T20:05:34Z"
+      },
+      "last_updated": "2026-08-26T01:12:57.262069+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@software{marx_luria,\n  author  = {Marx, David},\n  title   = {Luria: project memory, kept honest by lint},\n  url     = {https://github.com/dmarx/luria},\n  license = {MIT},\n}\n```\n<!-- /luria:citation -->\n\nDerived from [`CITATION.cff`](CITATION.cff) by `luria index`, which is also\nwhat GitHub reads for its *Cite this repository* button \u2014 so the two cannot\ndisagree. Add `version = {...}"
         ]
       }
     }
