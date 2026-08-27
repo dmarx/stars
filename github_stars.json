@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-26T01:12:57.680579+00:00",
+  "last_updated": "2026-08-27T07:23:40.130539+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -285555,6 +285555,212 @@
         "bibtex_citations": [
           "@software{marx_luria,\n  author  = {Marx, David},\n  title   = {Luria: project memory, kept honest by lint},\n  url     = {https://github.com/dmarx/luria},\n  license = {MIT},\n}\n```\n<!-- /luria:citation -->\n\nDerived from [`CITATION.cff`](CITATION.cff) by `luria index`, which is also\nwhat GitHub reads for its *Cite this repository* button \u2014 so the two cannot\ndisagree. Add `version = {...}"
         ]
+      }
+    },
+    "cedana/cedana": {
+      "lists": [],
+      "metadata": {
+        "id": 499826943,
+        "name": "cedana",
+        "full_name": "cedana/cedana",
+        "description": "Orchestrated process and container checkpointing",
+        "url": "https://github.com/cedana/cedana",
+        "homepage": "https://docs.cedana.ai",
+        "language": "Go",
+        "stars": 134,
+        "forks": 23,
+        "open_issues": 11,
+        "created_at": "2022-06-04T12:59:10Z",
+        "updated_at": "2026-08-26T23:33:33Z",
+        "pushed_at": "2026-08-26T15:40:50Z",
+        "starred_at": "2026-08-26T23:33:32Z"
+      },
+      "last_updated": "2026-08-27T07:23:35.219716+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "ai-dynamo/dynamo": {
+      "lists": [],
+      "metadata": {
+        "id": 942206898,
+        "name": "dynamo",
+        "full_name": "ai-dynamo/dynamo",
+        "description": "A Datacenter Scale Distributed Inference Serving Framework",
+        "url": "https://github.com/ai-dynamo/dynamo",
+        "homepage": "https://docs.nvidia.com/dynamo/latest",
+        "language": "Rust",
+        "stars": 7878,
+        "forks": 1499,
+        "open_issues": 1317,
+        "created_at": "2025-03-03T18:40:07Z",
+        "updated_at": "2026-08-27T06:54:55Z",
+        "pushed_at": "2026-08-27T07:17:52Z",
+        "starred_at": "2026-08-26T23:32:16Z"
+      },
+      "last_updated": "2026-08-27T07:23:35.901442+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "ai-dynamo/aiperf": {
+      "lists": [],
+      "metadata": {
+        "id": 967726092,
+        "name": "aiperf",
+        "full_name": "ai-dynamo/aiperf",
+        "description": "AIPerf is a comprehensive benchmarking tool that measures the performance of generative AI models served by your preferred inference solution.",
+        "url": "https://github.com/ai-dynamo/aiperf",
+        "homepage": "",
+        "language": "Python",
+        "stars": 593,
+        "forks": 160,
+        "open_issues": 95,
+        "created_at": "2025-04-16T22:51:08Z",
+        "updated_at": "2026-08-27T05:30:21Z",
+        "pushed_at": "2026-08-27T00:40:28Z",
+        "starred_at": "2026-08-26T23:31:07Z"
+      },
+      "last_updated": "2026-08-27T07:23:36.580306+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "lightseekorg/TorchSpec": {
+      "lists": [],
+      "metadata": {
+        "id": 1163082957,
+        "name": "TorchSpec",
+        "full_name": "lightseekorg/TorchSpec",
+        "description": "A PyTorch native library for training speculative decoding models",
+        "url": "https://github.com/lightseekorg/TorchSpec",
+        "homepage": "https://pytorch.org/blog/torchspec-speculative-decoding-training-at-scale/",
+        "language": "Python",
+        "stars": 232,
+        "forks": 62,
+        "open_issues": 2,
+        "created_at": "2026-02-21T04:18:35Z",
+        "updated_at": "2026-08-27T05:45:19Z",
+        "pushed_at": "2026-08-26T20:51:15Z",
+        "starred_at": "2026-08-26T23:30:37Z"
+      },
+      "last_updated": "2026-08-27T07:23:37.237701+00:00",
+      "arxiv": {
+        "ids": [
+          "2607.25852"
+        ],
+        "primary_id": "2607.25852",
+        "bibtex_citations": []
+      }
+    },
+    "ai-dynamo/modelexpress": {
+      "lists": [],
+      "metadata": {
+        "id": 982985446,
+        "name": "modelexpress",
+        "full_name": "ai-dynamo/modelexpress",
+        "description": "Model Express is a Rust-based component meant to be placed next to existing model inference systems to speed up their startup times and improve overall performance.",
+        "url": "https://github.com/ai-dynamo/modelexpress",
+        "homepage": "",
+        "language": "Python",
+        "stars": 132,
+        "forks": 70,
+        "open_issues": 58,
+        "created_at": "2025-05-13T17:45:18Z",
+        "updated_at": "2026-08-27T00:40:58Z",
+        "pushed_at": "2026-08-27T00:32:10Z",
+        "starred_at": "2026-08-26T23:29:44Z"
+      },
+      "last_updated": "2026-08-27T07:23:37.939100+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "vllm-project/vime": {
+      "lists": [],
+      "metadata": {
+        "id": 1235322661,
+        "name": "vime",
+        "full_name": "vllm-project/vime",
+        "description": "An LLM post-training framework with vLLM for RL Scaling",
+        "url": "https://github.com/vllm-project/vime",
+        "homepage": "",
+        "language": "Python",
+        "stars": 439,
+        "forks": 82,
+        "open_issues": 58,
+        "created_at": "2026-05-11T08:04:36Z",
+        "updated_at": "2026-08-27T06:59:41Z",
+        "pushed_at": "2026-08-27T05:33:01Z",
+        "starred_at": "2026-08-26T23:27:37Z"
+      },
+      "last_updated": "2026-08-27T07:23:38.555935+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@misc{vime,\n  author       = {Vime Contributors},\n  title        = {Vime: An LLM post-training framework with vLLM for RL Scaling},\n  year         = {2026},\n  howpublished = {\\url{https://github.com/vllm-project/vime}},\n  urldate      = {2026-06}\n}"
+        ]
+      }
+    },
+    "NVIDIA/Model-Optimizer": {
+      "lists": [],
+      "metadata": {
+        "id": 790916393,
+        "name": "Model-Optimizer",
+        "full_name": "NVIDIA/Model-Optimizer",
+        "description": "A unified library of SOTA model optimization techniques like quantization, distillation, pruning, neural architecture search, speculative decoding, etc. It compresses deep learning models for downstream deployment frameworks like TensorRT-LLM, TensorRT, vLLM, etc. to optimize inference speed.",
+        "url": "https://github.com/NVIDIA/Model-Optimizer",
+        "homepage": "https://nvidia.github.io/Model-Optimizer/",
+        "language": "Python",
+        "stars": 3492,
+        "forks": 551,
+        "open_issues": 368,
+        "created_at": "2024-04-23T19:00:54Z",
+        "updated_at": "2026-08-27T07:01:30Z",
+        "pushed_at": "2026-08-27T07:09:42Z",
+        "starred_at": "2026-08-26T23:21:25Z"
+      },
+      "last_updated": "2026-08-27T07:23:39.217274+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@misc{nvidia-modelopt,\n  author       = {{NVIDIA Corporation}},\n  title        = {{NVIDIA Model Optimizer}},\n  howpublished = {\\url{https://github.com/NVIDIA/Model-Optimizer}},\n  year         = {2024--2026},\n  note         = {GitHub repository}\n}"
+        ]
+      }
+    },
+    "astra-sim/astra-sim": {
+      "lists": [],
+      "metadata": {
+        "id": 278558077,
+        "name": "astra-sim",
+        "full_name": "astra-sim/astra-sim",
+        "description": "ASTRA-sim2.0: Modeling Hierarchical Networks and Disaggregated Systems for Large-model Training at Scale",
+        "url": "https://github.com/astra-sim/astra-sim",
+        "homepage": "https://astra-sim.github.io/",
+        "language": "C++",
+        "stars": 670,
+        "forks": 230,
+        "open_issues": 90,
+        "created_at": "2020-07-10T06:36:33Z",
+        "updated_at": "2026-08-26T23:08:24Z",
+        "pushed_at": "2026-04-25T13:58:22Z",
+        "starred_at": "2026-08-26T23:08:24Z"
+      },
+      "last_updated": "2026-08-27T07:23:39.824073+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
       }
     }
   },
