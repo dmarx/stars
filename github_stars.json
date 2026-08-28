@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-27T07:23:40.130539+00:00",
+  "last_updated": "2026-08-28T09:37:44.670227+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -285761,6 +285761,64 @@
         "ids": [],
         "primary_id": null,
         "bibtex_citations": []
+      }
+    },
+    "robbyant-research/MagicQuill": {
+      "lists": [],
+      "metadata": {
+        "id": 887261860,
+        "name": "MagicQuill",
+        "full_name": "robbyant-research/MagicQuill",
+        "description": "[CVPR'25] Official Implementations for Paper - MagicQuill: An Intelligent Interactive Image Editing System",
+        "url": "https://github.com/robbyant-research/MagicQuill",
+        "homepage": "https://magicquill.art",
+        "language": "Python",
+        "stars": 3688,
+        "forks": 389,
+        "open_issues": 46,
+        "created_at": "2024-11-12T12:52:36Z",
+        "updated_at": "2026-08-28T06:04:05Z",
+        "pushed_at": "2025-12-03T03:52:38Z",
+        "starred_at": "2024-11-15T21:06:39Z"
+      },
+      "last_updated": "2026-08-28T09:37:43.413466+00:00",
+      "arxiv": {
+        "ids": [
+          "2411.09703"
+        ],
+        "primary_id": "2411.09703",
+        "bibtex_citations": [
+          "@article{liu2024magicquill, \n\ttitle={MagicQuill: An Intelligent Interactive Image Editing System}, \n\tauthor={Zichen Liu and Yue Yu and Hao Ouyang and Qiuyu Wang and Ka Leong Cheng and Wen Wang and Zhiheng Liu and Qifeng Chen and Yujun Shen}, \n\tyear={2024}, \n\teprint={2411.09703}, \n\tarchivePrefix={arXiv}, \n\tprimaryClass={cs.CV}}"
+        ]
+      }
+    },
+    "robbyant-research/CoDeF": {
+      "lists": [],
+      "metadata": {
+        "id": 678805749,
+        "name": "CoDeF",
+        "full_name": "robbyant-research/CoDeF",
+        "description": "[CVPR'24 Highlight] Official PyTorch implementation of CoDeF: Content Deformation Fields for Temporally Consistent Video Processing",
+        "url": "https://github.com/robbyant-research/CoDeF",
+        "homepage": "https://robbyant-research.github.io/CoDeF/",
+        "language": "Python",
+        "stars": 4845,
+        "forks": 382,
+        "open_issues": 30,
+        "created_at": "2023-08-15T12:25:31Z",
+        "updated_at": "2026-08-28T06:02:24Z",
+        "pushed_at": "2024-04-07T03:27:29Z",
+        "starred_at": "2023-08-18T02:11:51Z"
+      },
+      "last_updated": "2026-08-28T09:37:44.358917+00:00",
+      "arxiv": {
+        "ids": [
+          "2308.07926"
+        ],
+        "primary_id": "2308.07926",
+        "bibtex_citations": [
+          "@article{ouyang2023codef,\n      title={CoDeF: Content Deformation Fields for Temporally Consistent Video Processing},\n      author={Hao Ouyang and Qiuyu Wang and Yuxi Xiao and Qingyan Bai and Juntao Zhang and Kecheng Zheng and Xiaowei Zhou and Qifeng Chen and Yujun Shen},\n      journal={arXiv preprint arXiv:2308.07926},\n      year={2023}\n}"
+        ]
       }
     }
   },
