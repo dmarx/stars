@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-28T09:37:44.670227+00:00",
+  "last_updated": "2026-08-31T03:43:13.739186+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -285819,6 +285819,56 @@
         "bibtex_citations": [
           "@article{ouyang2023codef,\n      title={CoDeF: Content Deformation Fields for Temporally Consistent Video Processing},\n      author={Hao Ouyang and Qiuyu Wang and Yuxi Xiao and Qingyan Bai and Juntao Zhang and Kecheng Zheng and Xiaowei Zhou and Qifeng Chen and Yujun Shen},\n      journal={arXiv preprint arXiv:2308.07926},\n      year={2023}\n}"
         ]
+      }
+    },
+    "glotzerlab/freud": {
+      "lists": [],
+      "metadata": {
+        "id": 167217991,
+        "name": "freud",
+        "full_name": "glotzerlab/freud",
+        "description": "Powerful, efficient particle trajectory analysis in scientific Python.",
+        "url": "https://github.com/glotzerlab/freud",
+        "homepage": "https://freud.readthedocs.io",
+        "language": "C++",
+        "stars": 328,
+        "forks": 52,
+        "open_issues": 19,
+        "created_at": "2019-01-23T16:47:33Z",
+        "updated_at": "2026-08-30T18:35:13Z",
+        "pushed_at": "2026-08-30T05:04:14Z",
+        "starred_at": "2026-08-30T18:35:12Z"
+      },
+      "last_updated": "2026-08-31T03:43:12.851943+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "CGAL/cgal": {
+      "lists": [],
+      "metadata": {
+        "id": 24677392,
+        "name": "cgal",
+        "full_name": "CGAL/cgal",
+        "description": "The public CGAL repository, see the README below",
+        "url": "https://github.com/CGAL/cgal",
+        "homepage": "https://github.com/CGAL/cgal#readme",
+        "language": "C++",
+        "stars": 6028,
+        "forks": 1588,
+        "open_issues": 677,
+        "created_at": "2014-10-01T12:22:47Z",
+        "updated_at": "2026-08-30T18:21:20Z",
+        "pushed_at": "2026-08-27T16:58:02Z",
+        "starred_at": "2026-08-30T18:21:19Z"
+      },
+      "last_updated": "2026-08-31T03:43:13.467161+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
       }
     }
   },
