@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-31T03:43:13.739186+00:00",
+  "last_updated": "2026-09-01T03:38:42.961344+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -285869,6 +285869,60 @@
         "ids": [],
         "primary_id": null,
         "bibtex_citations": []
+      }
+    },
+    "The-Vibe-Company/Quivr": {
+      "lists": [],
+      "metadata": {
+        "id": 640079149,
+        "name": "Quivr",
+        "full_name": "The-Vibe-Company/Quivr",
+        "description": "Opiniated RAG for integrating GenAI in your apps \ud83e\udde0   Focus on your product rather than the RAG. Easy integration in existing products with customisation!  Any LLM: GPT4, Groq, Llama. Any Vectorstore: PGVector, Faiss. Any Files. Anyway you want.",
+        "url": "https://github.com/The-Vibe-Company/Quivr",
+        "homepage": "https://core.quivr.com",
+        "language": "Python",
+        "stars": 39438,
+        "forks": 3728,
+        "open_issues": 35,
+        "created_at": "2023-05-12T23:53:30Z",
+        "updated_at": "2026-09-01T02:34:27Z",
+        "pushed_at": "2026-08-31T18:02:45Z",
+        "starred_at": "2023-08-09T03:15:45Z"
+      },
+      "last_updated": "2026-09-01T03:38:41.943155+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "liyuuuu98/GenMM": {
+      "lists": [],
+      "metadata": {
+        "id": 648489407,
+        "name": "GenMM",
+        "full_name": "liyuuuu98/GenMM",
+        "description": null,
+        "url": "https://github.com/liyuuuu98/GenMM",
+        "homepage": null,
+        "language": "Python",
+        "stars": 290,
+        "forks": 31,
+        "open_issues": 7,
+        "created_at": "2023-06-02T05:06:23Z",
+        "updated_at": "2026-08-21T17:34:40Z",
+        "pushed_at": "2025-08-04T20:36:19Z",
+        "starred_at": "2023-07-13T04:28:10Z"
+      },
+      "last_updated": "2026-09-01T03:38:42.628036+00:00",
+      "arxiv": {
+        "ids": [
+          "2306.00378"
+        ],
+        "primary_id": "2306.00378",
+        "bibtex_citations": [
+          "@article{10.1145/weiyu23GenMM,\n    author     = {Li, Weiyu and Chen, Xuelin and Li, Peizhuo and Sorkine-Hornung, Olga and Chen, Baoquan},\n    title      = {Example-Based Motion Synthesis via Generative Motion Matching},\n    journal    = {ACM Transactions on Graphics (TOG)},\n    volume     = {42},\n    number     = {4},\n    year       = {2023},\n    articleno  = {94},\n    doi = {10.1145/3592395},\n    publisher  = {Association for Computing Machinery},\n}"
+        ]
       }
     }
   },
