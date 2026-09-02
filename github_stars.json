@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-01T03:38:42.961344+00:00",
+  "last_updated": "2026-09-02T02:56:54.309973+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -285923,6 +285923,56 @@
         "bibtex_citations": [
           "@article{10.1145/weiyu23GenMM,\n    author     = {Li, Weiyu and Chen, Xuelin and Li, Peizhuo and Sorkine-Hornung, Olga and Chen, Baoquan},\n    title      = {Example-Based Motion Synthesis via Generative Motion Matching},\n    journal    = {ACM Transactions on Graphics (TOG)},\n    volume     = {42},\n    number     = {4},\n    year       = {2023},\n    articleno  = {94},\n    doi = {10.1145/3592395},\n    publisher  = {Association for Computing Machinery},\n}"
         ]
+      }
+    },
+    "Libraries-Openly-Fused/cvGPUSpeedup-FastOpenCV": {
+      "lists": [],
+      "metadata": {
+        "id": 615331645,
+        "name": "cvGPUSpeedup-FastOpenCV",
+        "full_name": "Libraries-Openly-Fused/cvGPUSpeedup-FastOpenCV",
+        "description": "A faster implementation of OpenCV-CUDA that uses OpenCV objects, and more! ",
+        "url": "https://github.com/Libraries-Openly-Fused/cvGPUSpeedup-FastOpenCV",
+        "homepage": "",
+        "language": "Cuda",
+        "stars": 55,
+        "forks": 8,
+        "open_issues": 2,
+        "created_at": "2023-03-17T13:06:21Z",
+        "updated_at": "2026-09-01T14:16:30Z",
+        "pushed_at": "2026-08-27T15:07:15Z",
+        "starred_at": "2024-02-09T10:28:52Z"
+      },
+      "last_updated": "2026-09-02T02:56:53.135453+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "The-Vibe-Company/quivr": {
+      "lists": [],
+      "metadata": {
+        "id": 640079149,
+        "name": "quivr",
+        "full_name": "The-Vibe-Company/quivr",
+        "description": "Opiniated RAG for integrating GenAI in your apps \ud83e\udde0   Focus on your product rather than the RAG. Easy integration in existing products with customisation!  Any LLM: GPT4, Groq, Llama. Any Vectorstore: PGVector, Faiss. Any Files. Anyway you want.",
+        "url": "https://github.com/The-Vibe-Company/quivr",
+        "homepage": "https://core.quivr.com",
+        "language": "Python",
+        "stars": 39449,
+        "forks": 3726,
+        "open_issues": 35,
+        "created_at": "2023-05-12T23:53:30Z",
+        "updated_at": "2026-09-02T02:31:55Z",
+        "pushed_at": "2026-08-31T18:02:45Z",
+        "starred_at": "2023-08-09T03:15:45Z"
+      },
+      "last_updated": "2026-09-02T02:56:54.044859+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
       }
     }
   },
