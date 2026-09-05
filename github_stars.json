@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-04T02:59:40.932904+00:00",
+  "last_updated": "2026-09-05T03:01:26.623852+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -286000,6 +286000,104 @@
         "bibtex_citations": [
           "@software{gradient_free_optimizers,\n  author = {Simon Blanke},\n  title = {Gradient-Free-Optimizers: Simple and reliable optimization with local, global, population-based and sequential techniques in mixed search spaces},\n  year = {2020},\n  url = {https://github.com/SimonBlanke/Gradient-Free-Optimizers},\n}"
         ]
+      }
+    },
+    "nunchux-ai/nunchaku": {
+      "lists": [],
+      "metadata": {
+        "id": 884123664,
+        "name": "nunchaku",
+        "full_name": "nunchux-ai/nunchaku",
+        "description": "[ICLR2025 Spotlight] SVDQuant: Absorbing Outliers by Low-Rank Components for 4-Bit Diffusion Models",
+        "url": "https://github.com/nunchux-ai/nunchaku",
+        "homepage": "https://nunchaku.tech/docs/nunchaku/",
+        "language": "Python",
+        "stars": 3943,
+        "forks": 277,
+        "open_issues": 25,
+        "created_at": "2024-11-06T07:24:40Z",
+        "updated_at": "2026-09-04T11:39:46Z",
+        "pushed_at": "2026-03-07T06:42:49Z",
+        "starred_at": "2024-11-14T20:51:57Z"
+      },
+      "last_updated": "2026-09-05T03:01:24.395434+00:00",
+      "arxiv": {
+        "ids": [
+          "2411.05007",
+          "2211.02048",
+          "2211.10438",
+          "2302.04304",
+          "2306.00978",
+          "2402.19481",
+          "2405.04532",
+          "2410.10629",
+          "2502.01776",
+          "2505.18875"
+        ],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@inproceedings{\n  li2024svdquant,\n  title={SVDQuant: Absorbing Outliers by Low-Rank Components for 4-Bit Diffusion Models},\n  author={Li*, Muyang and Lin*, Yujun and Zhang*, Zhekai and Cai, Tianle and Li, Xiuyu and Guo, Junxian and Xie, Enze and Meng, Chenlin and Zhu, Jun-Yan and Han, Song},\n  booktitle={The Thirteenth International Conference on Learning Representations},\n  year={2025}\n}"
+        ]
+      }
+    },
+    "nunchux-ai/deepcompressor": {
+      "lists": [],
+      "metadata": {
+        "id": 796839960,
+        "name": "deepcompressor",
+        "full_name": "nunchux-ai/deepcompressor",
+        "description": "Model Compression Toolbox for Large Language Models and Diffusion Models",
+        "url": "https://github.com/nunchux-ai/deepcompressor",
+        "homepage": "",
+        "language": "Python",
+        "stars": 802,
+        "forks": 104,
+        "open_issues": 86,
+        "created_at": "2024-05-06T18:18:14Z",
+        "updated_at": "2026-09-04T17:44:16Z",
+        "pushed_at": "2025-08-14T00:43:00Z",
+        "starred_at": "2024-11-14T20:51:18Z"
+      },
+      "last_updated": "2026-09-05T03:01:25.168287+00:00",
+      "arxiv": {
+        "ids": [
+          "2405.04532",
+          "2411.05007",
+          "2012.09852",
+          "2210.17323",
+          "2404.00456",
+          "2310.19102"
+        ],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@article{lin2024qserve,\n  title={QServe: W4A8KV4 Quantization and System Co-design for Efficient LLM Serving},\n  author={Lin*, Yujun and Tang*, Haotian and Yang*, Shang and Zhang, Zhekai and Xiao, Guangxuan and Gan, Chuang and Han, Song},\n  journal={arXiv preprint arXiv:2405.04532},\n  year={2024}\n}",
+          "@article{\n  li2024svdquant,\n  title={SVDQuant: Absorbing Outliers by Low-Rank Components for 4-Bit Diffusion Models},\n  author={Li*, Muyang and Lin*, Yujun and Zhang*, Zhekai and Cai, Tianle and Li, Xiuyu and Guo, Junxian and Xie, Enze and Meng, Chenlin and Zhu, Jun-Yan and Han, Song},\n  journal={arXiv preprint arXiv:2411.05007},\n  year={2024}\n}"
+        ]
+      }
+    },
+    "lenia-org/Lenia-Tutorial": {
+      "lists": [],
+      "metadata": {
+        "id": 386359064,
+        "name": "Lenia-Tutorial",
+        "full_name": "lenia-org/Lenia-Tutorial",
+        "description": "\"From Conway to Lenia\" tutorial",
+        "url": "https://github.com/lenia-org/Lenia-Tutorial",
+        "homepage": "",
+        "language": "Jupyter Notebook",
+        "stars": 50,
+        "forks": 10,
+        "open_issues": 2,
+        "created_at": "2021-07-15T16:38:31Z",
+        "updated_at": "2026-09-04T03:41:41Z",
+        "pushed_at": "2022-01-10T17:27:39Z",
+        "starred_at": "2024-09-30T12:40:28Z"
+      },
+      "last_updated": "2026-09-05T03:01:26.190268+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
       }
     }
   },
