@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-05T03:01:26.623852+00:00",
+  "last_updated": "2026-09-06T03:00:28.236892+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -286094,6 +286094,60 @@
         "starred_at": "2024-09-30T12:40:28Z"
       },
       "last_updated": "2026-09-05T03:01:26.190268+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "tiiuae/Falcon-H1": {
+      "lists": [],
+      "metadata": {
+        "id": 978630280,
+        "name": "Falcon-H1",
+        "full_name": "tiiuae/Falcon-H1",
+        "description": "All information and news with respect to Falcon-H1 series",
+        "url": "https://github.com/tiiuae/Falcon-H1",
+        "homepage": "https://tiiuae.github.io/Falcon-H1/",
+        "language": null,
+        "stars": 125,
+        "forks": 15,
+        "open_issues": 6,
+        "created_at": "2025-05-06T09:27:25Z",
+        "updated_at": "2026-09-05T15:32:58Z",
+        "pushed_at": "2025-10-09T21:08:32Z",
+        "starred_at": "2026-09-05T15:32:57Z"
+      },
+      "last_updated": "2026-09-06T03:00:27.258690+00:00",
+      "arxiv": {
+        "ids": [
+          "2507.22448"
+        ],
+        "primary_id": "2507.22448",
+        "bibtex_citations": [
+          "@article{falconh1,\n    title={Falcon-H1: A Family of Hybrid-Head Language Models Redefining Efficiency and Performance},\n    author={Jingwei Zuo and Maksim Velikanov and Ilyas Chahed and Younes Belkada and Dhia Eddine Rhayem and Guillaume Kunsch and Hakim Hacid and Hamza Yous and Brahim Farhat and Ibrahim Khadraoui and Mugariya Farooq and Giulia Campesan and Ruxandra Cojocaru and Yasser Djilali and Shi Hu and Iheb Chaabane and Puneesh Khanna and Mohamed El Amine Seddik and Ngoc Dung Huynh and Phuc Le Khac and Leen AlQadi and Billel Mokeddem and Mohamed Chami and Abdalgader Abubaker and Mikhail Lubinets and Kacper Piskorski and Slim Frikha},\n    journal = {arXiv preprint arXiv:2507.22448},\n    year={2025}\n}"
+        ]
+      }
+    },
+    "MusiCode1/markport": {
+      "lists": [],
+      "metadata": {
+        "id": 1233480625,
+        "name": "markport",
+        "full_name": "MusiCode1/markport",
+        "description": "Run Obsidian's desktop app in a standard browser \u2014 no Electron needed. Formerly obsidian-web.",
+        "url": "https://github.com/MusiCode1/markport",
+        "homepage": null,
+        "language": "JavaScript",
+        "stars": 139,
+        "forks": 36,
+        "open_issues": 10,
+        "created_at": "2026-05-09T02:25:09Z",
+        "updated_at": "2026-09-06T00:16:36Z",
+        "pushed_at": "2026-09-06T00:16:32Z",
+        "starred_at": "2026-05-09T21:23:25Z"
+      },
+      "last_updated": "2026-09-06T03:00:28.013759+00:00",
       "arxiv": {
         "ids": [],
         "primary_id": null,
