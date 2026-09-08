@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-06T03:00:28.236892+00:00",
+  "last_updated": "2026-09-08T03:08:17.401847+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -286148,6 +286148,56 @@
         "starred_at": "2026-05-09T21:23:25Z"
       },
       "last_updated": "2026-09-06T03:00:28.013759+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "mostlygeek/llama-swap": {
+      "lists": [],
+      "metadata": {
+        "id": 867433720,
+        "name": "llama-swap",
+        "full_name": "mostlygeek/llama-swap",
+        "description": "Reliable model swapping for any local OpenAI/Anthropic compatible server - llama.cpp, vllm, etc",
+        "url": "https://github.com/mostlygeek/llama-swap",
+        "homepage": "",
+        "language": "Go",
+        "stars": 5613,
+        "forks": 455,
+        "open_issues": 84,
+        "created_at": "2024-10-04T04:06:01Z",
+        "updated_at": "2026-09-08T02:54:36Z",
+        "pushed_at": "2026-09-07T07:15:57Z",
+        "starred_at": "2026-09-08T02:54:36Z"
+      },
+      "last_updated": "2026-09-08T03:08:16.021316+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "datamodel-code-generator/datamodel-code-generator": {
+      "lists": [],
+      "metadata": {
+        "id": 189179081,
+        "name": "datamodel-code-generator",
+        "full_name": "datamodel-code-generator/datamodel-code-generator",
+        "description": "Generate Pydantic v2 models, dataclasses, TypedDict, and msgspec.Struct from OpenAPI, JSON Schema, GraphQL, Avro, Protobuf, and raw JSON/YAML/CSV.",
+        "url": "https://github.com/datamodel-code-generator/datamodel-code-generator",
+        "homepage": "https://datamodel-code-generator.koxudaxi.dev/",
+        "language": "Python",
+        "stars": 4012,
+        "forks": 456,
+        "open_issues": 78,
+        "created_at": "2019-05-29T08:01:32Z",
+        "updated_at": "2026-09-08T02:07:25Z",
+        "pushed_at": "2026-09-08T03:00:00Z",
+        "starred_at": "2025-02-01T18:44:22Z"
+      },
+      "last_updated": "2026-09-08T03:08:17.045522+00:00",
       "arxiv": {
         "ids": [],
         "primary_id": null,
