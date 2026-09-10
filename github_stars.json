@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-08T03:08:17.401847+00:00",
+  "last_updated": "2026-09-10T03:09:10.728834+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -286198,6 +286198,31 @@
         "starred_at": "2025-02-01T18:44:22Z"
       },
       "last_updated": "2026-09-08T03:08:17.045522+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "metainternal/llama-cookbook": {
+      "lists": [],
+      "metadata": {
+        "id": 667297720,
+        "name": "llama-cookbook",
+        "full_name": "metainternal/llama-cookbook",
+        "description": "Welcome to the Llama Cookbook! This is your go to guide for Building with Llama: Getting started with Inference, Fine-Tuning, RAG. We also show you how to solve end to end problems using Llama model family and using them on various provider services  ",
+        "url": "https://github.com/metainternal/llama-cookbook",
+        "homepage": "https://www.llama.com",
+        "language": "Jupyter Notebook",
+        "stars": 18560,
+        "forks": 2760,
+        "open_issues": 92,
+        "created_at": "2023-07-17T07:33:48Z",
+        "updated_at": "2026-09-09T15:29:37Z",
+        "pushed_at": "2026-05-19T18:42:31Z",
+        "starred_at": "2023-07-18T18:32:43Z"
+      },
+      "last_updated": "2026-09-10T03:09:10.501155+00:00",
       "arxiv": {
         "ids": [],
         "primary_id": null,
