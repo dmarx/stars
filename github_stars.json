@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-12T03:11:31.720213+00:00",
+  "last_updated": "2026-09-12T03:11:39.035411+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -286479,6 +286479,216 @@
         "primary_id": "2412.13303",
         "bibtex_citations": [
           "@InProceedings{fastvlm2025,\n  author = {Pavan Kumar Anasosalu Vasu, Fartash Faghri, Chun-Liang Li, Cem Koc, Nate True, Albert Antony, Gokul Santhanam, James Gabriel, Peter Grasch, Oncel Tuzel, Hadi Pouransari},\n  title = {FastVLM: Efficient Vision Encoding for Vision Language Models},\n  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},\n  month = {June},\n  year = {2025},\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-sigmoid-attention": {
+      "lists": [],
+      "metadata": {
+        "id": 852593640,
+        "name": "ml-sigmoid-attention",
+        "full_name": "apple-aiml-research/ml-sigmoid-attention",
+        "description": null,
+        "url": "https://github.com/apple-aiml-research/ml-sigmoid-attention",
+        "homepage": null,
+        "language": "Python",
+        "stars": 312,
+        "forks": 20,
+        "open_issues": 2,
+        "created_at": "2024-09-05T04:41:45Z",
+        "updated_at": "2026-09-11T15:42:17Z",
+        "pushed_at": "2025-04-23T14:52:16Z",
+        "starred_at": "2025-01-02T19:38:25Z"
+      },
+      "last_updated": "2026-09-12T03:11:34.856941+00:00",
+      "arxiv": {
+        "ids": [
+          "2409.04431"
+        ],
+        "primary_id": "2409.04431",
+        "bibtex_citations": [
+          "@inproceedings{ramapuram2025theoryanalysisbestpractices,\n  title={Theory, Analysis, and Best Practices for Sigmoid Self-Attention},\n  author={Jason Ramapuram and Federico Danieli and Eeshan Dhekane and Floris Weers and Dan Busbridge and Pierre Ablin and Tatiana Likhomanenko and Jagrit Digani and Zijin Gu and Amitis Shidani and Russ Webb},\n  booktitle={International Conference on Learning Representations (ICLR)},\n  year={2025},\n  url={https://openreview.net/forum?id=Zhdhg6n2OG}\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-hugs": {
+      "lists": [],
+      "metadata": {
+        "id": 783979393,
+        "name": "ml-hugs",
+        "full_name": "apple-aiml-research/ml-hugs",
+        "description": "Official repository of HUGS: Human Gaussian Splats (CVPR 2024)",
+        "url": "https://github.com/apple-aiml-research/ml-hugs",
+        "homepage": "https://machinelearning.apple.com/research/hugs",
+        "language": "Python",
+        "stars": 404,
+        "forks": 54,
+        "open_issues": 23,
+        "created_at": "2024-04-09T00:22:59Z",
+        "updated_at": "2026-09-11T16:00:30Z",
+        "pushed_at": "2026-09-11T16:00:20Z",
+        "starred_at": "2024-12-15T08:25:41Z"
+      },
+      "last_updated": "2026-09-12T03:11:35.589436+00:00",
+      "arxiv": {
+        "ids": [
+          "2311.17910"
+        ],
+        "primary_id": "2311.17910",
+        "bibtex_citations": [
+          "@inproceedings{\n    kocabas2024hugs,\n    title={{HUGS}: Human Gaussian Splatting},\n    author={Kocabas, Muhammed and Chang, Jen-Hao Rick and Gabriel, James and Tuzel, Oncel and Ranjan, Anurag},\n    booktitle = {2024 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},\n    year = {2024},\n    url={https://arxiv.org/abs/2311.17910}\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-tarflow": {
+      "lists": [],
+      "metadata": {
+        "id": 899755416,
+        "name": "ml-tarflow",
+        "full_name": "apple-aiml-research/ml-tarflow",
+        "description": null,
+        "url": "https://github.com/apple-aiml-research/ml-tarflow",
+        "homepage": null,
+        "language": "Python",
+        "stars": 345,
+        "forks": 34,
+        "open_issues": 9,
+        "created_at": "2024-12-07T00:09:30Z",
+        "updated_at": "2026-09-11T16:07:07Z",
+        "pushed_at": "2026-09-11T16:07:02Z",
+        "starred_at": "2024-12-11T03:17:21Z"
+      },
+      "last_updated": "2026-09-12T03:11:36.044956+00:00",
+      "arxiv": {
+        "ids": [
+          "2412.06329",
+          "1601.06759"
+        ],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@article{zhai2024tarflow,\n         title={Normalizing Flows are Capable Generative Models},\n         author={Shuangfei Zhai and Ruixiang Zhang and Preetum Nakkiran and David Berthelot and Jiatao Gu and Huangjie Zheng and Tianrong Chen and Miguel Angel Bautista and Navdeep Jaitly and Josh Susskind},\n         year={2024},\n         eprint={2412.06329},\n         archivePrefix={arXiv},\n         primaryClass={cs.CV},\n         url={https://arxiv.org/abs/2412.06329}\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-cross-entropy": {
+      "lists": [],
+      "metadata": {
+        "id": 887718293,
+        "name": "ml-cross-entropy",
+        "full_name": "apple-aiml-research/ml-cross-entropy",
+        "description": null,
+        "url": "https://github.com/apple-aiml-research/ml-cross-entropy",
+        "homepage": null,
+        "language": "Python",
+        "stars": 618,
+        "forks": 76,
+        "open_issues": 16,
+        "created_at": "2024-11-13T06:53:37Z",
+        "updated_at": "2026-09-11T15:51:20Z",
+        "pushed_at": "2026-09-11T15:51:16Z",
+        "starred_at": "2024-11-18T03:35:07Z"
+      },
+      "last_updated": "2026-09-12T03:11:36.806139+00:00",
+      "arxiv": {
+        "ids": [
+          "2411.09009"
+        ],
+        "primary_id": "2411.09009",
+        "bibtex_citations": [
+          "@inproceedings{wijmans2025cut,\n  author       = {Erik Wijmans and\n                  Brody Huval and\n                  Alexander Hertzberg and\n                  Vladlen Koltun and\n                  Philipp Kr\\\"ahenb\\\"uhl},\n  title        = {Cut Your Losses in Large-Vocabulary Language Models},\n  booktitle    = {International Conference on Learning Representations},\n  year         = {2025},\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-depth-pro": {
+      "lists": [],
+      "metadata": {
+        "id": 847933360,
+        "name": "ml-depth-pro",
+        "full_name": "apple-aiml-research/ml-depth-pro",
+        "description": "Depth Pro: Sharp Monocular Metric Depth in Less Than a Second.",
+        "url": "https://github.com/apple-aiml-research/ml-depth-pro",
+        "homepage": "",
+        "language": "Python",
+        "stars": 5711,
+        "forks": 430,
+        "open_issues": 79,
+        "created_at": "2024-08-26T20:26:05Z",
+        "updated_at": "2026-09-11T22:38:45Z",
+        "pushed_at": "2026-09-11T15:56:05Z",
+        "starred_at": "2024-10-07T10:44:40Z"
+      },
+      "last_updated": "2026-09-12T03:11:37.609848+00:00",
+      "arxiv": {
+        "ids": [
+          "2410.02073"
+        ],
+        "primary_id": "2410.02073",
+        "bibtex_citations": [
+          "@inproceedings{Bochkovskii2024:arxiv,\n  author     = {Aleksei Bochkovskii and Ama\\\"{e}l Delaunoy and Hugo Germain and Marcel Santos and\n               Yichao Zhou and Stephan R. Richter and Vladlen Koltun},\n  title      = {Depth Pro: Sharp Monocular Metric Depth in Less Than a Second},\n  booktitle  = {International Conference on Learning Representations},\n  year       = {2025},\n  url        = {https://arxiv.org/abs/2410.02073},\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-veclip": {
+      "lists": [],
+      "metadata": {
+        "id": 768261058,
+        "name": "ml-veclip",
+        "full_name": "apple-aiml-research/ml-veclip",
+        "description": "The official repo for the paper \"VeCLIP: Improving CLIP Training via Visual-enriched Captions\"",
+        "url": "https://github.com/apple-aiml-research/ml-veclip",
+        "homepage": "",
+        "language": "Jupyter Notebook",
+        "stars": 255,
+        "forks": 15,
+        "open_issues": 1,
+        "created_at": "2024-03-06T19:00:33Z",
+        "updated_at": "2026-09-11T16:07:30Z",
+        "pushed_at": "2026-09-11T16:07:26Z",
+        "starred_at": "2024-10-07T10:41:31Z"
+      },
+      "last_updated": "2026-09-12T03:11:38.068011+00:00",
+      "arxiv": {
+        "ids": [
+          "2310.07699",
+          "2410.02740",
+          "2309.17425"
+        ],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@misc{lai2024veclip,\n      title={VeCLIP: Improving CLIP Training via Visual-enriched Captions}, \n      author={Zhengfeng Lai and Haotian Zhang and Bowen Zhang and Wentao Wu and Haoping Bai and Aleksei Timofeev and Xianzhi Du and Zhe Gan and Jiulong Shan and Chen-Nee Chuah and Yinfei Yang and Meng Cao},\n      year={2024},\n      eprint={2310.07699},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV}\n}",
+          "@misc{lai2024revisitlargescaleimagecaptiondata,\n      title={Revisit Large-Scale Image-Caption Data in Pre-training Multimodal Foundation Models}, \n      author={Zhengfeng Lai and Vasileios Saveris and Chen Chen and Hong-You Chen and Haotian Zhang and Bowen Zhang and Juan Lao Tebar and Wenze Hu and Zhe Gan and Peter Grasch and Meng Cao and Yinfei Yang},\n      year={2024},\n      eprint={2410.02740},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2410.02740}, \n}",
+          "@article{fang2023data,\n  title={Data filtering networks},\n  author={Fang, Alex and Jose, Albin Madappally and Jain, Amit and Schmidt, Ludwig and Toshev, Alexander and Shankar, Vaishaal},\n  journal={arXiv preprint arXiv:2309.17425},\n  year={2023}\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-4m": {
+      "lists": [],
+      "metadata": {
+        "id": 783932817,
+        "name": "ml-4m",
+        "full_name": "apple-aiml-research/ml-4m",
+        "description": "4M: Massively Multimodal Masked Modeling",
+        "url": "https://github.com/apple-aiml-research/ml-4m",
+        "homepage": "https://4m.epfl.ch",
+        "language": "Python",
+        "stars": 1809,
+        "forks": 113,
+        "open_issues": 17,
+        "created_at": "2024-04-08T21:31:33Z",
+        "updated_at": "2026-09-11T15:50:26Z",
+        "pushed_at": "2026-09-11T15:50:21Z",
+        "starred_at": "2024-07-25T04:54:57Z"
+      },
+      "last_updated": "2026-09-12T03:11:38.828900+00:00",
+      "arxiv": {
+        "ids": [
+          "2312.06647",
+          "2406.09406"
+        ],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@inproceedings{4m,\n    title={{4M}: Massively Multimodal Masked Modeling},\n    author={David Mizrahi and Roman Bachmann and O{\\u{g}}uzhan Fatih Kar and Teresa Yeo and Mingfei Gao and Afshin Dehghan and Amir Zamir},\n    booktitle={Thirty-seventh Conference on Neural Information Processing Systems},\n    year={2023},\n}",
+          "@article{4m21,\n    title={{4M-21}: An Any-to-Any Vision Model for Tens of Tasks and Modalities},\n    author={Roman Bachmann and O{\\u{g}}uzhan Fatih Kar and David Mizrahi and Ali Garjani and Mingfei Gao and David Griffiths and Jiaming Hu and Afshin Dehghan and Amir Zamir},\n    journal={arXiv 2024},\n    year={2024},\n}"
         ]
       }
     }
