@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-12T03:11:45.014354+00:00",
+  "last_updated": "2026-09-12T03:11:51.079114+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -286838,6 +286838,147 @@
         "primary_id": null,
         "bibtex_citations": [
           "@article{you2023ferret,\n  title={Ferret: Refer and Ground Anything Anywhere at Any Granularity},\n  author={You, Haoxuan and Zhang, Haotian and Gan, Zhe and Du, Xianzhi and Zhang, Bowen and Wang, Zirui and Cao, Liangliang and Chang, Shih-Fu and Yang, Yinfei},\n  journal={arXiv preprint arXiv:2310.07704},\n  year={2023}\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-finerecon": {
+      "lists": [],
+      "metadata": {
+        "id": 656975854,
+        "name": "ml-finerecon",
+        "full_name": "apple-aiml-research/ml-finerecon",
+        "description": null,
+        "url": "https://github.com/apple-aiml-research/ml-finerecon",
+        "homepage": null,
+        "language": "Python",
+        "stars": 163,
+        "forks": 15,
+        "open_issues": 1,
+        "created_at": "2023-06-22T03:39:48Z",
+        "updated_at": "2026-09-11T21:30:02Z",
+        "pushed_at": "2026-09-11T15:56:50Z",
+        "starred_at": "2023-10-06T17:03:34Z"
+      },
+      "last_updated": "2026-09-12T03:11:47.723177+00:00",
+      "arxiv": {
+        "ids": [
+          "2304.01480"
+        ],
+        "primary_id": "2304.01480",
+        "bibtex_citations": [
+          "@article{stier2023finerecon,\n  title={{FineRecon}: Depth-aware Feed-forward Network for Detailed 3D Reconstruction},\n  author={Stier, Noah and Ranjan, Anurag and Colburn, Alex and Yan, Yajie and Yang, Liang and Ma, Fangchang and Angles, Baptiste},\n  journal={arXiv preprint},\n  year={2023}\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-fastvit": {
+      "lists": [],
+      "metadata": {
+        "id": 678630946,
+        "name": "ml-fastvit",
+        "full_name": "apple-aiml-research/ml-fastvit",
+        "description": "This repository contains the official implementation of the research paper, \"FastViT: A Fast Hybrid Vision Transformer using Structural Reparameterization\" ICCV 2023",
+        "url": "https://github.com/apple-aiml-research/ml-fastvit",
+        "homepage": "",
+        "language": "Python",
+        "stars": 2034,
+        "forks": 129,
+        "open_issues": 3,
+        "created_at": "2023-08-15T02:03:14Z",
+        "updated_at": "2026-09-11T15:56:48Z",
+        "pushed_at": "2026-09-11T15:56:41Z",
+        "starred_at": "2023-08-18T22:26:44Z"
+      },
+      "last_updated": "2026-09-12T03:11:48.515913+00:00",
+      "arxiv": {
+        "ids": [
+          "2303.14189"
+        ],
+        "primary_id": "2303.14189",
+        "bibtex_citations": [
+          "@inproceedings{vasufastvit2023,\n  author = {Pavan Kumar Anasosalu Vasu and James Gabriel and Jeff Zhu and Oncel Tuzel and Anurag Ranjan},\n  title = {FastViT:  A Fast Hybrid Vision Transformer using Structural Reparameterization},\n  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision},\n  year = {2023}\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-hierarchical-confusion-matrix": {
+      "lists": [],
+      "metadata": {
+        "id": 472595300,
+        "name": "ml-hierarchical-confusion-matrix",
+        "full_name": "apple-aiml-research/ml-hierarchical-confusion-matrix",
+        "description": "Neo: Hierarchical Confusion Matrix Visualization (CHI 2022)",
+        "url": "https://github.com/apple-aiml-research/ml-hierarchical-confusion-matrix",
+        "homepage": "https://apple-aiml-research.github.io/ml-hierarchical-confusion-matrix/",
+        "language": "TypeScript",
+        "stars": 312,
+        "forks": 35,
+        "open_issues": 4,
+        "created_at": "2022-03-22T03:02:11Z",
+        "updated_at": "2026-09-11T16:00:24Z",
+        "pushed_at": "2026-09-11T16:00:17Z",
+        "starred_at": "2023-06-17T13:36:11Z"
+      },
+      "last_updated": "2026-09-12T03:11:49.288395+00:00",
+      "arxiv": {
+        "ids": [
+          "2110.12536"
+        ],
+        "primary_id": "2110.12536",
+        "bibtex_citations": [
+          "@inproceedings{goertler2022neo,\n  title={Neo: Generalizing Confusion Matrix Visualization to Hierarchical and Multi-Output Labels},\n  author={G\u00f6rtler, Jochen and Hohman, Fred and Moritz, Dominik and Wongsuphasawat, Kanit and Ren, Donghao and Nair, Rahul and Kirchner, Marc and Patel, Kayur},\n  booktitle={Proceedings of the SIGCHI Conference on Human Factors in Computing Systems},\n  year={2022},\n  organization={ACM},\n  doi={10.1145/3491102.3501823}\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-ane-transformers": {
+      "lists": [],
+      "metadata": {
+        "id": 499580907,
+        "name": "ml-ane-transformers",
+        "full_name": "apple-aiml-research/ml-ane-transformers",
+        "description": "Reference implementation of the Transformer architecture optimized for Apple Neural Engine (ANE)",
+        "url": "https://github.com/apple-aiml-research/ml-ane-transformers",
+        "homepage": "",
+        "language": "Python",
+        "stars": 2742,
+        "forks": 93,
+        "open_issues": 5,
+        "created_at": "2022-06-03T16:36:06Z",
+        "updated_at": "2026-09-11T15:50:42Z",
+        "pushed_at": "2026-09-11T15:50:36Z",
+        "starred_at": "2023-03-25T02:11:39Z"
+      },
+      "last_updated": "2026-09-12T03:11:50.033906+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "apple-aiml-research/ml-neuman": {
+      "lists": [],
+      "metadata": {
+        "id": 516054113,
+        "name": "ml-neuman",
+        "full_name": "apple-aiml-research/ml-neuman",
+        "description": "Official repository of NeuMan: Neural Human Radiance Field from a Single Video (ECCV 2022)",
+        "url": "https://github.com/apple-aiml-research/ml-neuman",
+        "homepage": "",
+        "language": "Python",
+        "stars": 1287,
+        "forks": 148,
+        "open_issues": 55,
+        "created_at": "2022-07-20T16:21:42Z",
+        "updated_at": "2026-09-11T16:03:28Z",
+        "pushed_at": "2026-09-11T16:03:24Z",
+        "starred_at": "2022-12-27T22:17:20Z"
+      },
+      "last_updated": "2026-09-12T03:11:50.732269+00:00",
+      "arxiv": {
+        "ids": [
+          "2203.12575"
+        ],
+        "primary_id": "2203.12575",
+        "bibtex_citations": [
+          "@inproceedings{jiang2022neuman,\n  title={NeuMan: Neural Human Radiance Field from a Single Video},\n  author={Jiang, Wei and Yi, Kwang Moo and Samei, Golnoosh and Tuzel, Oncel and Ranjan, Anurag},\n  booktitle={Proceedings of the European conference on computer vision (ECCV)},\n  year={2022}\n}"
         ]
       }
     }
