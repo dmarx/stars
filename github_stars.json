@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-12T03:11:39.035411+00:00",
+  "last_updated": "2026-09-12T03:11:45.014354+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -286689,6 +286689,155 @@
         "bibtex_citations": [
           "@inproceedings{4m,\n    title={{4M}: Massively Multimodal Masked Modeling},\n    author={David Mizrahi and Roman Bachmann and O{\\u{g}}uzhan Fatih Kar and Teresa Yeo and Mingfei Gao and Afshin Dehghan and Amir Zamir},\n    booktitle={Thirty-seventh Conference on Neural Information Processing Systems},\n    year={2023},\n}",
           "@article{4m21,\n    title={{4M-21}: An Any-to-Any Vision Model for Tens of Tasks and Modalities},\n    author={Roman Bachmann and O{\\u{g}}uzhan Fatih Kar and David Mizrahi and Ali Garjani and Mingfei Gao and David Griffiths and Jiaming Hu and Afshin Dehghan and Amir Zamir},\n    journal={arXiv 2024},\n    year={2024},\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-calibration": {
+      "lists": [],
+      "metadata": {
+        "id": 659995379,
+        "name": "ml-calibration",
+        "full_name": "apple-aiml-research/ml-calibration",
+        "description": "relplot: Utilities for measuring calibration and plotting reliability diagrams",
+        "url": "https://github.com/apple-aiml-research/ml-calibration",
+        "homepage": "",
+        "language": "Jupyter Notebook",
+        "stars": 191,
+        "forks": 12,
+        "open_issues": 1,
+        "created_at": "2023-06-29T02:43:29Z",
+        "updated_at": "2026-09-11T15:51:01Z",
+        "pushed_at": "2026-09-11T15:50:57Z",
+        "starred_at": "2024-05-07T08:54:15Z"
+      },
+      "last_updated": "2026-09-12T03:11:41.894044+00:00",
+      "arxiv": {
+        "ids": [
+          "2309.12236"
+        ],
+        "primary_id": "2309.12236",
+        "bibtex_citations": [
+          "@inproceedings{blasiok2024smooth,\n      title={Smooth {ECE}: Principled Reliability Diagrams via Kernel Smoothing},\n      author={B{\\l}asiok, Jaros{\\l}aw and Nakkiran, Preetum},\n      booktitle={The Twelfth International Conference on Learning Representations},\n      year={2024},\n      url={https://openreview.net/forum?id=XwiA1nDahv}\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-mobileclip": {
+      "lists": [],
+      "metadata": {
+        "id": 765465710,
+        "name": "ml-mobileclip",
+        "full_name": "apple-aiml-research/ml-mobileclip",
+        "description": "This repository contains the official implementation of the research papers, \"MobileCLIP\" CVPR 2024 and \"MobileCLIP2\" TMLR August 2025",
+        "url": "https://github.com/apple-aiml-research/ml-mobileclip",
+        "homepage": "",
+        "language": "Python",
+        "stars": 1635,
+        "forks": 131,
+        "open_issues": 1,
+        "created_at": "2024-03-01T01:07:30Z",
+        "updated_at": "2026-09-11T16:01:32Z",
+        "pushed_at": "2026-09-11T16:01:27Z",
+        "starred_at": "2024-03-10T03:55:41Z"
+      },
+      "last_updated": "2026-09-12T03:11:42.628349+00:00",
+      "arxiv": {
+        "ids": [
+          "2508.20691",
+          "2311.17049",
+          "2103.00020",
+          "2303.15343",
+          "2309.17425"
+        ],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@article{faghri2025mobileclip2,\n      title={Mobile{CLIP}2: Improving Multi-Modal Reinforced Training},\n      author={Fartash Faghri and Pavan Kumar Anasosalu Vasu and Cem Koc and \n      Vaishaal Shankar and Alexander T Toshev and Oncel Tuzel and Hadi \n      Pouransari},\n      journal={Transactions on Machine Learning Research},\n      issn={2835-8856},\n      year={2025},\n      url={https://openreview.net/forum?id=WeF9zolng8},\n      note={Featured Certification}\n    }",
+          "@InProceedings{vasu2024mobileclip,\n      author = {Vasu, Pavan Kumar Anasosalu and Pouransari, Hadi and Faghri, Fartash and Vemulapalli, Raviteja and Tuzel, Oncel},\n      title = {MobileCLIP: Fast Image-Text Models through Multi-Modal Reinforced Training},\n      booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},\n      month = {June},\n      year = {2024},\n    }"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-mgie": {
+      "lists": [],
+      "metadata": {
+        "id": 732203523,
+        "name": "ml-mgie",
+        "full_name": "apple-aiml-research/ml-mgie",
+        "description": null,
+        "url": "https://github.com/apple-aiml-research/ml-mgie",
+        "homepage": null,
+        "language": "Python",
+        "stars": 3871,
+        "forks": 250,
+        "open_issues": 4,
+        "created_at": "2023-12-15T23:04:40Z",
+        "updated_at": "2026-09-11T16:01:25Z",
+        "pushed_at": "2026-09-11T16:01:20Z",
+        "starred_at": "2024-02-08T08:36:19Z"
+      },
+      "last_updated": "2026-09-12T03:11:43.341225+00:00",
+      "arxiv": {
+        "ids": [
+          "2309.17102"
+        ],
+        "primary_id": "2309.17102",
+        "bibtex_citations": [
+          "@inproceedings{fu2024mgie,\n  author = {Tsu-Jui Fu and Wenze Hu and Xianzhi Du and William Yang Wang and Yinfei Yang, and Zhe Gan}, \n\u2003 title = {{Guiding Instruction-based Image Editing via Multimodal Large Language Models}}, \n\u2003 booktitle = {International Conference on Learning Representations (ICLR)}, \n\u2003 year = {2024} \n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-sigma-reparam": {
+      "lists": [],
+      "metadata": {
+        "id": 720212968,
+        "name": "ml-sigma-reparam",
+        "full_name": "apple-aiml-research/ml-sigma-reparam",
+        "description": null,
+        "url": "https://github.com/apple-aiml-research/ml-sigma-reparam",
+        "homepage": null,
+        "language": "Python",
+        "stars": 314,
+        "forks": 14,
+        "open_issues": 2,
+        "created_at": "2023-11-17T20:45:09Z",
+        "updated_at": "2026-09-11T16:04:40Z",
+        "pushed_at": "2026-09-11T16:04:36Z",
+        "starred_at": "2024-01-09T17:25:58Z"
+      },
+      "last_updated": "2026-09-12T03:11:44.113206+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@inproceedings{zhai2023stabilizing,\n  title={Stabilizing Transformer Training by Preventing Attention Entropy Collapse},\n  author={Zhai, Shuangfei and Likhomanenko, Tatiana and Littwin, Etai and Busbridge, Dan and Ramapuram, Jason and Zhang, Yizhe and Gu, Jiatao and Susskind, Joshua M},\n  booktitle={International Conference on Machine Learning},\n  pages={40770--40803},\n  year={2023},\n  organization={PMLR}\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-ferret": {
+      "lists": [],
+      "metadata": {
+        "id": 701540574,
+        "name": "ml-ferret",
+        "full_name": "apple-aiml-research/ml-ferret",
+        "description": null,
+        "url": "https://github.com/apple-aiml-research/ml-ferret",
+        "homepage": null,
+        "language": "Python",
+        "stars": 8665,
+        "forks": 519,
+        "open_issues": 8,
+        "created_at": "2023-10-06T21:39:03Z",
+        "updated_at": "2026-09-11T15:56:54Z",
+        "pushed_at": "2026-09-11T15:56:47Z",
+        "starred_at": "2023-10-23T15:22:16Z"
+      },
+      "last_updated": "2026-09-12T03:11:44.829000+00:00",
+      "arxiv": {
+        "ids": [
+          "2310.07704",
+          "2404.07973"
+        ],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@article{you2023ferret,\n  title={Ferret: Refer and Ground Anything Anywhere at Any Granularity},\n  author={You, Haoxuan and Zhang, Haotian and Gan, Zhe and Du, Xianzhi and Zhang, Bowen and Wang, Zirui and Cao, Liangliang and Chang, Shih-Fu and Yang, Yinfei},\n  journal={arXiv preprint arXiv:2310.07704},\n  year={2023}\n}"
         ]
       }
     }
