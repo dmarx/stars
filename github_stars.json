@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-12T03:11:51.079114+00:00",
+  "last_updated": "2026-09-12T03:11:57.128194+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -286979,6 +286979,172 @@
         "primary_id": "2203.12575",
         "bibtex_citations": [
           "@inproceedings{jiang2022neuman,\n  title={NeuMan: Neural Human Radiance Field from a Single Video},\n  author={Jiang, Wei and Yi, Kwang Moo and Samei, Golnoosh and Tuzel, Oncel and Ranjan, Anurag},\n  booktitle={Proceedings of the European conference on computer vision (ECCV)},\n  year={2022}\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-stable-diffusion": {
+      "lists": [],
+      "metadata": {
+        "id": 566576114,
+        "name": "ml-stable-diffusion",
+        "full_name": "apple-aiml-research/ml-stable-diffusion",
+        "description": "Stable Diffusion with Core ML on Apple Silicon",
+        "url": "https://github.com/apple-aiml-research/ml-stable-diffusion",
+        "homepage": "",
+        "language": "Python",
+        "stars": 17975,
+        "forks": 1081,
+        "open_issues": 193,
+        "created_at": "2022-11-16T00:48:18Z",
+        "updated_at": "2026-09-11T16:05:00Z",
+        "pushed_at": "2026-09-11T16:04:51Z",
+        "starred_at": "2022-12-01T20:42:56Z"
+      },
+      "last_updated": "2026-09-12T03:11:53.995938+00:00",
+      "arxiv": {
+        "ids": [
+          "1701.07204"
+        ],
+        "primary_id": "1701.07204",
+        "bibtex_citations": [
+          "@misc{stable-diffusion-coreml-apple-silicon,\ntitle = {Stable Diffusion with Core ML on Apple Silicon},\nauthor = {Atila Orhon and Michael Siracusa and Aseem Wadhwa},\nyear = {2022},\nURL = {null}\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-gaudi": {
+      "lists": [],
+      "metadata": {
+        "id": 518183731,
+        "name": "ml-gaudi",
+        "full_name": "apple-aiml-research/ml-gaudi",
+        "description": null,
+        "url": "https://github.com/apple-aiml-research/ml-gaudi",
+        "homepage": null,
+        "language": null,
+        "stars": 618,
+        "forks": 26,
+        "open_issues": 1,
+        "created_at": "2022-07-26T18:59:29Z",
+        "updated_at": "2026-09-11T15:57:04Z",
+        "pushed_at": "2026-09-11T15:56:57Z",
+        "starred_at": "2022-08-05T21:47:32Z"
+      },
+      "last_updated": "2026-09-12T03:11:54.715549+00:00",
+      "arxiv": {
+        "ids": [
+          "2207.13751",
+          "2104.00587"
+        ],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@article{bautista2022gaudi,\n    title={GAUDI: A Neural Architect for Immersive 3D Scene Generation},\n    author={Miguel Angel Bautista and Pengsheng Guo and Samira Abnar and Walter Talbott and Alexander Toshev and Zhuoyuan Chen and Laurent Dinh and Shuangfei Zhai and Hanlin Goh and Daniel Ulbricht and Afshin Dehghan and Josh Susskind},\n    journal={arXiv},\n    year={2022}\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-gmpi": {
+      "lists": [],
+      "metadata": {
+        "id": 515737529,
+        "name": "ml-gmpi",
+        "full_name": "apple-aiml-research/ml-gmpi",
+        "description": "[ECCV 2022, Oral Presentation] Official PyTorch implementation of GMPI ",
+        "url": "https://github.com/apple-aiml-research/ml-gmpi",
+        "homepage": "",
+        "language": "Python",
+        "stars": 344,
+        "forks": 32,
+        "open_issues": 1,
+        "created_at": "2022-07-19T20:49:58Z",
+        "updated_at": "2026-09-11T15:57:11Z",
+        "pushed_at": "2026-09-11T15:57:06Z",
+        "starred_at": "2022-07-25T01:29:25Z"
+      },
+      "last_updated": "2026-09-12T03:11:55.436080+00:00",
+      "arxiv": {
+        "ids": [
+          "2207.10642"
+        ],
+        "primary_id": "2207.10642",
+        "bibtex_citations": [
+          "@inproceedings{zhao-gmpi2022,\n  title = {Generative Multiplane Images: Making a 2D GAN 3D-Aware},\n  author = {Xiaoming Zhao and Fangchang Ma and David G\u00fcera and Zhile Ren and Alexander G. Schwing and Alex Colburn},\n  booktitle = {ECCV},\n  year = {2022},\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-cvnets": {
+      "lists": [],
+      "metadata": {
+        "id": 419903001,
+        "name": "ml-cvnets",
+        "full_name": "apple-aiml-research/ml-cvnets",
+        "description": "CVNets: A library for training computer vision networks",
+        "url": "https://github.com/apple-aiml-research/ml-cvnets",
+        "homepage": "https://apple-aiml-research.github.io/ml-cvnets/",
+        "language": "Python",
+        "stars": 1987,
+        "forks": 258,
+        "open_issues": 50,
+        "created_at": "2021-10-21T23:12:39Z",
+        "updated_at": "2026-09-11T15:56:01Z",
+        "pushed_at": "2026-09-11T15:55:55Z",
+        "starred_at": "2022-07-07T03:41:19Z"
+      },
+      "last_updated": "2026-09-12T03:11:56.194450+00:00",
+      "arxiv": {
+        "ids": [
+          "2306.00238",
+          "2212.10553",
+          "1704.04861",
+          "1801.04381",
+          "1905.02244",
+          "1905.11946",
+          "1512.03385",
+          "2003.13678",
+          "2010.11929",
+          "2110.02178",
+          "2206.02680",
+          "2103.14030",
+          "1512.02325",
+          "1703.06870",
+          "1706.05587",
+          "1612.01105",
+          "2103.00020",
+          "1805.09501",
+          "1909.13719",
+          "2206.02002"
+        ],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@inproceedings{mehta2022mobilevit,\n     title={MobileViT: Light-weight, General-purpose, and Mobile-friendly Vision Transformer},\n     author={Sachin Mehta and Mohammad Rastegari},\n     booktitle={International Conference on Learning Representations},\n     year={2022}\n}",
+          "@inproceedings{mehta2022cvnets, \n     author = {Mehta, Sachin and Abdolhosseini, Farzad and Rastegari, Mohammad}, \n     title = {CVNets: High Performance Library for Computer Vision}, \n     year = {2022}, \n     booktitle = {Proceedings of the 30th ACM International Conference on Multimedia}, \n     series = {MM '22} \n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-no-token-left-behind": {
+      "lists": [],
+      "metadata": {
+        "id": 498430936,
+        "name": "ml-no-token-left-behind",
+        "full_name": "apple-aiml-research/ml-no-token-left-behind",
+        "description": null,
+        "url": "https://github.com/apple-aiml-research/ml-no-token-left-behind",
+        "homepage": null,
+        "language": "Jupyter Notebook",
+        "stars": 140,
+        "forks": 13,
+        "open_issues": 1,
+        "created_at": "2022-05-31T17:20:26Z",
+        "updated_at": "2026-09-11T16:03:31Z",
+        "pushed_at": "2026-09-11T16:03:26Z",
+        "starred_at": "2022-06-06T14:53:58Z"
+      },
+      "last_updated": "2026-09-12T03:11:56.880403+00:00",
+      "arxiv": {
+        "ids": [
+          "2204.04908"
+        ],
+        "primary_id": "2204.04908",
+        "bibtex_citations": [
+          "@misc{Paiss2022NoTL,\n  url = {https://arxiv.org/abs/2204.04908},\n  author = {Paiss, Roni and Chefer, Hila and Wolf, Lior},\n  title = {No Token Left Behind: Explainability-Aided Image Classification and Generation},\n  publisher = {arXiv},\n  year = {2022}\n}"
         ]
       }
     }
