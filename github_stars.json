@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-11T03:04:45.008217+00:00",
+  "last_updated": "2026-09-12T03:11:31.720213+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -286277,6 +286277,209 @@
         "ids": [],
         "primary_id": null,
         "bibtex_citations": []
+      }
+    },
+    "syv-ai/qwen38-27b-rtx3090": {
+      "lists": [],
+      "metadata": {
+        "id": 1334946608,
+        "name": "qwen38-27b-rtx3090",
+        "full_name": "syv-ai/qwen38-27b-rtx3090",
+        "description": "Qwen3.8-27B on a single RTX 3090 with vLLM: ~1,000 tok/s at 64 concurrent (int8 tensor-core GEMMs, fp16 DeltaNet state), ~114 tok/s single-user at default sampling / ~124 greedy (MTP drafts, own-output draft vocab, calibrated int4 lm_head, split-KV verify attention), 150k-262k context; patches, requant scripts, benchmarks",
+        "url": "https://github.com/syv-ai/qwen38-27b-rtx3090",
+        "homepage": null,
+        "language": "Python",
+        "stars": 1309,
+        "forks": 183,
+        "open_issues": 20,
+        "created_at": "2026-08-15T09:10:56Z",
+        "updated_at": "2026-09-12T00:51:46Z",
+        "pushed_at": "2026-09-11T10:19:09Z",
+        "starred_at": "2026-09-11T07:53:17Z"
+      },
+      "last_updated": "2026-09-12T03:11:27.267974+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "apple-aiml-research/ml-ssd": {
+      "lists": [],
+      "metadata": {
+        "id": 1196596858,
+        "name": "ml-ssd",
+        "full_name": "apple-aiml-research/ml-ssd",
+        "description": null,
+        "url": "https://github.com/apple-aiml-research/ml-ssd",
+        "homepage": null,
+        "language": "Python",
+        "stars": 803,
+        "forks": 64,
+        "open_issues": 9,
+        "created_at": "2026-03-30T21:14:58Z",
+        "updated_at": "2026-09-11T16:04:54Z",
+        "pushed_at": "2026-09-11T16:04:50Z",
+        "starred_at": "2026-04-08T01:08:53Z"
+      },
+      "last_updated": "2026-09-12T03:11:27.991811+00:00",
+      "arxiv": {
+        "ids": [
+          "2604.01193"
+        ],
+        "primary_id": "2604.01193",
+        "bibtex_citations": [
+          "@misc{zhang2026embarrassinglysimpleselfdistillationimproves,\n      title={Embarrassingly Simple Self-Distillation Improves Code Generation},\n      author={Ruixiang Zhang and Richard He Bai and Huangjie Zheng and Navdeep Jaitly and Ronan Collobert and Yizhe Zhang},\n      year={2026},\n      eprint={2604.01193},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2604.01193},\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-flextok": {
+      "lists": [],
+      "metadata": {
+        "id": 958288264,
+        "name": "ml-flextok",
+        "full_name": "apple-aiml-research/ml-flextok",
+        "description": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+        "url": "https://github.com/apple-aiml-research/ml-flextok",
+        "homepage": "",
+        "language": "Jupyter Notebook",
+        "stars": 331,
+        "forks": 18,
+        "open_issues": 4,
+        "created_at": "2025-04-01T00:31:05Z",
+        "updated_at": "2026-09-11T15:56:57Z",
+        "pushed_at": "2026-09-11T15:56:53Z",
+        "starred_at": "2026-03-19T20:11:30Z"
+      },
+      "last_updated": "2026-09-12T03:11:28.506916+00:00",
+      "arxiv": {
+        "ids": [
+          "2502.13967",
+          "2410.02416"
+        ],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@article{flextok,\n    title={{FlexTok}: Resampling Images into 1D Token Sequences of Flexible Length},\n    author={Roman Bachmann and Jesse Allardice and David Mizrahi and Enrico Fini and O{\\u{g}}uzhan Fatih Kar and Elmira Amirloo and Alaaeldin El-Nouby and Amir Zamir and Afshin Dehghan},\n    journal={arXiv 2025},\n    year={2025},\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-atoken": {
+      "lists": [],
+      "metadata": {
+        "id": 1080930021,
+        "name": "ml-atoken",
+        "full_name": "apple-aiml-research/ml-atoken",
+        "description": null,
+        "url": "https://github.com/apple-aiml-research/ml-atoken",
+        "homepage": null,
+        "language": "Jupyter Notebook",
+        "stars": 150,
+        "forks": 8,
+        "open_issues": 8,
+        "created_at": "2025-10-22T04:19:24Z",
+        "updated_at": "2026-09-11T15:50:47Z",
+        "pushed_at": "2026-09-11T15:50:43Z",
+        "starred_at": "2026-01-26T17:23:54Z"
+      },
+      "last_updated": "2026-09-12T03:11:29.360408+00:00",
+      "arxiv": {
+        "ids": [
+          "2509.14476"
+        ],
+        "primary_id": "2509.14476",
+        "bibtex_citations": [
+          "@article{lu2025atoken,\n  title={Atoken: A unified tokenizer for vision},\n  author={Lu, Jiasen and Song, Liangchen and Xu, Mingze and Ahn, Byeongjoo and Wang, Yanjun and Chen, Chen and Dehghan, Afshin and Yang, Yinfei},\n  journal={arXiv preprint arXiv:2509.14476},\n  year={2025}\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-sharp": {
+      "lists": [],
+      "metadata": {
+        "id": 1114899133,
+        "name": "ml-sharp",
+        "full_name": "apple-aiml-research/ml-sharp",
+        "description": "Sharp Monocular View Synthesis in Less Than a Second",
+        "url": "https://github.com/apple-aiml-research/ml-sharp",
+        "homepage": "https://apple-aiml-research.github.io/ml-sharp/",
+        "language": "Python",
+        "stars": 8884,
+        "forks": 649,
+        "open_issues": 77,
+        "created_at": "2025-12-12T03:46:09Z",
+        "updated_at": "2026-09-11T16:32:21Z",
+        "pushed_at": "2026-09-11T16:04:32Z",
+        "starred_at": "2025-12-25T06:46:12Z"
+      },
+      "last_updated": "2026-09-12T03:11:29.896459+00:00",
+      "arxiv": {
+        "ids": [
+          "2512.10685"
+        ],
+        "primary_id": "2512.10685",
+        "bibtex_citations": [
+          "@inproceedings{Sharp2025:arxiv,\n  title      = {Sharp Monocular View Synthesis in Less Than a Second},\n  author     = {Lars Mescheder and Wei Dong and Shiwei Li and Xuyang Bai and Marcel Santos and Peiyun Hu and Bruno Lecouat and Mingmin Zhen and Ama\\\"{e}l Delaunoy and Tian Fang and Yanghai Tsin and Stephan R. Richter and Vladlen Koltun},\n  journal    = {arXiv preprint arXiv:2512.10685},\n  year       = {2025},\n  url        = {https://arxiv.org/abs/2512.10685},\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-starflow": {
+      "lists": [],
+      "metadata": {
+        "id": 1080778548,
+        "name": "ml-starflow",
+        "full_name": "apple-aiml-research/ml-starflow",
+        "description": null,
+        "url": "https://github.com/apple-aiml-research/ml-starflow",
+        "homepage": "https://apple-aiml-research.github.io/ml-starflow/",
+        "language": "Python",
+        "stars": 591,
+        "forks": 40,
+        "open_issues": 6,
+        "created_at": "2025-10-21T21:18:32Z",
+        "updated_at": "2026-09-11T16:04:59Z",
+        "pushed_at": "2026-09-11T16:04:54Z",
+        "starred_at": "2025-12-02T06:48:09Z"
+      },
+      "last_updated": "2026-09-12T03:11:30.663220+00:00",
+      "arxiv": {
+        "ids": [
+          "2506.06276",
+          "2511.20462",
+          "2605.08078",
+          "2605.08029"
+        ],
+        "primary_id": "2506.06276",
+        "bibtex_citations": [
+          "@article{gu2025starflow,\n  title={STARFlow: Scaling Latent Normalizing Flows for High-resolution Image Synthesis},\n  author={Gu, Jiatao and Chen, Tianrong and Berthelot, David and Zheng, Huangjie and Wang, Yuyang and Zhang, Ruixiang and Dinh, Laurent and Bautista, Miguel Angel and Susskind, Josh and Zhai, Shuangfei},\n  journal={NeurIPS},\n  year={2025}\n}"
+        ]
+      }
+    },
+    "apple-aiml-research/ml-fastvlm": {
+      "lists": [],
+      "metadata": {
+        "id": 976325482,
+        "name": "ml-fastvlm",
+        "full_name": "apple-aiml-research/ml-fastvlm",
+        "description": "This repository contains the official implementation of \"FastVLM: Efficient Vision Encoding for Vision Language Models\" - CVPR 2025",
+        "url": "https://github.com/apple-aiml-research/ml-fastvlm",
+        "homepage": "",
+        "language": "Python",
+        "stars": 7416,
+        "forks": 560,
+        "open_issues": 57,
+        "created_at": "2025-05-01T22:56:43Z",
+        "updated_at": "2026-09-12T02:34:38Z",
+        "pushed_at": "2026-09-11T15:56:44Z",
+        "starred_at": "2025-05-09T02:18:10Z"
+      },
+      "last_updated": "2026-09-12T03:11:31.506314+00:00",
+      "arxiv": {
+        "ids": [
+          "2412.13303"
+        ],
+        "primary_id": "2412.13303",
+        "bibtex_citations": [
+          "@InProceedings{fastvlm2025,\n  author = {Pavan Kumar Anasosalu Vasu, Fartash Faghri, Chun-Liang Li, Cem Koc, Nate True, Albert Antony, Gokul Santhanam, James Gabriel, Peter Grasch, Oncel Tuzel, Hadi Pouransari},\n  title = {FastVLM: Efficient Vision Encoding for Vision Language Models},\n  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},\n  month = {June},\n  year = {2025},\n}"
+        ]
       }
     }
   },
