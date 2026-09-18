@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-17T03:29:58.841324+00:00",
+  "last_updated": "2026-09-18T03:16:39.207644+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -287267,6 +287267,31 @@
         "starred_at": "2022-11-07T05:36:52Z"
       },
       "last_updated": "2026-09-17T03:29:58.555635+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "syv-ai/HyperQwen": {
+      "lists": [],
+      "metadata": {
+        "id": 1334946608,
+        "name": "HyperQwen",
+        "full_name": "syv-ai/HyperQwen",
+        "description": "Serve large Qwen models fast on the GPUs you actually own. Qwen3.8-27B on a single 24 GB card with vLLM: 127 tok/s single-user (381 when the answer quotes the prompt), ~1,035 tok/s at 64 concurrent, 150k-262k context. vLLM patches, requant pipeline, benchmarks.",
+        "url": "https://github.com/syv-ai/HyperQwen",
+        "homepage": null,
+        "language": "Python",
+        "stars": 1459,
+        "forks": 203,
+        "open_issues": 21,
+        "created_at": "2026-08-15T09:10:56Z",
+        "updated_at": "2026-09-18T02:22:35Z",
+        "pushed_at": "2026-09-17T20:59:20Z",
+        "starred_at": "2026-09-11T07:53:17Z"
+      },
+      "last_updated": "2026-09-18T03:16:38.894828+00:00",
       "arxiv": {
         "ids": [],
         "primary_id": null,
