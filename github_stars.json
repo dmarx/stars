@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-18T03:16:39.207644+00:00",
+  "last_updated": "2026-09-19T03:12:23.243060+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -287296,6 +287296,35 @@
         "ids": [],
         "primary_id": null,
         "bibtex_citations": []
+      }
+    },
+    "wynoxos/MCF": {
+      "lists": [],
+      "metadata": {
+        "id": 675188397,
+        "name": "MCF",
+        "full_name": "wynoxos/MCF",
+        "description": "[MM 2023] Toward High Quality Facial Representation Learning",
+        "url": "https://github.com/wynoxos/MCF",
+        "homepage": "",
+        "language": "Python",
+        "stars": 19,
+        "forks": 0,
+        "open_issues": 2,
+        "created_at": "2023-08-06T04:37:19Z",
+        "updated_at": "2026-08-20T21:15:49Z",
+        "pushed_at": "2023-10-30T14:44:36Z",
+        "starred_at": "2023-11-15T00:15:11Z"
+      },
+      "last_updated": "2026-09-19T03:12:22.894550+00:00",
+      "arxiv": {
+        "ids": [
+          "2309.03575"
+        ],
+        "primary_id": "2309.03575",
+        "bibtex_citations": [
+          "@article{wang2023toward,\n  title={Toward High Quality Facial Representation Learning},\n  author={Wang, Yue and Peng, Jinlong and Zhang, Jiangning and Yi, Ran and Liu, Liang and Wang, Yabiao and Wang, Chengjie},\n  booktitle={Proceedings of the 30th ACM International Conference on Multimedia},\n  year={2023}\n}"
+        ]
       }
     }
   },
