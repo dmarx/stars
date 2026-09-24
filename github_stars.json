@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-20T03:29:22.606937+00:00",
+  "last_updated": "2026-09-24T03:14:01.751821+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -287346,6 +287346,56 @@
         "starred_at": "2025-06-22T20:36:37Z"
       },
       "last_updated": "2026-09-20T03:29:22.300093+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "LibreChat-AI/LibreChat": {
+      "lists": [],
+      "metadata": {
+        "id": 600596928,
+        "name": "LibreChat",
+        "full_name": "LibreChat-AI/LibreChat",
+        "description": "Enhanced ChatGPT Clone: Features Agents, MCP, Skills, DeepSeek, Anthropic, AWS, OpenAI, Responses API, Azure, Groq, o1, GPT-5, Mistral, OpenRouter, Vertex AI, Gemini, Artifacts, AI model switching, message search, Code Interpreter, langchain, DALL-E-3, OpenAPI Actions, Functions, Secure Multi-User Auth, Presets, open-source for self-hosting. Active",
+        "url": "https://github.com/LibreChat-AI/LibreChat",
+        "homepage": "https://librechat.ai/",
+        "language": "TypeScript",
+        "stars": 44808,
+        "forks": 9187,
+        "open_issues": 773,
+        "created_at": "2023-02-12T01:06:52Z",
+        "updated_at": "2026-09-24T03:09:06Z",
+        "pushed_at": "2026-09-24T03:10:37Z",
+        "starred_at": "2024-01-22T18:25:31Z"
+      },
+      "last_updated": "2026-09-24T03:14:00.307624+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "hydra-ecosystem/omegaconf": {
+      "lists": [],
+      "metadata": {
+        "id": 147219819,
+        "name": "omegaconf",
+        "full_name": "hydra-ecosystem/omegaconf",
+        "description": "Flexible Python configuration system. The last one you will ever need.",
+        "url": "https://github.com/hydra-ecosystem/omegaconf",
+        "homepage": "https://hydra-ecosystem.github.io/omegaconf/",
+        "language": "Python",
+        "stars": 2433,
+        "forks": 158,
+        "open_issues": 33,
+        "created_at": "2018-09-03T14:59:01Z",
+        "updated_at": "2026-09-23T13:25:49Z",
+        "pushed_at": "2026-09-23T20:59:36Z",
+        "starred_at": "2021-05-25T16:06:46Z"
+      },
+      "last_updated": "2026-09-24T03:14:01.350517+00:00",
       "arxiv": {
         "ids": [],
         "primary_id": null,
