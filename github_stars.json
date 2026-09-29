@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-26T03:36:08.723194+00:00",
+  "last_updated": "2026-09-29T04:19:31.216277+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -287450,6 +287450,91 @@
         "ids": [],
         "primary_id": null,
         "bibtex_citations": []
+      }
+    },
+    "RWTHVision/opensplat3d": {
+      "lists": [],
+      "metadata": {
+        "id": 1042044625,
+        "name": "opensplat3d",
+        "full_name": "RWTHVision/opensplat3d",
+        "description": "CVPRW 2025 (OpenSUN3D)",
+        "url": "https://github.com/RWTHVision/opensplat3d",
+        "homepage": "https://jenspiek.github.io/opensplat3d",
+        "language": "Python",
+        "stars": 31,
+        "forks": 2,
+        "open_issues": 0,
+        "created_at": "2025-08-21T11:58:01Z",
+        "updated_at": "2026-08-25T21:54:53Z",
+        "pushed_at": "2026-08-05T16:58:28Z",
+        "starred_at": "2025-10-26T19:53:25Z"
+      },
+      "last_updated": "2026-09-29T04:19:29.407280+00:00",
+      "arxiv": {
+        "ids": [
+          "2506.07697"
+        ],
+        "primary_id": "2506.07697",
+        "bibtex_citations": [
+          "@InProceedings{piekenbrinck2025opensplat3d,\n  title     = {{OpenSplat3D: Open-Vocabulary 3D Instance Segmentation using Gaussian Splatting}},\n  author    = {Piekenbrinck, Jens and Schmidt, Christian and Hermans, Alexander and Vaskevicius, Narunas and Linder, Timm and Leibe, Bastian},\n  booktitle = {Proceedings of the Computer Vision and Pattern Recognition Conference},\n  pages     = {5246--5255},\n  year      = {2025}\n}"
+        ]
+      }
+    },
+    "RWTHVision/diffusion-e2e-ft": {
+      "lists": [],
+      "metadata": {
+        "id": 856792934,
+        "name": "diffusion-e2e-ft",
+        "full_name": "RWTHVision/diffusion-e2e-ft",
+        "description": "[WACV'25 Oral] Fine-Tuning Image-Conditional Diffusion Models is Easier than You Think",
+        "url": "https://github.com/RWTHVision/diffusion-e2e-ft",
+        "homepage": "https://vision.rwth-aachen.de/diffusion-e2e-ft",
+        "language": "Python",
+        "stars": 523,
+        "forks": 22,
+        "open_issues": 4,
+        "created_at": "2024-09-13T08:05:23Z",
+        "updated_at": "2026-09-29T03:10:02Z",
+        "pushed_at": "2026-07-09T13:32:48Z",
+        "starred_at": "2024-09-30T19:37:37Z"
+      },
+      "last_updated": "2026-09-29T04:19:30.208073+00:00",
+      "arxiv": {
+        "ids": [
+          "2409.11355"
+        ],
+        "primary_id": "2409.11355",
+        "bibtex_citations": [
+          "@InProceedings{martingarcia2024diffusione2eft,\n  title     = {Fine-Tuning Image-Conditional Diffusion Models is Easier than You Think},\n  author    = {Martin Garcia, Gonzalo and Knaebel, Karim and Schmidt, Christian and de Geus, Daan and Hermans, Alexander and Leibe, Bastian},\n  booktitle = {Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)},\n  year      = {2025}\n}"
+        ]
+      }
+    },
+    "QuantClimate/GPJax": {
+      "lists": [],
+      "metadata": {
+        "id": 299115429,
+        "name": "GPJax",
+        "full_name": "QuantClimate/GPJax",
+        "description": "Gaussian processes in JAX and Equinox.",
+        "url": "https://github.com/QuantClimate/GPJax",
+        "homepage": "https://gpjax.quantclimate.com",
+        "language": "Python",
+        "stars": 666,
+        "forks": 82,
+        "open_issues": 15,
+        "created_at": "2020-09-27T20:40:59Z",
+        "updated_at": "2026-09-28T12:33:27Z",
+        "pushed_at": "2026-09-28T12:33:29Z",
+        "starred_at": "2023-01-01T01:19:52Z"
+      },
+      "last_updated": "2026-09-29T04:19:30.982524+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@article{Pinder2022,\n  doi = {10.21105/joss.04455},\n  url = {https://doi.org/10.21105/joss.04455},\n  year = {2022},\n  publisher = {The Open Journal},\n  volume = {7},\n  number = {75},\n  pages = {4455},\n  author = {Thomas Pinder and Daniel Dodd},\n  title = {GPJax: A Gaussian Process Framework in JAX},\n  journal = {Journal of Open Source Software}\n}"
+        ]
       }
     }
   },
