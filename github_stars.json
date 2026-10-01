@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-30T04:03:45.704246+00:00",
+  "last_updated": "2026-10-01T04:14:52.175483+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -287585,6 +287585,77 @@
         "ids": [],
         "primary_id": null,
         "bibtex_citations": []
+      }
+    },
+    "gradshaan/Vision-Transformers": {
+      "lists": [],
+      "metadata": {
+        "id": 834703155,
+        "name": "Vision-Transformers",
+        "full_name": "gradshaan/Vision-Transformers",
+        "description": "This repo has all the basic things you'll need in-order to understand complete vision transformer architecture and its various implementations.",
+        "url": "https://github.com/gradshaan/Vision-Transformers",
+        "homepage": null,
+        "language": "Python",
+        "stars": 228,
+        "forks": 11,
+        "open_issues": 0,
+        "created_at": "2024-07-28T05:19:20Z",
+        "updated_at": "2026-09-14T09:57:14Z",
+        "pushed_at": "2025-01-02T18:09:25Z",
+        "starred_at": "2024-10-14T04:12:39Z"
+      },
+      "last_updated": "2026-10-01T04:14:50.655262+00:00",
+      "arxiv": {
+        "ids": [
+          "2101.01169",
+          "2111.06091",
+          "2010.11929",
+          "2012.12877",
+          "1706.03762",
+          "2103.15808",
+          "2106.04803",
+          "2103.10697",
+          "2103.14030",
+          "2102.12122",
+          "2009.06732",
+          "2102.05095",
+          "2106.05968",
+          "2104.11227",
+          "2103.15691",
+          "2102.00719"
+        ],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "ZJU4EmbodiedAI/Cheetah": {
+      "lists": [],
+      "metadata": {
+        "id": 667044089,
+        "name": "Cheetah",
+        "full_name": "ZJU4EmbodiedAI/Cheetah",
+        "description": null,
+        "url": "https://github.com/ZJU4EmbodiedAI/Cheetah",
+        "homepage": null,
+        "language": "Python",
+        "stars": 354,
+        "forks": 26,
+        "open_issues": 10,
+        "created_at": "2023-07-16T13:06:33Z",
+        "updated_at": "2026-04-24T08:52:51Z",
+        "pushed_at": "2024-05-25T14:57:38Z",
+        "starred_at": "2024-09-25T01:06:58Z"
+      },
+      "last_updated": "2026-10-01T04:14:51.702341+00:00",
+      "arxiv": {
+        "ids": [
+          "2308.04152"
+        ],
+        "primary_id": "2308.04152",
+        "bibtex_citations": [
+          "@inproceedings{li2023fine,\n  title={Fine-tuning multimodal llms to follow zero-shot demonstrative instructions},\n  author={Li, Juncheng and Pan, Kaihang and Ge, Zhiqi and Gao, Minghe and Ji, Wei and Zhang, Wenqiao and Chua, Tat-Seng and Tang, Siliang and Zhang, Hanwang and Zhuang, Yueting},\n  booktitle={The Twelfth International Conference on Learning Representations},\n  year={2023}\n}"
+        ]
       }
     }
   },
