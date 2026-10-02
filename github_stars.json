@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-01T04:14:52.175483+00:00",
+  "last_updated": "2026-10-02T04:08:45.638780+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -287656,6 +287656,114 @@
         "bibtex_citations": [
           "@inproceedings{li2023fine,\n  title={Fine-tuning multimodal llms to follow zero-shot demonstrative instructions},\n  author={Li, Juncheng and Pan, Kaihang and Ge, Zhiqi and Gao, Minghe and Ji, Wei and Zhang, Wenqiao and Chua, Tat-Seng and Tang, Siliang and Zhang, Hanwang and Zhuang, Yueting},\n  booktitle={The Twelfth International Conference on Learning Representations},\n  year={2023}\n}"
         ]
+      }
+    },
+    "ziyangjoy/DiaBlo": {
+      "lists": [],
+      "metadata": {
+        "id": 992881983,
+        "name": "DiaBlo",
+        "full_name": "ziyangjoy/DiaBlo",
+        "description": "Source codes of DiaBlo: Diagonal Blocks Are Sufficient For Finetuning",
+        "url": "https://github.com/ziyangjoy/DiaBlo",
+        "homepage": null,
+        "language": "Python",
+        "stars": 9,
+        "forks": 0,
+        "open_issues": 1,
+        "created_at": "2025-05-29T21:28:26Z",
+        "updated_at": "2026-10-01T15:25:44Z",
+        "pushed_at": "2026-03-13T21:36:07Z",
+        "starred_at": "2026-10-01T15:25:43Z"
+      },
+      "last_updated": "2026-10-02T04:08:43.730519+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@article{gurses2025diablo,\n  title={DiaBlo: Diagonal Blocks Are Sufficient For Finetuning},\n  author={Gurses, Selcuk and Zhang, Aozhong and Deng, Yanxia and Dong, Xun and Li, Xin and Wang, Naigang and Yin, Penghang and Yang, Zi},\n  journal={International Conference on Learning Representations},\n  year={2026}\n}"
+        ]
+      }
+    },
+    "Video-Rebirth/hyperflow": {
+      "lists": [],
+      "metadata": {
+        "id": 1374137407,
+        "name": "hyperflow",
+        "full_name": "Video-Rebirth/hyperflow",
+        "description": "HyperFlow: Video Rebirth's 8-step LoRA for MiniMax-H3 on the diffusers Modular Pipeline",
+        "url": "https://github.com/Video-Rebirth/hyperflow",
+        "homepage": "https://huggingface.co/videorebirth/hyperflow",
+        "language": "Python",
+        "stars": 132,
+        "forks": 5,
+        "open_issues": 1,
+        "created_at": "2026-09-17T08:17:10Z",
+        "updated_at": "2026-10-02T01:37:14Z",
+        "pushed_at": "2026-09-18T17:45:15Z",
+        "starred_at": "2026-10-01T05:38:31Z"
+      },
+      "last_updated": "2026-10-02T04:08:44.379330+00:00",
+      "arxiv": {
+        "ids": [
+          "2605.13724",
+          "2307.08691",
+          "2407.08608",
+          "2603.05451",
+          "2607.24027"
+        ],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "Adudeguyman/ComfyUI-HyperFlow-H3": {
+      "lists": [],
+      "metadata": {
+        "id": 1389662048,
+        "name": "ComfyUI-HyperFlow-H3",
+        "full_name": "Adudeguyman/ComfyUI-HyperFlow-H3",
+        "description": "Unofficial implementation of HyperFlow for MiniMax H3 in ComfyUI. 8-step speedup with minimal quality loss",
+        "url": "https://github.com/Adudeguyman/ComfyUI-HyperFlow-H3",
+        "homepage": null,
+        "language": "Python",
+        "stars": 7,
+        "forks": 3,
+        "open_issues": 1,
+        "created_at": "2026-09-26T18:40:54Z",
+        "updated_at": "2026-10-01T07:06:06Z",
+        "pushed_at": "2026-10-01T00:41:08Z",
+        "starred_at": "2026-10-01T05:37:58Z"
+      },
+      "last_updated": "2026-10-02T04:08:44.844021+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "Adudeguyman/ComfyUI-Fantastic-MiniMaxH3-PromptBuilder": {
+      "lists": [],
+      "metadata": {
+        "id": 1323463941,
+        "name": "ComfyUI-Fantastic-MiniMaxH3-PromptBuilder",
+        "full_name": "Adudeguyman/ComfyUI-Fantastic-MiniMaxH3-PromptBuilder",
+        "description": "A prompt builder and media manager for MiniMax H3.",
+        "url": "https://github.com/Adudeguyman/ComfyUI-Fantastic-MiniMaxH3-PromptBuilder",
+        "homepage": null,
+        "language": "JavaScript",
+        "stars": 256,
+        "forks": 25,
+        "open_issues": 2,
+        "created_at": "2026-08-04T23:44:39Z",
+        "updated_at": "2026-10-02T01:36:04Z",
+        "pushed_at": "2026-10-01T02:11:42Z",
+        "starred_at": "2026-10-01T04:39:09Z"
+      },
+      "last_updated": "2026-10-02T04:08:45.287647+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
       }
     }
   },
