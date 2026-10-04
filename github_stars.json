@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-02T04:08:45.638780+00:00",
+  "last_updated": "2026-10-04T04:23:42.795337+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -287760,6 +287760,112 @@
         "starred_at": "2026-10-01T04:39:09Z"
       },
       "last_updated": "2026-10-02T04:08:45.287647+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "the-principles-of-diffusion-models/codes-demos": {
+      "lists": [],
+      "metadata": {
+        "id": 1188620923,
+        "name": "codes-demos",
+        "full_name": "the-principles-of-diffusion-models/codes-demos",
+        "description": null,
+        "url": "https://github.com/the-principles-of-diffusion-models/codes-demos",
+        "homepage": null,
+        "language": "Jupyter Notebook",
+        "stars": 30,
+        "forks": 2,
+        "open_issues": 0,
+        "created_at": "2026-03-22T10:54:34Z",
+        "updated_at": "2026-10-04T01:39:36Z",
+        "pushed_at": "2026-06-03T03:40:25Z",
+        "starred_at": "2026-10-04T01:39:35Z"
+      },
+      "last_updated": "2026-10-04T04:23:40.005644+00:00",
+      "arxiv": {
+        "ids": [
+          "2510.21890"
+        ],
+        "primary_id": "2510.21890",
+        "bibtex_citations": [
+          "@article{lai2025principles,\n  title={The principles of diffusion models},\n  author={Lai, Chieh-Hsin and Song, Yang and Kim, Dongjun and Mitsufuji, Yuki and Ermon, Stefano},\n  journal={arXiv preprint arXiv:2510.21890},\n  year={2025}\n}"
+        ]
+      }
+    },
+    "Yomguithereal/mnemonist": {
+      "lists": [],
+      "metadata": {
+        "id": 71649256,
+        "name": "mnemonist",
+        "full_name": "Yomguithereal/mnemonist",
+        "description": "Curated collection of data structures for the JavaScript/TypeScript language.",
+        "url": "https://github.com/Yomguithereal/mnemonist",
+        "homepage": "https://yomguithereal.github.io/mnemonist",
+        "language": "JavaScript",
+        "stars": 2433,
+        "forks": 106,
+        "open_issues": 77,
+        "created_at": "2016-10-22T15:53:07Z",
+        "updated_at": "2026-10-04T03:14:50Z",
+        "pushed_at": "2026-09-22T12:02:50Z",
+        "starred_at": "2026-10-03T19:36:27Z"
+      },
+      "last_updated": "2026-10-04T04:23:40.839991+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "bolongpa/repopedia": {
+      "lists": [],
+      "metadata": {
+        "id": 1394495502,
+        "name": "repopedia",
+        "full_name": "bolongpa/repopedia",
+        "description": "MIT-licensed code knowledge graph: index any source repo into a queryable graph of symbols, call chains and blast radius \u2014 with wiki generation. Code is a graph; treat it like one.",
+        "url": "https://github.com/bolongpa/repopedia",
+        "homepage": null,
+        "language": "Python",
+        "stars": 9,
+        "forks": 1,
+        "open_issues": 0,
+        "created_at": "2026-09-29T06:11:22Z",
+        "updated_at": "2026-10-03T23:45:31Z",
+        "pushed_at": "2026-10-03T20:26:10Z",
+        "starred_at": "2026-10-03T19:20:55Z"
+      },
+      "last_updated": "2026-10-04T04:23:41.634470+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@software{pan2026repopedia,\n  author = {Bolong Pan},\n  title = {repopedia: an MIT-licensed code knowledge graph and wiki generator},\n  year = {2026},\n  url = {https://github.com/bolongpa/repopedia},\n  doi = {10.5281/zenodo.23034535}\n}"
+        ]
+      }
+    },
+    "abhigyanpatwari/GitNexus": {
+      "lists": [],
+      "metadata": {
+        "id": 1031059905,
+        "name": "GitNexus",
+        "full_name": "abhigyanpatwari/GitNexus",
+        "description": "GitNexus: The Zero-Server Code Intelligence Engine ",
+        "url": "https://github.com/abhigyanpatwari/GitNexus",
+        "homepage": "https://gitnexus.vercel.app",
+        "language": "TypeScript",
+        "stars": 47704,
+        "forks": 5179,
+        "open_issues": 288,
+        "created_at": "2025-08-02T23:20:31Z",
+        "updated_at": "2026-10-04T03:12:17Z",
+        "pushed_at": "2026-10-03T19:41:16Z",
+        "starred_at": "2026-10-03T19:20:36Z"
+      },
+      "last_updated": "2026-10-04T04:23:42.329520+00:00",
       "arxiv": {
         "ids": [],
         "primary_id": null,
