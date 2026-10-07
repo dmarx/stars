@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-04T04:23:42.795337+00:00",
+  "last_updated": "2026-10-07T04:24:19.645758+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -287870,6 +287870,60 @@
         "ids": [],
         "primary_id": null,
         "bibtex_citations": []
+      }
+    },
+    "potassco/clingo": {
+      "lists": [],
+      "metadata": {
+        "id": 58459878,
+        "name": "clingo",
+        "full_name": "potassco/clingo",
+        "description": "\ud83e\udd89 A grounder and solver for logic programs.",
+        "url": "https://github.com/potassco/clingo",
+        "homepage": "https://potassco.org/clingo",
+        "language": "C++",
+        "stars": 843,
+        "forks": 102,
+        "open_issues": 11,
+        "created_at": "2016-05-10T12:35:00Z",
+        "updated_at": "2026-10-07T03:56:12Z",
+        "pushed_at": "2026-10-07T01:03:41Z",
+        "starred_at": "2026-10-07T03:56:11Z"
+      },
+      "last_updated": "2026-10-07T04:24:18.692621+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "Tencent-Hunyuan/Prism": {
+      "lists": [],
+      "metadata": {
+        "id": 1379605083,
+        "name": "Prism",
+        "full_name": "Tencent-Hunyuan/Prism",
+        "description": "We propose Prism, a dynamic sparse attention framework for natively training joint video-audio generation models at 2K.",
+        "url": "https://github.com/Tencent-Hunyuan/Prism",
+        "homepage": "https://francis-rings.github.io/Prism",
+        "language": "Python",
+        "stars": 46,
+        "forks": 5,
+        "open_issues": 0,
+        "created_at": "2026-09-21T11:31:58Z",
+        "updated_at": "2026-10-07T03:58:44Z",
+        "pushed_at": "2026-10-06T15:14:31Z",
+        "starred_at": "2026-10-06T07:16:33Z"
+      },
+      "last_updated": "2026-10-07T04:24:19.359625+00:00",
+      "arxiv": {
+        "ids": [
+          "2610.05416"
+        ],
+        "primary_id": "2610.05416",
+        "bibtex_citations": [
+          "@article{tu2026prism,\n  title={Prism:Dynamic Sparse Attention for Native 2K Joint Video-Audio Generation Model Training},\n  author={Tu, Shuyuan and Tian, Qi and Huang, Yinming and Wu, Yue and Han, Xintong and Pan, Kaihang and Kong, Weijie and Xiong, Jiangfeng and Zhang, Jian-Wei and Wu, Zuxuan and Jiang, Yu-Gang},\n  journal={arXiv preprint arXiv:2610.05416},\n  year={2026}\n}"
+        ]
       }
     }
   },
