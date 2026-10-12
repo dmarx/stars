@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-09T04:39:17.024435+00:00",
+  "last_updated": "2026-10-12T04:24:56.153844+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -288003,6 +288003,31 @@
         "bibtex_citations": [
           "@inproceedings{duffield2025scalable,\n    title={Scalable Bayesian Learning with posteriors},\n    author={Samuel Duffield and Kaelan Donatella and Johnathan Chiu and Phoebe Klett and Daniel Simpson},\n    booktitle={The Thirteenth International Conference on Learning Representations},\n    year={2025},\n    url={https://openreview.net/forum?id=fifXzmzeGy}\n}"
         ]
+      }
+    },
+    "deepbeepmeep/WanGP": {
+      "lists": [],
+      "metadata": {
+        "id": 940296815,
+        "name": "WanGP",
+        "full_name": "deepbeepmeep/WanGP",
+        "description": "A fast AI Video Generator for the GPU Poor. Supports Minimax H3, LTX-2.3/2.5, Wan 2.1/2.2,  Qwen Image 1/2, Krea 2, Hunyuan Video, LTX  Video and Flux.",
+        "url": "https://github.com/deepbeepmeep/WanGP",
+        "homepage": "",
+        "language": "Python",
+        "stars": 10336,
+        "forks": 1644,
+        "open_issues": 1283,
+        "created_at": "2025-02-27T23:52:36Z",
+        "updated_at": "2026-10-12T03:25:57Z",
+        "pushed_at": "2026-10-11T22:59:09Z",
+        "starred_at": "2025-03-19T16:26:50Z"
+      },
+      "last_updated": "2026-10-12T04:24:55.875683+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
       }
     }
   },
