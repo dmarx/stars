@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-14T03:36:56.649722+00:00",
+  "last_updated": "2026-10-16T03:12:48.905212+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -288099,6 +288099,60 @@
         "starred_at": "2024-07-25T05:49:33Z"
       },
       "last_updated": "2026-10-14T03:36:56.394104+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "SakanaAI/AI-Scientist-v3": {
+      "lists": [],
+      "metadata": {
+        "id": 1414362482,
+        "name": "AI-Scientist-v3",
+        "full_name": "SakanaAI/AI-Scientist-v3",
+        "description": "The Agentic Scientist: Orchestrating Coding Agents for Automated Scientific (Co-)Discovery",
+        "url": "https://github.com/SakanaAI/AI-Scientist-v3",
+        "homepage": null,
+        "language": "Python",
+        "stars": 158,
+        "forks": 22,
+        "open_issues": 1,
+        "created_at": "2026-10-11T13:20:48Z",
+        "updated_at": "2026-10-16T03:11:05Z",
+        "pushed_at": "2026-10-15T08:53:39Z",
+        "starred_at": "2026-10-15T16:55:33Z"
+      },
+      "last_updated": "2026-10-16T03:12:47.682871+00:00",
+      "arxiv": {
+        "ids": [
+          "2610.18933"
+        ],
+        "primary_id": "2610.18933",
+        "bibtex_citations": [
+          "@article{agentic_scientist,\n  title   = {The Agentic Scientist: Orchestrating Coding Agents for Automated Scientific (Co-)Discovery},\n  author  = {Lange, Robert Tjarko and Grillotti, Luca and Yamada, Yutaro and Charakorn, Rujikorn and Ha, David},\n  journal = {arXiv preprint arXiv:2610.18933},\n  year    = {2026}\n}"
+        ]
+      }
+    },
+    "kaust-violab/Differender": {
+      "lists": [],
+      "metadata": {
+        "id": 367693320,
+        "name": "Differender",
+        "full_name": "kaust-violab/Differender",
+        "description": "Taichi-based Differentiable DVR Renderer",
+        "url": "https://github.com/kaust-violab/Differender",
+        "homepage": "",
+        "language": "Python",
+        "stars": 12,
+        "forks": 5,
+        "open_issues": 0,
+        "created_at": "2021-05-15T17:32:52Z",
+        "updated_at": "2026-01-02T06:31:50Z",
+        "pushed_at": "2022-07-20T11:57:31Z",
+        "starred_at": "2022-07-03T17:35:10Z"
+      },
+      "last_updated": "2026-10-16T03:12:48.532643+00:00",
       "arxiv": {
         "ids": [],
         "primary_id": null,
