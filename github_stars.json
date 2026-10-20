@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-19T03:20:15.608113+00:00",
+  "last_updated": "2026-10-20T03:28:49.419709+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -288228,6 +288228,60 @@
         "starred_at": "2026-10-18T17:56:29Z"
       },
       "last_updated": "2026-10-19T03:20:15.158494+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "google-research/harness2": {
+      "lists": [],
+      "metadata": {
+        "id": 1407951147,
+        "name": "harness2",
+        "full_name": "google-research/harness2",
+        "description": null,
+        "url": "https://github.com/google-research/harness2",
+        "homepage": null,
+        "language": "Python",
+        "stars": 12344,
+        "forks": 1126,
+        "open_issues": 89,
+        "created_at": "2026-10-06T21:48:11Z",
+        "updated_at": "2026-10-20T03:27:55Z",
+        "pushed_at": "2026-10-14T02:22:51Z",
+        "starred_at": "2026-10-19T04:28:33Z"
+      },
+      "last_updated": "2026-10-20T03:28:48.258863+00:00",
+      "arxiv": {
+        "ids": [
+          "2610.14224"
+        ],
+        "primary_id": "2610.14224",
+        "bibtex_citations": [
+          "@article{xu2026harness2,\n  title   = {Harness$^2$: Recursive Agent Harnessing for an Open World},\n  author  = {Xu, Ruiyao and Chen, Yanfei and CuiZhu, Zhongying and Dalvi Mishra, Bhavana and Ming, Yifei and Yu, Han and Han, Rujun and Lee, Chen-Yu and Pfister, Tomas},\n  journal = {arXiv preprint arXiv:2610.14224},\n  year    = {2026},\n  url     = {https://arxiv.org/abs/2610.14224}\n}"
+        ]
+      }
+    },
+    "kuberay-project/kuberay": {
+      "lists": [],
+      "metadata": {
+        "id": 308444913,
+        "name": "kuberay",
+        "full_name": "kuberay-project/kuberay",
+        "description": "A toolkit to run Ray applications on Kubernetes",
+        "url": "https://github.com/kuberay-project/kuberay",
+        "homepage": "https://kuberay-project.github.io/kuberay/",
+        "language": "Go",
+        "stars": 2737,
+        "forks": 892,
+        "open_issues": 713,
+        "created_at": "2020-10-29T20:42:00Z",
+        "updated_at": "2026-10-20T00:45:00Z",
+        "pushed_at": "2026-10-20T00:12:49Z",
+        "starred_at": "2023-09-08T23:02:00Z"
+      },
+      "last_updated": "2026-10-20T03:28:49.124971+00:00",
       "arxiv": {
         "ids": [],
         "primary_id": null,
