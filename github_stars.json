@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-20T03:28:49.419709+00:00",
+  "last_updated": "2026-10-21T03:23:53.895121+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -288282,6 +288282,183 @@
         "starred_at": "2023-09-08T23:02:00Z"
       },
       "last_updated": "2026-10-20T03:28:49.124971+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "SuchirAgarwal/lilie": {
+      "lists": [],
+      "metadata": {
+        "id": 1404814910,
+        "name": "lilie",
+        "full_name": "SuchirAgarwal/lilie",
+        "description": "A Language-Informed Loss for Visual Generation: LILIE encoders and JiT-T2I training/sampling in JAX",
+        "url": "https://github.com/SuchirAgarwal/lilie",
+        "homepage": null,
+        "language": "Python",
+        "stars": 8,
+        "forks": 0,
+        "open_issues": 1,
+        "created_at": "2026-10-04T20:33:16Z",
+        "updated_at": "2026-10-21T03:03:45Z",
+        "pushed_at": "2026-10-19T06:59:42Z",
+        "starred_at": "2026-10-20T14:20:36Z"
+      },
+      "last_updated": "2026-10-21T03:23:48.335882+00:00",
+      "arxiv": {
+        "ids": [
+          "2610.23653"
+        ],
+        "primary_id": "2610.23653",
+        "bibtex_citations": []
+      }
+    },
+    "T-Crypt/berth": {
+      "lists": [],
+      "metadata": {
+        "id": 1414824407,
+        "name": "berth",
+        "full_name": "T-Crypt/berth",
+        "description": "Decides who gets your GPU. Chat, image and voice engines lease the card in turn instead of grabbing it, so two of them never load at once and crash each other. One Go binary, nothing else to install.",
+        "url": "https://github.com/T-Crypt/berth",
+        "homepage": null,
+        "language": "Go",
+        "stars": 113,
+        "forks": 8,
+        "open_issues": 2,
+        "created_at": "2026-10-11T22:32:01Z",
+        "updated_at": "2026-10-21T02:55:59Z",
+        "pushed_at": "2026-10-21T02:50:06Z",
+        "starred_at": "2026-10-20T06:55:28Z"
+      },
+      "last_updated": "2026-10-21T03:23:49.088122+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "Neroued/ninfer": {
+      "lists": [],
+      "metadata": {
+        "id": 1281510950,
+        "name": "ninfer",
+        "full_name": "Neroued/ninfer",
+        "description": "High-performance single-GPU inference for selected model checkpoints and GPUs.",
+        "url": "https://github.com/Neroued/ninfer",
+        "homepage": null,
+        "language": "C++",
+        "stars": 3108,
+        "forks": 633,
+        "open_issues": 168,
+        "created_at": "2026-06-26T16:20:43Z",
+        "updated_at": "2026-10-21T03:07:59Z",
+        "pushed_at": "2026-10-20T16:34:09Z",
+        "starred_at": "2026-10-20T06:48:11Z"
+      },
+      "last_updated": "2026-10-21T03:23:49.945389+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "Don-Chad/ninfer-3090": {
+      "lists": [],
+      "metadata": {
+        "id": 1307440682,
+        "name": "ninfer-3090",
+        "full_name": "Don-Chad/ninfer-3090",
+        "description": "Hyper optimised Qwen3.8-27B inference on one RTX 3090: ReplaySSM, MTP3, reasoning effort, C1-C8 batching, and native Windows and Linux builds.",
+        "url": "https://github.com/Don-Chad/ninfer-3090",
+        "homepage": "",
+        "language": "C++",
+        "stars": 464,
+        "forks": 51,
+        "open_issues": 10,
+        "created_at": "2026-07-21T08:05:58Z",
+        "updated_at": "2026-10-20T14:44:09Z",
+        "pushed_at": "2026-10-16T20:32:31Z",
+        "starred_at": "2026-10-20T06:47:41Z"
+      },
+      "last_updated": "2026-10-21T03:23:50.747690+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "Niko1221/Strata": {
+      "lists": [],
+      "metadata": {
+        "id": 1385946301,
+        "name": "Strata",
+        "full_name": "Niko1221/Strata",
+        "description": "Qwen3.8-Flash-Next on any consumer hardware: one-click install for Windows / Linux. Strata inference engine, OpenAI/Anthropic API on localhost, optional image input.",
+        "url": "https://github.com/Niko1221/Strata",
+        "homepage": "",
+        "language": "C++",
+        "stars": 29305,
+        "forks": 3101,
+        "open_issues": 465,
+        "created_at": "2026-09-24T16:40:20Z",
+        "updated_at": "2026-10-21T03:22:56Z",
+        "pushed_at": "2026-10-20T22:17:55Z",
+        "starred_at": "2026-10-20T06:45:37Z"
+      },
+      "last_updated": "2026-10-21T03:23:51.510049+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "Tripo-Developer/ComfyUI-Tripo": {
+      "lists": [],
+      "metadata": {
+        "id": 787304066,
+        "name": "ComfyUI-Tripo",
+        "full_name": "Tripo-Developer/ComfyUI-Tripo",
+        "description": "Official custom nodes for using Tripo in ComfyUI.",
+        "url": "https://github.com/Tripo-Developer/ComfyUI-Tripo",
+        "homepage": "https://platform.tripo3d.ai",
+        "language": "Python",
+        "stars": 358,
+        "forks": 40,
+        "open_issues": 1,
+        "created_at": "2024-04-16T09:15:35Z",
+        "updated_at": "2026-10-20T17:18:25Z",
+        "pushed_at": "2026-10-14T21:18:54Z",
+        "starred_at": "2024-08-02T16:50:56Z"
+      },
+      "last_updated": "2026-10-21T03:23:52.563625+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "martinthissen/alpaca-lora-finetune-language": {
+      "lists": [],
+      "metadata": {
+        "id": 619463597,
+        "name": "alpaca-lora-finetune-language",
+        "full_name": "martinthissen/alpaca-lora-finetune-language",
+        "description": null,
+        "url": "https://github.com/martinthissen/alpaca-lora-finetune-language",
+        "homepage": null,
+        "language": "Python",
+        "stars": 121,
+        "forks": 32,
+        "open_issues": 4,
+        "created_at": "2023-03-27T07:36:15Z",
+        "updated_at": "2026-06-15T20:17:08Z",
+        "pushed_at": "2023-07-10T04:31:46Z",
+        "starred_at": "2023-04-01T04:51:38Z"
+      },
+      "last_updated": "2026-10-21T03:23:53.508777+00:00",
       "arxiv": {
         "ids": [],
         "primary_id": null,
