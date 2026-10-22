@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-21T03:23:53.895121+00:00",
+  "last_updated": "2026-10-22T03:22:16.168307+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -288459,6 +288459,214 @@
         "starred_at": "2023-04-01T04:51:38Z"
       },
       "last_updated": "2026-10-21T03:23:53.508777+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "NVlabs/FastGen": {
+      "lists": [],
+      "metadata": {
+        "id": 1135148452,
+        "name": "FastGen",
+        "full_name": "NVlabs/FastGen",
+        "description": "NVIDIA FastGen: Fast Generation from Diffusion Models",
+        "url": "https://github.com/NVlabs/FastGen",
+        "homepage": "https://developer.nvidia.com/blog/accelerating-diffusion-models-with-an-open-plug-and-play-offering/",
+        "language": "Python",
+        "stars": 1035,
+        "forks": 84,
+        "open_issues": 9,
+        "created_at": "2026-01-15T17:50:45Z",
+        "updated_at": "2026-10-22T00:50:22Z",
+        "pushed_at": "2026-08-21T05:21:44Z",
+        "starred_at": "2026-10-21T06:42:17Z"
+      },
+      "last_updated": "2026-10-22T03:22:10.531558+00:00",
+      "arxiv": {
+        "ids": [
+          "2303.01469",
+          "2410.11081",
+          "2410.14895",
+          "2505.13447",
+          "2405.14867",
+          "2502.15681",
+          "2403.12015",
+          "2412.07772",
+          "2506.08009",
+          "2006.11239",
+          "2407.01392",
+          "2101.02388"
+        ],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@misc{fastgen2026,\n  title={NVIDIA FastGen: Fast Generation from Diffusion Models},\n  author={Nie, Weili and Berner, Julius and Liu, Chao and Vahdat, Arash},\n  url={https://github.com/NVlabs/FastGen},\n  year={2026},\n}"
+        ]
+      }
+    },
+    "keshik6/gpic": {
+      "lists": [],
+      "metadata": {
+        "id": 1253229410,
+        "name": "gpic",
+        "full_name": "keshik6/gpic",
+        "description": "Official Code for GPIC: A Giant Permissive Image Corpus for Visual Generation",
+        "url": "https://github.com/keshik6/gpic",
+        "homepage": "https://gpic.stanford.edu",
+        "language": "Python",
+        "stars": 60,
+        "forks": 2,
+        "open_issues": 3,
+        "created_at": "2026-05-29T09:05:47Z",
+        "updated_at": "2026-10-21T06:19:23Z",
+        "pushed_at": "2026-06-04T19:43:02Z",
+        "starred_at": "2026-10-21T06:19:23Z"
+      },
+      "last_updated": "2026-10-22T03:22:11.323091+00:00",
+      "arxiv": {
+        "ids": [
+          "2605.30341"
+        ],
+        "primary_id": "2605.30341",
+        "bibtex_citations": [
+          "@misc{chandrasegaran2026gpic,\n      title={GPIC: A Giant Permissive Image Corpus for Visual Generation}, \n      author={Keshigeyan Chandrasegaran and Kyle Sargent and Suchir Agarwal and Michael Jang and Michael Poli and Juan Carlos Niebles and Justin Johnson and Jiajun Wu and Li Fei-Fei},\n      year={2026},\n      eprint={2605.30341},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2605.30341}, \n}"
+        ]
+      }
+    },
+    "willisma/diffuse_nnx": {
+      "lists": [],
+      "metadata": {
+        "id": 1074463377,
+        "name": "diffuse_nnx",
+        "full_name": "willisma/diffuse_nnx",
+        "description": "A comprehensive JAX/NNX library for diffusion and flow matching generative algorithms, featuring DiT (Diffusion Transformer) and its variants as the primary backbone with support for ImageNet training and various sampling strategies.",
+        "url": "https://github.com/willisma/diffuse_nnx",
+        "homepage": "https://diffuse-nnx.github.io/",
+        "language": "Python",
+        "stars": 156,
+        "forks": 14,
+        "open_issues": 2,
+        "created_at": "2025-10-11T20:53:32Z",
+        "updated_at": "2026-10-21T03:57:55Z",
+        "pushed_at": "2025-10-16T01:24:26Z",
+        "starred_at": "2026-10-21T03:57:55Z"
+      },
+      "last_updated": "2026-10-22T03:22:12.126345+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@misc{DiffuseNNX,\n  author={Nanye Ma},\n  title={DiffuseNNX: A JAX/NNX Library for Diffusion and Flow Matching},\n  year={2025},\n  publisher={Github},\n  url={https://github.com/willisma/diffuse_nnx.git}\n}"
+        ]
+      }
+    },
+    "bytetriper/RAE": {
+      "lists": [],
+      "metadata": {
+        "id": 1065669017,
+        "name": "RAE",
+        "full_name": "bytetriper/RAE",
+        "description": "Official PyTorch Implementation of \"Diffusion Transformers with Representation Autoencoders\"",
+        "url": "https://github.com/bytetriper/RAE",
+        "homepage": null,
+        "language": "Python",
+        "stars": 2086,
+        "forks": 102,
+        "open_issues": 19,
+        "created_at": "2025-09-28T07:29:37Z",
+        "updated_at": "2026-10-21T23:40:06Z",
+        "pushed_at": "2026-02-25T23:07:26Z",
+        "starred_at": "2026-10-21T03:48:11Z"
+      },
+      "last_updated": "2026-10-22T03:22:13.029393+00:00",
+      "arxiv": {
+        "ids": [
+          "2510.11690",
+          "2304.07193",
+          "2502.14786"
+        ],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "CompVis/tread": {
+      "lists": [],
+      "metadata": {
+        "id": 913984404,
+        "name": "tread",
+        "full_name": "CompVis/tread",
+        "description": null,
+        "url": "https://github.com/CompVis/tread",
+        "homepage": null,
+        "language": "Python",
+        "stars": 186,
+        "forks": 12,
+        "open_issues": 3,
+        "created_at": "2025-01-08T18:15:46Z",
+        "updated_at": "2026-10-21T03:44:20Z",
+        "pushed_at": "2026-10-10T15:40:32Z",
+        "starred_at": "2026-10-21T03:44:19Z"
+      },
+      "last_updated": "2026-10-22T03:22:13.819198+00:00",
+      "arxiv": {
+        "ids": [
+          "2501.04765",
+          "2601.01608"
+        ],
+        "primary_id": "2601.01608",
+        "bibtex_citations": [
+          "@InProceedings{krause2025tread,\n    author={Krause, Felix and Phan, Timy and Gui, Ming and Baumann, Stefan Andreas and Hu, Vincent Tao and Ommer, Bj\\\"orn},\n    title={TREAD: Token Routing for Efficient Architecture-agnostic Diffusion Training},\n    booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},\n    month={October},\n    year={2025},\n    pages={15703-15713}\n}",
+          "@misc{krause2026guidingtokensparsediffusionmodels,\n      title={Guiding Token-Sparse Diffusion Models},\n      author={Felix Krause and Stefan Andreas Baumann and Johannes Schusterbauer and Olga Grebenkova and Ming Gui and Vincent Tao Hu and Bj\\\"orn Ommer},\n      year={2026},\n      eprint={2601.01608},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2601.01608}, \n}"
+        ]
+      }
+    },
+    "arijit-hub/dino_forcing": {
+      "lists": [],
+      "metadata": {
+        "id": 1405431375,
+        "name": "dino_forcing",
+        "full_name": "arijit-hub/dino_forcing",
+        "description": null,
+        "url": "https://github.com/arijit-hub/dino_forcing",
+        "homepage": "https://arijit-hub.github.io/projects/dino_forcing/",
+        "language": "Python",
+        "stars": 41,
+        "forks": 0,
+        "open_issues": 0,
+        "created_at": "2026-10-05T08:40:49Z",
+        "updated_at": "2026-10-21T17:34:17Z",
+        "pushed_at": "2026-10-21T13:05:03Z",
+        "starred_at": "2026-10-21T03:39:52Z"
+      },
+      "last_updated": "2026-10-22T03:22:14.638540+00:00",
+      "arxiv": {
+        "ids": [
+          "2610.11751"
+        ],
+        "primary_id": "2610.11751",
+        "bibtex_citations": []
+      }
+    },
+    "hiddenswitch/forks-pip-and-uv-installable-ComfyUI": {
+      "lists": [],
+      "metadata": {
+        "id": 618678962,
+        "name": "forks-pip-and-uv-installable-ComfyUI",
+        "full_name": "hiddenswitch/forks-pip-and-uv-installable-ComfyUI",
+        "description": "Pip / uv installable ComfyUI package",
+        "url": "https://github.com/hiddenswitch/forks-pip-and-uv-installable-ComfyUI",
+        "homepage": "",
+        "language": "Python",
+        "stars": 96,
+        "forks": 30,
+        "open_issues": 3,
+        "created_at": "2023-03-25T03:00:28Z",
+        "updated_at": "2026-10-21T20:20:43Z",
+        "pushed_at": "2026-10-21T20:20:39Z",
+        "starred_at": "2024-03-05T04:06:16Z"
+      },
+      "last_updated": "2026-10-22T03:22:15.672903+00:00",
       "arxiv": {
         "ids": [],
         "primary_id": null,
