@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-22T03:22:16.168307+00:00",
+  "last_updated": "2026-10-23T03:27:32.394205+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -288667,6 +288667,56 @@
         "starred_at": "2024-03-05T04:06:16Z"
       },
       "last_updated": "2026-10-22T03:22:15.672903+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "LBH-123-AI/Comfyui_Minimax_h3_latent_Upscaler": {
+      "lists": [],
+      "metadata": {
+        "id": 1336707765,
+        "name": "Comfyui_Minimax_h3_latent_Upscaler",
+        "full_name": "LBH-123-AI/Comfyui_Minimax_h3_latent_Upscaler",
+        "description": "Neural latent upscaler for Minimax H3 (24ch). Bypasses costly 5B-param VAE decode/encode. Upscale low-res latents directly, then refine. Accelerates high-res video gen, outperforms naive interp.",
+        "url": "https://github.com/LBH-123-AI/Comfyui_Minimax_h3_latent_Upscaler",
+        "homepage": null,
+        "language": "Python",
+        "stars": 770,
+        "forks": 56,
+        "open_issues": 47,
+        "created_at": "2026-08-17T05:21:29Z",
+        "updated_at": "2026-10-22T19:14:17Z",
+        "pushed_at": "2026-09-17T09:55:32Z",
+        "starred_at": "2026-10-22T16:36:48Z"
+      },
+      "last_updated": "2026-10-23T03:27:31.298035+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "morluto/rea": {
+      "lists": [],
+      "metadata": {
+        "id": 1209966933,
+        "name": "rea",
+        "full_name": "morluto/rea",
+        "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
+        "url": "https://github.com/morluto/rea",
+        "homepage": "https://rea.tools",
+        "language": "TypeScript",
+        "stars": 367125,
+        "forks": 91994,
+        "open_issues": 1577,
+        "created_at": "2026-04-14T00:51:32Z",
+        "updated_at": "2026-10-23T03:27:29Z",
+        "pushed_at": "2026-10-23T03:08:32Z",
+        "starred_at": "2026-10-22T10:29:21Z"
+      },
+      "last_updated": "2026-10-23T03:27:31.994946+00:00",
       "arxiv": {
         "ids": [],
         "primary_id": null,
