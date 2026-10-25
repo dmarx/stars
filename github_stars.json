@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-24T03:21:50.304648+00:00",
+  "last_updated": "2026-10-25T03:16:24.161075+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -288746,6 +288746,68 @@
         "ids": [],
         "primary_id": null,
         "bibtex_citations": []
+      }
+    },
+    "LogosIntelligenceLab/S-Agents": {
+      "lists": [],
+      "metadata": {
+        "id": 753641534,
+        "name": "S-Agents",
+        "full_name": "LogosIntelligenceLab/S-Agents",
+        "description": "Official repository of S-Agents: Self-organizing Agents in Open-ended Environment",
+        "url": "https://github.com/LogosIntelligenceLab/S-Agents",
+        "homepage": "",
+        "language": null,
+        "stars": 27,
+        "forks": 3,
+        "open_issues": 0,
+        "created_at": "2024-02-06T14:22:15Z",
+        "updated_at": "2026-10-24T14:07:51Z",
+        "pushed_at": "2024-03-15T03:55:24Z",
+        "starred_at": "2024-12-23T16:34:58Z"
+      },
+      "last_updated": "2026-10-25T03:16:23.112801+00:00",
+      "arxiv": {
+        "ids": [
+          "2402.04578"
+        ],
+        "primary_id": "2402.04578",
+        "bibtex_citations": [
+          "@article{chen2024sagent,\n  title={S-Agents: self-organizing agents in open-ended environments},\n  author={Chen, Jiaqi and Jiang, Yuxian and Lu, Jiachen and Zhang, Li},\n  journal={arXiv preprint arxiv:2402.04578},\n  year={2024}\n}"
+        ]
+      }
+    },
+    "LogosIntelligenceLab/Semantic-Segment-Anything": {
+      "lists": [],
+      "metadata": {
+        "id": 625415628,
+        "name": "Semantic-Segment-Anything",
+        "full_name": "LogosIntelligenceLab/Semantic-Segment-Anything",
+        "description": "Automated dense category annotation engine that serves as the initial semantic labeling for the Segment Anything dataset (SA-1B). ",
+        "url": "https://github.com/LogosIntelligenceLab/Semantic-Segment-Anything",
+        "homepage": "",
+        "language": "Python",
+        "stars": 2303,
+        "forks": 143,
+        "open_issues": 27,
+        "created_at": "2023-04-09T03:17:59Z",
+        "updated_at": "2026-10-24T14:08:38Z",
+        "pushed_at": "2026-10-24T14:08:34Z",
+        "starred_at": "2023-04-13T17:41:10Z"
+      },
+      "last_updated": "2026-10-25T03:16:23.860208+00:00",
+      "arxiv": {
+        "ids": [
+          "2112.10003",
+          "2105.15203",
+          "2211.06220",
+          "2201.12086",
+          "2103.00020"
+        ],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@misc{chen2023semantic,\n    title = {Semantic Segment Anything},\n    author = {Chen, Jiaqi and Yang, Zeyu and Zhang, Li},\n    howpublished = {\\url{https://github.com/LogosIntelligenceLab/Semantic-Segment-Anything}},\n    year = {2023}\n}"
+        ]
       }
     }
   },
