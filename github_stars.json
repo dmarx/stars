@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-25T03:16:24.161075+00:00",
+  "last_updated": "2026-10-27T03:47:02.489625+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -288808,6 +288808,161 @@
         "bibtex_citations": [
           "@misc{chen2023semantic,\n    title = {Semantic Segment Anything},\n    author = {Chen, Jiaqi and Yang, Zeyu and Zhang, Li},\n    howpublished = {\\url{https://github.com/LogosIntelligenceLab/Semantic-Segment-Anything}},\n    year = {2023}\n}"
         ]
+      }
+    },
+    "JustAResearcher/gpu-unlock-ada": {
+      "lists": [],
+      "metadata": {
+        "id": 1431545439,
+        "name": "gpu-unlock-ada",
+        "full_name": "JustAResearcher/gpu-unlock-ada",
+        "description": "GPU tensor unlock source for RTX 4090 and experimental RTX 4070 Ti SUPER; firmware generated locally",
+        "url": "https://github.com/JustAResearcher/gpu-unlock-ada",
+        "homepage": null,
+        "language": "C",
+        "stars": 3917,
+        "forks": 508,
+        "open_issues": 25,
+        "created_at": "2026-10-23T21:00:53Z",
+        "updated_at": "2026-10-27T03:46:00Z",
+        "pushed_at": "2026-10-26T04:24:46Z",
+        "starred_at": "2026-10-27T03:41:39Z"
+      },
+      "last_updated": "2026-10-27T03:46:59.145066+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "haohervchb/Turing-unlock": {
+      "lists": [],
+      "metadata": {
+        "id": 1429076409,
+        "name": "Turing-unlock",
+        "full_name": "haohervchb/Turing-unlock",
+        "description": "2080ti TU102 doing the unlock trick",
+        "url": "https://github.com/haohervchb/Turing-unlock",
+        "homepage": null,
+        "language": "C",
+        "stars": 91,
+        "forks": 10,
+        "open_issues": 0,
+        "created_at": "2026-10-22T00:39:44Z",
+        "updated_at": "2026-10-27T03:41:43Z",
+        "pushed_at": "2026-10-22T01:41:39Z",
+        "starred_at": "2026-10-27T03:41:34Z"
+      },
+      "last_updated": "2026-10-27T03:46:59.708866+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "Zagitta/gpu-unlock": {
+      "lists": [],
+      "metadata": {
+        "id": 1423892373,
+        "name": "gpu-unlock",
+        "full_name": "Zagitta/gpu-unlock",
+        "description": "Unlock FP/BF16 instruction issue rate on Nvidia 3000's cards to their professional equivalents",
+        "url": "https://github.com/Zagitta/gpu-unlock",
+        "homepage": "",
+        "language": "C",
+        "stars": 9984,
+        "forks": 994,
+        "open_issues": 178,
+        "created_at": "2026-10-18T01:28:31Z",
+        "updated_at": "2026-10-27T03:45:53Z",
+        "pushed_at": "2026-10-27T00:17:30Z",
+        "starred_at": "2026-10-27T03:41:14Z"
+      },
+      "last_updated": "2026-10-27T03:47:00.319204+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "mit-zardini-lab/pyncd": {
+      "lists": [],
+      "metadata": {
+        "id": 1144269924,
+        "name": "pyncd",
+        "full_name": "mit-zardini-lab/pyncd",
+        "description": null,
+        "url": "https://github.com/mit-zardini-lab/pyncd",
+        "homepage": null,
+        "language": "Jupyter Notebook",
+        "stars": 141,
+        "forks": 15,
+        "open_issues": 0,
+        "created_at": "2026-01-28T13:58:01Z",
+        "updated_at": "2026-10-26T19:32:42Z",
+        "pushed_at": "2026-10-02T17:26:09Z",
+        "starred_at": "2026-10-26T19:32:41Z"
+      },
+      "last_updated": "2026-10-27T03:47:00.936218+00:00",
+      "arxiv": {
+        "ids": [
+          "2505.09326",
+          "2305.08768"
+        ],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "ifiaposto/sdft_zero3": {
+      "lists": [],
+      "metadata": {
+        "id": 1431770857,
+        "name": "sdft_zero3",
+        "full_name": "ifiaposto/sdft_zero3",
+        "description": "Ready-to-run SDFT with PEFT and DeepSpeed ZeRO-3",
+        "url": "https://github.com/ifiaposto/sdft_zero3",
+        "homepage": null,
+        "language": "Python",
+        "stars": 4,
+        "forks": 0,
+        "open_issues": 0,
+        "created_at": "2026-10-24T03:20:35Z",
+        "updated_at": "2026-10-26T22:32:23Z",
+        "pushed_at": "2026-10-24T21:18:53Z",
+        "starred_at": "2026-10-26T17:19:40Z"
+      },
+      "last_updated": "2026-10-27T03:47:01.548048+00:00",
+      "arxiv": {
+        "ids": [
+          "2601.19897"
+        ],
+        "primary_id": "2601.19897",
+        "bibtex_citations": []
+      }
+    },
+    "safzanpirani/comfyui-zip-ties": {
+      "lists": [],
+      "metadata": {
+        "id": 1433478728,
+        "name": "comfyui-zip-ties",
+        "full_name": "safzanpirani/comfyui-zip-ties",
+        "description": null,
+        "url": "https://github.com/safzanpirani/comfyui-zip-ties",
+        "homepage": null,
+        "language": "JavaScript",
+        "stars": 79,
+        "forks": 6,
+        "open_issues": 2,
+        "created_at": "2026-10-25T17:54:54Z",
+        "updated_at": "2026-10-27T03:01:40Z",
+        "pushed_at": "2026-10-26T10:37:52Z",
+        "starred_at": "2026-10-26T05:17:59Z"
+      },
+      "last_updated": "2026-10-27T03:47:02.194615+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
       }
     }
   },
