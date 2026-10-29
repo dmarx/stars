@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-27T03:47:02.489625+00:00",
+  "last_updated": "2026-10-29T04:27:45.570949+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -288959,6 +288959,131 @@
         "starred_at": "2026-10-26T05:17:59Z"
       },
       "last_updated": "2026-10-27T03:47:02.194615+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "meta/pyrefly": {
+      "lists": [],
+      "metadata": {
+        "id": 935685654,
+        "name": "pyrefly",
+        "full_name": "meta/pyrefly",
+        "description": "A fast type checker and language server for Python",
+        "url": "https://github.com/meta/pyrefly",
+        "homepage": "http://pyrefly.org/",
+        "language": "Rust",
+        "stars": 7163,
+        "forks": 579,
+        "open_issues": 719,
+        "created_at": "2025-02-19T21:09:33Z",
+        "updated_at": "2026-10-29T03:36:03Z",
+        "pushed_at": "2026-10-29T03:35:58Z",
+        "starred_at": "2026-06-19T06:21:20Z"
+      },
+      "last_updated": "2026-10-29T04:27:41.554447+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "meta/rocksdb": {
+      "lists": [],
+      "metadata": {
+        "id": 6934395,
+        "name": "rocksdb",
+        "full_name": "meta/rocksdb",
+        "description": "A library that provides an embeddable, persistent key-value store for fast storage.",
+        "url": "https://github.com/meta/rocksdb",
+        "homepage": "http://rocksdb.org",
+        "language": "C++",
+        "stars": 32232,
+        "forks": 6991,
+        "open_issues": 1806,
+        "created_at": "2012-11-30T06:16:18Z",
+        "updated_at": "2026-10-29T04:20:52Z",
+        "pushed_at": "2026-10-29T02:11:46Z",
+        "starred_at": "2024-07-24T17:17:53Z"
+      },
+      "last_updated": "2026-10-29T04:27:42.493104+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "meta/watchman": {
+      "lists": [],
+      "metadata": {
+        "id": 6930489,
+        "name": "watchman",
+        "full_name": "meta/watchman",
+        "description": "Watches files and records, or triggers actions, when they change. ",
+        "url": "https://github.com/meta/watchman",
+        "homepage": "https://facebook.github.io/watchman/",
+        "language": "C++",
+        "stars": 13756,
+        "forks": 1075,
+        "open_issues": 262,
+        "created_at": "2012-11-29T23:35:52Z",
+        "updated_at": "2026-10-29T03:26:15Z",
+        "pushed_at": "2026-10-28T23:53:11Z",
+        "starred_at": "2023-05-09T23:09:43Z"
+      },
+      "last_updated": "2026-10-29T04:27:43.389453+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "meta/docusaurus": {
+      "lists": [],
+      "metadata": {
+        "id": 94911145,
+        "name": "docusaurus",
+        "full_name": "meta/docusaurus",
+        "description": "Easy to maintain open source documentation websites.",
+        "url": "https://github.com/meta/docusaurus",
+        "homepage": "https://docusaurus.io",
+        "language": "TypeScript",
+        "stars": 66601,
+        "forks": 10107,
+        "open_issues": 446,
+        "created_at": "2017-06-20T16:13:53Z",
+        "updated_at": "2026-10-29T03:37:32Z",
+        "pushed_at": "2026-10-23T20:44:37Z",
+        "starred_at": "2022-02-05T03:39:25Z"
+      },
+      "last_updated": "2026-10-29T04:27:44.299459+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "meta/pyre-check": {
+      "lists": [],
+      "metadata": {
+        "id": 110274488,
+        "name": "pyre-check",
+        "full_name": "meta/pyre-check",
+        "description": "Performant type-checking for python.",
+        "url": "https://github.com/meta/pyre-check",
+        "homepage": "https://pyre-check.org/",
+        "language": "OCaml",
+        "stars": 7180,
+        "forks": 448,
+        "open_issues": 167,
+        "created_at": "2017-11-10T17:31:36Z",
+        "updated_at": "2026-10-28T05:20:32Z",
+        "pushed_at": "2026-06-26T16:04:19Z",
+        "starred_at": "2021-10-28T17:50:56Z"
+      },
+      "last_updated": "2026-10-29T04:27:45.184406+00:00",
       "arxiv": {
         "ids": [],
         "primary_id": null,
