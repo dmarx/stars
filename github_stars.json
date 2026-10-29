@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-29T04:27:45.570949+00:00",
+  "last_updated": "2026-10-29T04:27:49.963855+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -289084,6 +289084,58 @@
         "starred_at": "2021-10-28T17:50:56Z"
       },
       "last_updated": "2026-10-29T04:27:45.184406+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "meta/Ax": {
+      "lists": [],
+      "metadata": {
+        "id": 169880381,
+        "name": "Ax",
+        "full_name": "meta/Ax",
+        "description": "Adaptive Experimentation Platform",
+        "url": "https://github.com/meta/Ax",
+        "homepage": "https://ax.dev",
+        "language": "Python",
+        "stars": 2832,
+        "forks": 389,
+        "open_issues": 172,
+        "created_at": "2019-02-09T15:23:44Z",
+        "updated_at": "2026-10-28T08:17:53Z",
+        "pushed_at": "2026-10-22T16:47:00Z",
+        "starred_at": "2021-02-19T17:48:43Z"
+      },
+      "last_updated": "2026-10-29T04:27:48.786017+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@inproceedings{olson2025ax,\n  title = {{Ax: A Platform for Adaptive Experimentation}},\n  author = {\n    Olson, Miles and Santorella, Elizabeth and Tiao, Louis C. and\n    Cakmak, Sait and Garrard, Mia and Daulton, Samuel and\n    Lin, Zhiyuan Jerry  and Ament, Sebastian and Beckerman, Bernard and\n    Onofrey, Eric and Igusti, Paschal and Lara, Cristian and\n    Letham, Benjamin and Cardoso, Cesar and Shen, Shiyun Sunny and\n    Lin, Andy Chenyuan and Grange, Matthew and Kashtelyan, Elena and\n    Eriksson, David and Balandat, Maximilian and Bakshy, Eytan.\n  },\n  booktitle = {AutoML 2025 ABCD Track},\n  year = {2025}\n}"
+        ]
+      }
+    },
+    "meta/prophet": {
+      "lists": [],
+      "metadata": {
+        "id": 73872834,
+        "name": "prophet",
+        "full_name": "meta/prophet",
+        "description": "Tool for producing high quality forecasts for time series data that has multiple seasonality with linear or non-linear growth.",
+        "url": "https://github.com/meta/prophet",
+        "homepage": "https://facebook.github.io/prophet",
+        "language": "Python",
+        "stars": 20461,
+        "forks": 4644,
+        "open_issues": 459,
+        "created_at": "2016-11-16T01:50:08Z",
+        "updated_at": "2026-10-28T13:03:36Z",
+        "pushed_at": "2026-10-22T11:32:07Z",
+        "starred_at": "2017-09-06T14:21:00Z"
+      },
+      "last_updated": "2026-10-29T04:27:49.641923+00:00",
       "arxiv": {
         "ids": [],
         "primary_id": null,
