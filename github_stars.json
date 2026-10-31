@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-29T04:27:49.963855+00:00",
+  "last_updated": "2026-10-31T04:07:31.210210+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -289140,6 +289140,65 @@
         "ids": [],
         "primary_id": null,
         "bibtex_citations": []
+      }
+    },
+    "JaydenTeoh/Soft-MTP": {
+      "lists": [],
+      "metadata": {
+        "id": 1436337635,
+        "name": "Soft-MTP",
+        "full_name": "JaydenTeoh/Soft-MTP",
+        "description": "Official codebase for \"Multi-Token Prediction Done Right\"",
+        "url": "https://github.com/JaydenTeoh/Soft-MTP",
+        "homepage": "https://arxiv.org/abs/2610.38331",
+        "language": "Python",
+        "stars": 20,
+        "forks": 3,
+        "open_issues": 1,
+        "created_at": "2026-10-27T22:18:24Z",
+        "updated_at": "2026-10-31T04:04:13Z",
+        "pushed_at": "2026-10-30T07:43:21Z",
+        "starred_at": "2026-10-31T03:13:31Z"
+      },
+      "last_updated": "2026-10-31T04:07:30.259962+00:00",
+      "arxiv": {
+        "ids": [
+          "2610.38331"
+        ],
+        "primary_id": "2610.38331",
+        "bibtex_citations": [
+          "@article{teoh2026multitokenpredictionright,\n  title={Multi-Token Prediction Done Right},\n  author={Jayden Teoh},\n  journal={arXiv preprint arXiv:2610.38331},\n  year={2026},\n}"
+        ]
+      }
+    },
+    "Ar-Kareem/SwaT": {
+      "lists": [],
+      "metadata": {
+        "id": 1412666339,
+        "name": "SwaT",
+        "full_name": "Ar-Kareem/SwaT",
+        "description": "SwaT: Allowing LLM Agents to communicate without text. Prefill-free cross-family KV-cache transfer for LLMs communication using latent states instead of text.",
+        "url": "https://github.com/Ar-Kareem/SwaT",
+        "homepage": "",
+        "language": "Python",
+        "stars": 24,
+        "forks": 7,
+        "open_issues": 1,
+        "created_at": "2026-10-10T02:31:14Z",
+        "updated_at": "2026-10-31T02:18:08Z",
+        "pushed_at": "2026-10-14T03:16:05Z",
+        "starred_at": "2026-10-30T16:32:06Z"
+      },
+      "last_updated": "2026-10-31T04:07:30.891356+00:00",
+      "arxiv": {
+        "ids": [
+          "2610.15095",
+          "2602.16284"
+        ],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@misc{alabdulkareem2026swarmtelepathyprefillfreekvcache,\n      title={Swarm Telepathy: Prefill-Free KV-Cache Transfer Across Families},\n      author={Abdulrahman Alabdulkareem and Irene Tenison and Yang Zhang and Yada Zhu and Boris Katz and Dan Gutfreund},\n      year={2026},\n      eprint={2610.15095},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.15095},\n}"
+        ]
       }
     }
   },
