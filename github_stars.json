@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-31T04:07:31.210210+00:00",
+  "last_updated": "2026-11-01T04:29:16.768705+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -289198,6 +289198,33 @@
         "primary_id": null,
         "bibtex_citations": [
           "@misc{alabdulkareem2026swarmtelepathyprefillfreekvcache,\n      title={Swarm Telepathy: Prefill-Free KV-Cache Transfer Across Families},\n      author={Abdulrahman Alabdulkareem and Irene Tenison and Yang Zhang and Yada Zhu and Boris Katz and Dan Gutfreund},\n      year={2026},\n      eprint={2610.15095},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.15095},\n}"
+        ]
+      }
+    },
+    "the-dual-space/pymoo": {
+      "lists": [],
+      "metadata": {
+        "id": 104132965,
+        "name": "pymoo",
+        "full_name": "the-dual-space/pymoo",
+        "description": "NSGA2, NSGA3, R-NSGA3, MOEAD, Genetic Algorithms (GA), Differential Evolution (DE), CMAES, PSO",
+        "url": "https://github.com/the-dual-space/pymoo",
+        "homepage": "https://pymoo.org",
+        "language": "Python",
+        "stars": 2986,
+        "forks": 484,
+        "open_issues": 18,
+        "created_at": "2017-09-19T21:52:39Z",
+        "updated_at": "2026-10-31T08:35:04Z",
+        "pushed_at": "2026-07-07T01:34:50Z",
+        "starred_at": "2021-02-17T13:34:38Z"
+      },
+      "last_updated": "2026-11-01T04:29:16.540496+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@ARTICLE{pymoo,\n        author={J. {Blank} and K. {Deb}},\n        journal={IEEE Access},\n        title={pymoo: Multi-Objective Optimization in Python},\n        year={2020},\n        volume={8},\n        number={},\n        pages={89497-89509},\n    }"
         ]
       }
     }
