@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-02T04:31:04.388599+00:00",
+  "last_updated": "2026-11-04T04:55:19.260684+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -289254,6 +289254,33 @@
         "primary_id": "2610.40614",
         "bibtex_citations": [
           "@misc{choi2026l3gworldrealtimeinfiniteworld,\n      title={L3G-World: Real-Time Infinite World Generation with Latent 3D Gaussian Memory},\n      author={Jinhyeok Choi and JoungBin Lee and Jongmin Lee and Minkyeong Jeon and Jiyoung Kim and Kaeun Han and Yoonjin Yoon and Seungryong Kim},\n      year={2026},\n      eprint={2610.40614},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2610.40614},\n}"
+        ]
+      }
+    },
+    "PrunaAI/pruna": {
+      "lists": [],
+      "metadata": {
+        "id": 946676136,
+        "name": "pruna",
+        "full_name": "PrunaAI/pruna",
+        "description": "Pruna is a model optimization framework built for developers, enabling you to deliver faster, more efficient models with minimal overhead.",
+        "url": "https://github.com/PrunaAI/pruna",
+        "homepage": "https://docs.pruna.ai",
+        "language": "Python",
+        "stars": 1345,
+        "forks": 120,
+        "open_issues": 14,
+        "created_at": "2025-03-11T14:03:49Z",
+        "updated_at": "2026-11-04T04:17:00Z",
+        "pushed_at": "2026-11-03T21:53:39Z",
+        "starred_at": "2026-11-03T21:40:54Z"
+      },
+      "last_updated": "2026-11-04T04:55:18.836543+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@misc{pruna,\n    title = {Efficient Machine Learning with Pruna},\n    year = {2023},\n    note = {Software available from pruna.ai},\n    url={https://www.pruna.ai/}\n}"
         ]
       }
     }
