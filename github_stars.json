@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-04T04:55:19.260684+00:00",
+  "last_updated": "2026-11-06T05:11:04.194202+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -289281,6 +289281,36 @@
         "primary_id": null,
         "bibtex_citations": [
           "@misc{pruna,\n    title = {Efficient Machine Learning with Pruna},\n    year = {2023},\n    note = {Software available from pruna.ai},\n    url={https://www.pruna.ai/}\n}"
+        ]
+      }
+    },
+    "yangy1c/DreamMix": {
+      "lists": [],
+      "metadata": {
+        "id": 893318155,
+        "name": "DreamMix",
+        "full_name": "yangy1c/DreamMix",
+        "description": "The official implementation of paper: DreamMix: Decoupling Object Attributes for Enhanced Editability in Customized Image Inpainting",
+        "url": "https://github.com/yangy1c/DreamMix",
+        "homepage": null,
+        "language": "Python",
+        "stars": 121,
+        "forks": 5,
+        "open_issues": 0,
+        "created_at": "2024-11-24T05:30:19Z",
+        "updated_at": "2026-11-06T04:47:17Z",
+        "pushed_at": "2026-11-06T04:47:13Z",
+        "starred_at": "2024-12-04T09:57:35Z"
+      },
+      "last_updated": "2026-11-06T05:11:03.886460+00:00",
+      "arxiv": {
+        "ids": [
+          "2411.17223"
+        ],
+        "primary_id": "2411.17223",
+        "bibtex_citations": [
+          "@article{yang2026dreammix,\n  title   = {DreamMix: Decoupling Object Attributes for Enhanced Editability in Customized Image Inpainting},\n  author  = {Yang, Yicheng and Li, Pengxiang and Zhang, Lu and Ma, Liqian and Hu, Ping\n             and Du, Siyu and Zhuge, Yunzhi and Jia, Xu and Lu, Huchuan},\n  journal = {International Journal of Computer Vision},\n  volume  = {134},\n  number  = {10},\n  pages   = {464},\n  year    = {2026},\n  doi     = {10.1007/s11263-026-03066-w}\n}",
+          "@misc{yang2024dreammix,\n  title         = {DreamMix: Decoupling Object Attributes for Enhanced Editability in Customized Image Inpainting},\n  author        = {Yicheng Yang and Pengxiang Li and Lu Zhang and Liqian Ma and Ping Hu\n                   and Siyu Du and Yunzhi Zhuge and Xu Jia and Huchuan Lu},\n  year          = {2024},\n  eprint        = {2411.17223},\n  archivePrefix = {arXiv},\n  primaryClass  = {cs.CV},\n  url           = {https://arxiv.org/abs/2411.17223}\n}"
         ]
       }
     }
