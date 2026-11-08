@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-07T04:43:58.168122+00:00",
+  "last_updated": "2026-11-08T04:31:26.780393+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -289344,6 +289344,64 @@
         "primary_id": null,
         "bibtex_citations": [
           "@misc{rombach2021highresolution,\n      title={High-Resolution Image Synthesis with Latent Diffusion Models}, \n      author={Robin Rombach and Andreas Blattmann and Dominik Lorenz and Patrick Esser and Bj\u00f6rn Ommer},\n      year={2021},\n      eprint={2112.10752},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV}\n}"
+        ]
+      }
+    },
+    "Alibaba-VELLDEPTH/dit-lsc": {
+      "lists": [],
+      "metadata": {
+        "id": 1411597679,
+        "name": "dit-lsc",
+        "full_name": "Alibaba-VELLDEPTH/dit-lsc",
+        "description": "Official codebase for Why DiT Models Underperform as Representation Learners without Long Skip Connections",
+        "url": "https://github.com/Alibaba-VELLDEPTH/dit-lsc",
+        "homepage": null,
+        "language": "Python",
+        "stars": 3,
+        "forks": 0,
+        "open_issues": 0,
+        "created_at": "2026-10-09T09:25:58Z",
+        "updated_at": "2026-11-07T15:41:31Z",
+        "pushed_at": "2026-10-12T01:42:45Z",
+        "starred_at": "2026-11-07T15:41:31Z"
+      },
+      "last_updated": "2026-11-08T04:31:25.952655+00:00",
+      "arxiv": {
+        "ids": [
+          "2610.13344"
+        ],
+        "primary_id": "2610.13344",
+        "bibtex_citations": [
+          "@misc{meng2026ditmodelsunderperformrepresentation,\n      title={Why DiT Models Underperform as Representation Learners without Long Skip Connections}, \n      author={Benyuan Meng and Yiliang Zhang and Jin-Wen Wu and Qianqian Xu and Qingming Huang and Longtao Huang},\n      year={2026},\n      eprint={2610.13344},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2610.13344}, \n}"
+        ]
+      }
+    },
+    "Alibaba-VELLDEPTH/dit-compare": {
+      "lists": [],
+      "metadata": {
+        "id": 1411624022,
+        "name": "dit-compare",
+        "full_name": "Alibaba-VELLDEPTH/dit-compare",
+        "description": "Officitial codebase for We Have Been Interpreting Diffusion Transformer Backbone Behaviors Wrong",
+        "url": "https://github.com/Alibaba-VELLDEPTH/dit-compare",
+        "homepage": null,
+        "language": "Python",
+        "stars": 5,
+        "forks": 0,
+        "open_issues": 0,
+        "created_at": "2026-10-09T09:49:07Z",
+        "updated_at": "2026-11-07T15:37:59Z",
+        "pushed_at": "2026-11-06T04:33:20Z",
+        "starred_at": "2026-11-07T15:37:58Z"
+      },
+      "last_updated": "2026-11-08T04:31:26.473474+00:00",
+      "arxiv": {
+        "ids": [
+          "2610.14517"
+        ],
+        "primary_id": "2610.14517",
+        "bibtex_citations": [
+          "@misc{meng2026interpretingdiffusiontransformerbackbone,\n      title={We Have Been Interpreting Diffusion Transformer Backbone Behaviors Wrong}, \n      author={Benyuan Meng and Longtao Huang and Yang Liu and Liang Lin},\n      year={2026},\n      eprint={2610.14517},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2610.14517}, \n}"
         ]
       }
     }
