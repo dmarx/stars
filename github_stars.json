@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-11T04:47:12.055936+00:00",
+  "last_updated": "2026-11-12T05:49:37.454884+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -289583,6 +289583,62 @@
       "arxiv": {
         "ids": [],
         "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "ruc-datalab/EvoOntology": {
+      "lists": [],
+      "metadata": {
+        "id": 1370752473,
+        "name": "EvoOntology",
+        "full_name": "ruc-datalab/EvoOntology",
+        "description": "EvoOntology: A Self-Evolving Ontology Layer for Data Agents \u2699\ufe0f EvoOntology\u63d2\u4ef6\u4e3aClaude Code/Codex \u5efa\u7acb&\u8fdb\u5316\u672c\u4f53\u5c42",
+        "url": "https://github.com/ruc-datalab/EvoOntology",
+        "homepage": "",
+        "language": "Python",
+        "stars": 1197,
+        "forks": 101,
+        "open_issues": 5,
+        "created_at": "2026-09-15T01:57:40Z",
+        "updated_at": "2026-11-12T03:10:08Z",
+        "pushed_at": "2026-11-06T10:59:36Z",
+        "starred_at": "2026-11-12T03:10:07Z"
+      },
+      "last_updated": "2026-11-12T05:49:36.340595+00:00",
+      "arxiv": {
+        "ids": [
+          "2609.15779"
+        ],
+        "primary_id": "2609.15779",
+        "bibtex_citations": [
+          "@misc{chong2026evoontologyselfevolvingontologylayer,\n      title={EvoOntology: A Self-Evolving Ontology Layer for Data Agents},\n      author={Meiduo Chong and Shaolei Zhang and Ju Fan and Xiaoyong Du},\n      year={2026},\n      eprint={2609.15779},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2609.15779},\n}"
+        ]
+      }
+    },
+    "Zheng-Chong/CatVTON-Page": {
+      "lists": [],
+      "metadata": {
+        "id": 823175328,
+        "name": "CatVTON-Page",
+        "full_name": "Zheng-Chong/CatVTON-Page",
+        "description": "[ICLR 2025] CatVTON is a simple and efficient virtual try-on diffusion model with 1) Lightweight Network (899.06M parameters totally), 2) Parameter-Efficient Training (49.57M parameters trainable) and 3) Simplified Inference (< 8G VRAM for 1024X768 resolution).",
+        "url": "https://github.com/Zheng-Chong/CatVTON-Page",
+        "homepage": "https://arxiv.org/abs/2407.15886",
+        "language": null,
+        "stars": 1913,
+        "forks": 244,
+        "open_issues": 73,
+        "created_at": "2024-07-02T14:29:30Z",
+        "updated_at": "2026-11-12T02:35:46Z",
+        "pushed_at": "2026-11-12T01:35:43Z",
+        "starred_at": "2024-11-25T06:17:05Z"
+      },
+      "last_updated": "2026-11-12T05:49:37.199639+00:00",
+      "arxiv": {
+        "ids": [
+          "2407.15886"
+        ],
+        "primary_id": "2407.15886",
         "bibtex_citations": []
       }
     }
