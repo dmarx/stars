@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-14T04:59:38.066916+00:00",
+  "last_updated": "2026-11-16T04:49:54.549127+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -289686,6 +289686,106 @@
         "starred_at": "2026-06-19T06:21:20Z"
       },
       "last_updated": "2026-11-14T04:59:37.754485+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "Extraltodeus/PENDULUM": {
+      "lists": [],
+      "metadata": {
+        "id": 1412047367,
+        "name": "PENDULUM",
+        "full_name": "Extraltodeus/PENDULUM",
+        "description": "Personality tuning for local GGUF models, control vector creation, LoRA training and more.",
+        "url": "https://github.com/Extraltodeus/PENDULUM",
+        "homepage": "",
+        "language": "Python",
+        "stars": 6,
+        "forks": 0,
+        "open_issues": 0,
+        "created_at": "2026-10-09T15:16:12Z",
+        "updated_at": "2026-11-16T01:05:54Z",
+        "pushed_at": "2026-10-14T03:33:03Z",
+        "starred_at": "2026-11-16T01:05:53Z"
+      },
+      "last_updated": "2026-11-16T04:49:52.539609+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "anthropics/jacobian-lens": {
+      "lists": [],
+      "metadata": {
+        "id": 1287583035,
+        "name": "jacobian-lens",
+        "full_name": "anthropics/jacobian-lens",
+        "description": " Companion code for the global workspace interpretability paper",
+        "url": "https://github.com/anthropics/jacobian-lens",
+        "homepage": null,
+        "language": "Python",
+        "stars": 2169,
+        "forks": 316,
+        "open_issues": 16,
+        "created_at": "2026-07-02T20:30:04Z",
+        "updated_at": "2026-11-16T02:11:20Z",
+        "pushed_at": "2026-10-10T08:22:51Z",
+        "starred_at": "2026-11-16T01:02:27Z"
+      },
+      "last_updated": "2026-11-16T04:49:53.265420+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "Extraltodeus/J-Wash": {
+      "lists": [],
+      "metadata": {
+        "id": 1299705358,
+        "name": "J-Wash",
+        "full_name": "Extraltodeus/J-Wash",
+        "description": "Jacobian-Brainwash : A manual alignment tool for large language models built on Anthropic's Jacobian Lens. Results are exportable.",
+        "url": "https://github.com/Extraltodeus/J-Wash",
+        "homepage": "",
+        "language": "Python",
+        "stars": 244,
+        "forks": 22,
+        "open_issues": 2,
+        "created_at": "2026-07-13T20:23:26Z",
+        "updated_at": "2026-11-16T01:25:28Z",
+        "pushed_at": "2026-09-06T15:30:16Z",
+        "starred_at": "2026-11-16T01:01:57Z"
+      },
+      "last_updated": "2026-11-16T04:49:53.803366+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "jamesondh/chimera-vocal-synth": {
+      "lists": [],
+      "metadata": {
+        "id": 1447408881,
+        "name": "chimera-vocal-synth",
+        "full_name": "jamesondh/chimera-vocal-synth",
+        "description": "the ultimate vocal synthesizer - sing, speak, beatbox, and more",
+        "url": "https://github.com/jamesondh/chimera-vocal-synth",
+        "homepage": "https://chimera.audio",
+        "language": "Rust",
+        "stars": 2482,
+        "forks": 311,
+        "open_issues": 40,
+        "created_at": "2026-11-05T19:10:42Z",
+        "updated_at": "2026-11-16T04:35:58Z",
+        "pushed_at": "2026-11-15T16:09:39Z",
+        "starred_at": "2026-11-15T15:13:39Z"
+      },
+      "last_updated": "2026-11-16T04:49:54.311779+00:00",
       "arxiv": {
         "ids": [],
         "primary_id": null,
