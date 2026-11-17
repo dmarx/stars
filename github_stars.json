@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-16T04:49:54.549127+00:00",
+  "last_updated": "2026-11-17T06:37:39.386710+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -289790,6 +289790,33 @@
         "ids": [],
         "primary_id": null,
         "bibtex_citations": []
+      }
+    },
+    "djl11/ivy": {
+      "lists": [],
+      "metadata": {
+        "id": 330914717,
+        "name": "ivy",
+        "full_name": "djl11/ivy",
+        "description": "Convert Machine Learning Code Between Frameworks",
+        "url": "https://github.com/djl11/ivy",
+        "homepage": "https://ivy-llc.github.io/docs/",
+        "language": "Python",
+        "stars": 14166,
+        "forks": 5433,
+        "open_issues": 984,
+        "created_at": "2021-01-19T08:37:25Z",
+        "updated_at": "2026-11-16T06:25:37Z",
+        "pushed_at": "2026-11-10T06:28:57Z",
+        "starred_at": "2022-07-18T05:06:10Z"
+      },
+      "last_updated": "2026-11-17T06:37:39.092197+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@article{lenton2021ivy,\r\n      title={Ivy: Templated deep learning for inter-framework portability},\r\n      author={Lenton, Daniel and Pardo, Fabio and Falck, Fabian and James, Stephen and Clark, Ronald},\r\n      journal={arXiv preprint arXiv:2102.02886},\r\n      year={2021}\r\n    }"
+        ]
       }
     }
   },
