@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-17T06:37:39.386710+00:00",
+  "last_updated": "2026-11-18T05:58:46.488956+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -289817,6 +289817,60 @@
         "bibtex_citations": [
           "@article{lenton2021ivy,\r\n      title={Ivy: Templated deep learning for inter-framework portability},\r\n      author={Lenton, Daniel and Pardo, Fabio and Falck, Fabian and James, Stephen and Clark, Ronald},\r\n      journal={arXiv preprint arXiv:2102.02886},\r\n      year={2021}\r\n    }"
         ]
+      }
+    },
+    "maddiedreese/gbc-transformer": {
+      "lists": [],
+      "metadata": {
+        "id": 1234342089,
+        "name": "gbc-transformer",
+        "full_name": "maddiedreese/gbc-transformer",
+        "description": "TinyStories-260K running locally on a stock Game Boy Color.",
+        "url": "https://github.com/maddiedreese/gbc-transformer",
+        "homepage": "",
+        "language": "C",
+        "stars": 73,
+        "forks": 2,
+        "open_issues": 6,
+        "created_at": "2026-05-10T03:57:20Z",
+        "updated_at": "2026-11-18T05:54:56Z",
+        "pushed_at": "2026-07-29T23:50:33Z",
+        "starred_at": "2026-11-18T05:54:55Z"
+      },
+      "last_updated": "2026-11-18T05:58:45.571972+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
+      }
+    },
+    "crashtheuniverse/chatgbc": {
+      "lists": [],
+      "metadata": {
+        "id": 1352113564,
+        "name": "chatgbc",
+        "full_name": "crashtheuniverse/chatgbc",
+        "description": "A language model on a Game Boy Color - pure SM83 assembly",
+        "url": "https://github.com/crashtheuniverse/chatgbc",
+        "homepage": "",
+        "language": "Python",
+        "stars": 40,
+        "forks": 2,
+        "open_issues": 0,
+        "created_at": "2026-08-31T07:15:51Z",
+        "updated_at": "2026-11-17T22:27:35Z",
+        "pushed_at": "2026-09-29T08:09:17Z",
+        "starred_at": "2026-11-17T22:27:34Z"
+      },
+      "last_updated": "2026-11-18T05:58:46.190903+00:00",
+      "arxiv": {
+        "ids": [
+          "2305.07759",
+          "2410.01201",
+          "2601.07892"
+        ],
+        "primary_id": null,
+        "bibtex_citations": []
       }
     }
   },
