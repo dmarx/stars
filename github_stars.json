@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-20T05:47:30.946182+00:00",
+  "last_updated": "2026-11-21T05:42:29.212948+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -289996,6 +289996,33 @@
         "ids": [],
         "primary_id": null,
         "bibtex_citations": []
+      }
+    },
+    "MultiMolecule/multimolecule": {
+      "lists": [],
+      "metadata": {
+        "id": 763933431,
+        "name": "multimolecule",
+        "full_name": "MultiMolecule/multimolecule",
+        "description": "Accelerate Molecular Biology Research with Machine Learning",
+        "url": "https://github.com/MultiMolecule/multimolecule",
+        "homepage": "https://multimolecule.danling.org/",
+        "language": "Python",
+        "stars": 59,
+        "forks": 9,
+        "open_issues": 1,
+        "created_at": "2024-02-27T07:14:35Z",
+        "updated_at": "2026-11-20T06:37:44Z",
+        "pushed_at": "2026-11-20T06:24:44Z",
+        "starred_at": "2026-05-10T04:19:21Z"
+      },
+      "last_updated": "2026-11-21T05:42:28.839147+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@software{chen_2024_12638419,\n  author    = {Chen, Zhiyuan and Zhu, Sophia Y.},\n  title     = {MultiMolecule},\n  doi       = {10.5281/zenodo.12638419},\n  publisher = {Zenodo},\n  url       = {https://doi.org/10.5281/zenodo.12638419},\n  year      = 2024,\n  month     = may,\n  day       = 4\n}"
+        ]
       }
     }
   },
