@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-21T05:42:29.212948+00:00",
+  "last_updated": "2026-11-24T08:29:11.866354+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -290022,6 +290022,66 @@
         "primary_id": null,
         "bibtex_citations": [
           "@software{chen_2024_12638419,\n  author    = {Chen, Zhiyuan and Zhu, Sophia Y.},\n  title     = {MultiMolecule},\n  doi       = {10.5281/zenodo.12638419},\n  publisher = {Zenodo},\n  url       = {https://doi.org/10.5281/zenodo.12638419},\n  year      = 2024,\n  month     = may,\n  day       = 4\n}"
+        ]
+      }
+    },
+    "kopperx/ReCaVSR": {
+      "lists": [],
+      "metadata": {
+        "id": 1368465850,
+        "name": "ReCaVSR",
+        "full_name": "kopperx/ReCaVSR",
+        "description": null,
+        "url": "https://github.com/kopperx/ReCaVSR",
+        "homepage": null,
+        "language": "Python",
+        "stars": 44,
+        "forks": 2,
+        "open_issues": 1,
+        "created_at": "2026-09-13T14:32:01Z",
+        "updated_at": "2026-11-24T07:01:07Z",
+        "pushed_at": "2026-10-06T08:09:59Z",
+        "starred_at": "2026-11-23T15:29:56Z"
+      },
+      "last_updated": "2026-11-24T08:29:10.684162+00:00",
+      "arxiv": {
+        "ids": [
+          "2609.37831"
+        ],
+        "primary_id": "2609.37831",
+        "bibtex_citations": [
+          "@misc{wang2026recavsronestepstreamingdiffusion,\n  title={ReCaVSR: One-Step Streaming Diffusion Video Super-Resolution with Recycled Latents and Learned Cache Routing},\n  author={Xijun Wang and Xin Li and Suhang Yao and Zirui Lang and Bingchen Li and Zhibo Chen},\n  year={2026},\n  eprint={2609.37831},\n  archivePrefix={arXiv},\n  primaryClass={cs.CV},\n  url={https://arxiv.org/abs/2609.37831}\n}"
+        ]
+      }
+    },
+    "Sage-PhysicalAI/PointLLM": {
+      "lists": [],
+      "metadata": {
+        "id": 679564879,
+        "name": "PointLLM",
+        "full_name": "Sage-PhysicalAI/PointLLM",
+        "description": "[ECCV 2024 Best Paper Candidate & TPAMI 2025] PointLLM: Empowering Large Language Models to Understand Point Clouds",
+        "url": "https://github.com/Sage-PhysicalAI/PointLLM",
+        "homepage": "https://runsenxu.com/projects/PointLLM",
+        "language": "Python",
+        "stars": 1065,
+        "forks": 59,
+        "open_issues": 9,
+        "created_at": "2023-08-17T06:06:35Z",
+        "updated_at": "2026-11-15T17:59:23Z",
+        "pushed_at": "2026-05-15T07:35:59Z",
+        "starred_at": "2023-09-02T05:54:06Z"
+      },
+      "last_updated": "2026-11-24T08:29:11.556801+00:00",
+      "arxiv": {
+        "ids": [
+          "2308.16911",
+          "2309.00615",
+          "2307.12981"
+        ],
+        "primary_id": null,
+        "bibtex_citations": [
+          "@inproceedings{xu2024pointllm,\n  title={PointLLM: Empowering Large Language Models to Understand Point Clouds},\n  author={Xu, Runsen and Wang, Xiaolong and Wang, Tai and Chen, Yilun and Pang, Jiangmiao and Lin, Dahua},\n  booktitle={ECCV},\n  year={2024}\n}"
         ]
       }
     }
