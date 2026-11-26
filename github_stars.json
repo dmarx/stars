@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-24T08:29:11.866354+00:00",
+  "last_updated": "2026-11-26T06:56:23.561081+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -290083,6 +290083,31 @@
         "bibtex_citations": [
           "@inproceedings{xu2024pointllm,\n  title={PointLLM: Empowering Large Language Models to Understand Point Clouds},\n  author={Xu, Runsen and Wang, Xiaolong and Wang, Tai and Chen, Yilun and Pang, Jiangmiao and Lin, Dahua},\n  booktitle={ECCV},\n  year={2024}\n}"
         ]
+      }
+    },
+    "mindspore-ai/mindspore-bk": {
+      "lists": [],
+      "metadata": {
+        "id": 239714835,
+        "name": "mindspore-bk",
+        "full_name": "mindspore-ai/mindspore-bk",
+        "description": "MindSpore is a new open source deep learning training/inference framework that could be used for mobile, edge and cloud scenarios.",
+        "url": "https://github.com/mindspore-ai/mindspore-bk",
+        "homepage": "https://gitee.com/mindspore/mindspore",
+        "language": "C++",
+        "stars": 4727,
+        "forks": 750,
+        "open_issues": 255,
+        "created_at": "2020-02-11T08:43:48Z",
+        "updated_at": "2026-11-26T06:13:15Z",
+        "pushed_at": "2026-10-28T08:28:53Z",
+        "starred_at": "2022-07-06T18:48:24Z"
+      },
+      "last_updated": "2026-11-26T06:56:23.208806+00:00",
+      "arxiv": {
+        "ids": [],
+        "primary_id": null,
+        "bibtex_citations": []
       }
     }
   },
