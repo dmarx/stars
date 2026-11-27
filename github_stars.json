@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-26T06:56:23.561081+00:00",
+  "last_updated": "2026-11-27T06:49:03.042271+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -290108,6 +290108,35 @@
         "ids": [],
         "primary_id": null,
         "bibtex_citations": []
+      }
+    },
+    "radian-rises/artbench": {
+      "lists": [],
+      "metadata": {
+        "id": 501327535,
+        "name": "artbench",
+        "full_name": "radian-rises/artbench",
+        "description": "Benchmarking Generative Models with Artworks",
+        "url": "https://github.com/radian-rises/artbench",
+        "homepage": "https://arxiv.org/abs/2206.11404",
+        "language": "Python",
+        "stars": 242,
+        "forks": 11,
+        "open_issues": 2,
+        "created_at": "2022-06-08T16:22:45Z",
+        "updated_at": "2026-11-18T10:06:38Z",
+        "pushed_at": "2022-10-29T03:49:20Z",
+        "starred_at": "2022-07-24T00:32:01Z"
+      },
+      "last_updated": "2026-11-27T06:49:02.741483+00:00",
+      "arxiv": {
+        "ids": [
+          "2206.11404"
+        ],
+        "primary_id": "2206.11404",
+        "bibtex_citations": [
+          "@article{liao2022artbench,\n  title={The ArtBench Dataset: Benchmarking Generative Models with Artworks},\n  author={Liao, Peiyuan and Li, Xiuyu and Liu, Xihui and Keutzer, Kurt},\n  journal={arXiv preprint arXiv:2206.11404},\n  year={2022}\n}"
+        ]
       }
     }
   },
