@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-27T06:49:03.042271+00:00",
+  "last_updated": "2026-11-28T06:23:06.899201+00:00",
   "repositories": {
     "McGill-NLP/VinePPO": {
       "lists": [
@@ -290137,6 +290137,34 @@
         "bibtex_citations": [
           "@article{liao2022artbench,\n  title={The ArtBench Dataset: Benchmarking Generative Models with Artworks},\n  author={Liao, Peiyuan and Li, Xiuyu and Liu, Xihui and Keutzer, Kurt},\n  journal={arXiv preprint arXiv:2206.11404},\n  year={2022}\n}"
         ]
+      }
+    },
+    "yedp123/ComfyUI-Yedp-Face3D": {
+      "lists": [],
+      "metadata": {
+        "id": 1460811482,
+        "name": "ComfyUI-Yedp-Face3D",
+        "full_name": "yedp123/ComfyUI-Yedp-Face3D",
+        "description": "experimental MediaPipe-based 3D face reconstruction for AI image conditioning",
+        "url": "https://github.com/yedp123/ComfyUI-Yedp-Face3D",
+        "homepage": null,
+        "language": "JavaScript",
+        "stars": 21,
+        "forks": 3,
+        "open_issues": 0,
+        "created_at": "2026-11-17T02:21:49Z",
+        "updated_at": "2026-11-28T05:58:05Z",
+        "pushed_at": "2026-11-27T11:19:07Z",
+        "starred_at": "2026-11-27T19:44:48Z"
+      },
+      "last_updated": "2026-11-28T06:23:06.470082+00:00",
+      "arxiv": {
+        "ids": [
+          "2204.02776",
+          "2312.00311"
+        ],
+        "primary_id": null,
+        "bibtex_citations": []
       }
     }
   },
